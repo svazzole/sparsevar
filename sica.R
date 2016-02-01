@@ -111,9 +111,13 @@ sica <- function(X, y, a = 1e-3, lambda = 1e-2, inival = integer(), maxiter = 50
     }
     
     indm <- which(resc > lambda*(1 + a^(-1)))
-    ind <- union(c(setr(indm), ind), varset)
-    
+    ind <- union(c(setr(indm), ind), varset)    
   }
+
+  # TODO: check this two lines
+  varset <- union(find(beta), varset);
+  inival <- beta;
+    
   
 }
 

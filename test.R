@@ -51,12 +51,13 @@ image(A)
 
 source("simulations.R")
 source("estimateVAR.R")
-sim <- simulateVAR(N = 30)
+sim <- simulateVAR(N = 200)
 genA <- sim$A
 data <- sim$data$series
 
 resSCAD <- estimateVAR(data, penalty = "SCAD")
 ASCAD <- resSCAD$A
+
 
 resLASSO <- estimateVAR(data)
 ALASSO <- resLASSO$A
@@ -66,6 +67,6 @@ ALASSO2 <- resLASSO2$A
 
 par(mfrow = c(2,2))
 image(ASCAD[30:1, ])
-image(genA[30:1, ])
-image(ALASSO[30:1, ])
+image(genA[200:1, ])
+image(ALASSO[200:1, ])
 image(ALASSO2[30:1, ])

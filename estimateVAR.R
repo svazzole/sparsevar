@@ -24,7 +24,10 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
   if (penalty == "ENET"){
 
     # Hadamard product for data
-    X <- Matrix(I %x% tmpX, sparse = TRUE)
+    I <- Diagonal(nc)
+    X <- kronecker(I, tmpX)
+    # X <- Matrix(sparseId %x% tmpX, sparse = TRUE)
+    # X <- Matrix(I %x% tmpX, sparse = TRUE)
 
     cat("ENET estimation...")
     # fit the ENET model

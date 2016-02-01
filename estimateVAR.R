@@ -8,17 +8,19 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
   nr <- nrow(rets)
   nc <- ncol(rets)
   
+  # make sure the data is in matrix format
+  rets <- as.matrix(rets)
+  
   # scale the matrix columns
   for (i in 1:nc){
     rets[, i] <- scale(rets[, i])
   }
   
-  # make sure the data is in matrix format
-  tmpX <- as.matrix(rets[1:(nr-1), ])
-  tmpY <- as.matrix(rets[2:(nr), ])
+  # create Xs and Ys (temp variables)
+  tmpX <- rets[1:(nr-1), ]
+  tmpY <- rets[2:(nr), ]
   
   # vectorization for VAR
-  I <- diag(nc)
   y <- as.vector(tmpY)
   
   if (penalty == "ENET"){
@@ -26,8 +28,6 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
     # Hadamard product for data
     I <- Diagonal(nc)
     X <- kronecker(I, tmpX)
-    # X <- Matrix(sparseId %x% tmpX, sparse = TRUE)
-    # X <- Matrix(I %x% tmpX, sparse = TRUE)
 
     cat("ENET estimation...")
     # fit the ENET model
@@ -44,9 +44,11 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
 
   } else if (penalty == "SCAD") {
     
-    cat("SCAD estimation...")
+    I <- diag(nc)
     X <- as.matrix(I %x% tmpX)
     
+    cat("SCAD estimation...")
+    # fit the SCAD model
     t <- Sys.time()
     fit <- varSCAD(X, y, options)
     elapsed <- Sys.time() - t
@@ -57,7 +59,18 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
 
   } else if (penalty == "MCP") {
     
+    I <- diag(nc)
     X <- as.matrix(I %x% tmpX)
+    
+    cat("MCP estimation...")
+    # fit the MCP model
+    t <- Sys.time()
+    fit <- varMCP(X, y, options)
+    elapsed <- Sys.time() - t
+    
+    # extract the coefficients and reshape the matrix
+    Avector <- coef(fit, s = "lambda.min")
+    A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc, byrow = TRUE)
     
   } else {
     
@@ -104,7 +117,7 @@ varMCP <- function(X, y, options = NULL) {
   e <- ifelse(is.null(options$eps), 0.01, options$eps)
   nf <- ifelse(is.null(options$nfolds), 10, options$nfolds)
 
-  cvfit = cv.ncvreg(X, y, nfolds = nf, penalty = "SCAD", eps = e)
+  cvfit = cv.ncvreg(X, y, nfolds = nf, penalty = "MCP", eps = e)
   
   return(cvfit)
   

@@ -1,6 +1,7 @@
 library(glmnet)
 library(Matrix)
 library(ncvreg)
+library(doMC)
 
 estimateVAR <- function(rets, penalty = "ENET", options = NULL){
 
@@ -29,7 +30,7 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
     I <- Diagonal(nc)
     X <- kronecker(I, tmpX)
 
-    cat("ENET estimation...")
+    # cat("ENET estimation...")
     # fit the ENET model
     t <- Sys.time()
     fit <- varENET(X, y, options)
@@ -42,12 +43,14 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
     Avector <- coef(fit, s = lambda)
     A <- matrix(Avector[2:nrow(Avector)], nrow = nc, ncol = nc, byrow = TRUE)
 
+    mse <- min(fit$cvm)
+    
   } else if (penalty == "SCAD") {
     
     I <- diag(nc)
     X <- as.matrix(I %x% tmpX)
     
-    cat("SCAD estimation...")
+    # cat("SCAD estimation...")
     # fit the SCAD model
     t <- Sys.time()
     fit <- varSCAD(X, y, options)
@@ -56,13 +59,14 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
     # extract the coefficients and reshape the matrix
     Avector <- coef(fit, s = "lambda.min")
     A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc, byrow = TRUE)
-
+    mse <- min(fit$cve)
+    
   } else if (penalty == "MCP") {
     
     I <- diag(nc)
     X <- as.matrix(I %x% tmpX)
     
-    cat("MCP estimation...")
+    # cat("MCP estimation...")
     # fit the MCP model
     t <- Sys.time()
     fit <- varMCP(X, y, options)
@@ -71,6 +75,7 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
     # extract the coefficients and reshape the matrix
     Avector <- coef(fit, s = "lambda.min")
     A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc, byrow = TRUE)
+    mse <- min(fit$cve)
     
   } else {
     
@@ -82,6 +87,7 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
   
   output$A <- A
   output$fit <- fit
+  output$mse <- mse
   output$time <- elapsed
   
   return(output)
@@ -94,8 +100,15 @@ varENET <- function(X,y, options = NULL) {
   nl <- ifelse(is.null(options$nlambda), 100, options$nlambda)
   tm <- ifelse(is.null(options$type.measure), "mse", options$type.measure)
   nf <- ifelse(is.null(options$nfolds), 10, options$nfolds)
-  
-  cvfit = cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf)
+  parall <- ifelse(is.null(options$parallel), FALSE, options$parallel)
+  ncores <- ifelse(is.null(options$ncores), 1, options$ncores)
+
+  if(parall == TRUE) {
+    registerDoMC(ncores)
+    cvfit = cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = TRUE)
+  } else {
+    cvfit = cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf)
+  }
   
   return(cvfit)
   

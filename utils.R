@@ -19,7 +19,7 @@ maxNorm <- function(M) {
   
 }
 
-frobNorm <- function(M) {s
+frobNorm <- function(M) {
   
   A <- (t(M) %*% M)
   A <-  A * diag(nrow(A))

@@ -9,6 +9,7 @@ s <- simulateVAR(nobs = 200, N = N, rho = 0.5, sparsity = 0.15)
 rets <- s$data$series
 genA <- s$A
 
+#################################
 N <- ncol(rets)
 d <- nrow(rets)
 
@@ -32,7 +33,7 @@ Av <- coef(cvfit, s = "lambda.min")
 A <- matrix(Av[2:nrow(Av)], nrow = N, ncol = N, byrow = TRUE)
 Av2 <- coef(cvfit, s = "lambda.1se")
 A2 <- matrix(Av2[2:nrow(Av)], nrow = N, ncol = N, byrow = TRUE)
-
+######################
 L <- A
 L[L!=0] <- 1
 L[L==0] <- 0

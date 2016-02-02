@@ -105,17 +105,19 @@ varENET <- function(X,y, options = NULL) {
 
   if(parall == TRUE) {
     registerDoMC(ncores)
-    cvfit = cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = TRUE)
-  } else {
-    cvfit = cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf)
   }
+
+  if(ncores < 1) {
+    stop("The number of cores must be > 1")
+  }
+    
+  cvfit = cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = parall)
   
   return(cvfit)
   
 }
 
 varSCAD <- function(X, y, options = NULL) {
-  
   e <- ifelse(is.null(options$eps), 0.01, options$eps)
   nf <- ifelse(is.null(options$nfolds), 10, options$nfolds)
   

@@ -1,13 +1,15 @@
+# Libraries
 library(MTS)
 
-simulateVAR <- function(nobs = 250, rho = 0.75, N = 100, sparsity = 0.03){
-  
-  source("createSparseMatrix.R")
+# Other files needed
+source("createSparseMatrix.R")
 
+simulateVAR <- function(nobs = 250, rho = 0.75, N = 100, sparsity = 0.05, method = "normal"){
+  
   # Create sparse matrix for VAR
-  A <- createSparseMatrix(sparsity = sparsity, N = N)
-  while (max(abs(eigen(A)$values)) > 1) {
-    A <- createSparseMatrix(sparsity = sparsity, N = N)
+  A <- createSparseMatrix(sparsity = sparsity, N = N, method = method)
+  while (max(Mod(eigen(A)$values)) > 1) {
+    A <- createSparseMatrix(sparsity = sparsity, N = N, method = method)
   }
   
   # Covariance Matrix: Toeplitz

@@ -104,7 +104,7 @@ varENET <- function(X,y, options = NULL) {
   ncores <- ifelse(is.null(options$ncores), 1, options$ncores)
 
   if(parall == TRUE) {
-    registerDoMC(ncores)
+    cl <- registerDoMC(ncores)
   }
 
   if(ncores < 1) {
@@ -118,6 +118,7 @@ varENET <- function(X,y, options = NULL) {
 }
 
 varSCAD <- function(X, y, options = NULL) {
+  
   e <- ifelse(is.null(options$eps), 0.01, options$eps)
   nf <- ifelse(is.null(options$nfolds), 10, options$nfolds)
   

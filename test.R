@@ -1,72 +1,55 @@
-library(glmnet)
-library(hdf5)
-library(Matrix)
-
-hdf5load("data/est/2004.h5", load = TRUE, verbosity = 0, tidy = FALSE)
-
-p <- prices$block0_values
-r <- rets$block0_values
-
-nAssets <- 100
-permNo <- p[1, 1:nAssets]
-
-rets <- r[3:nrow(r), 1:nAssets]
-
-N <- ncol(rets)
-d <- nrow(rets)
-
-rm(prices, r, p)
-
-for (i in 1:N){
-  rets[, i] <- scale(rets[, i])
-}
-  
-tmpX <- rets[1:(d-1), ]
-tmpY <- rets[2:d, ] 
-
-I <- diag(N)
-# X <- Matrix(I %x% tmpX, nrow = d*N, ncol = N*N, sparse = TRUE)
-X <- I %x% tmpX
-Y <- as.vector(tmpY)
-gc()
-
-t <- Sys.time()
-cvfit = cv.glmnet(X, Y, alpha = 1, nlambda = 100, type.measure="mse")
-elapsed <- Sys.time() - t
-
-plot(cvfit)
-
-Av <- coef(cvfit, s = "lambda.min")
-
-if(sum(Av[2:N^2]!=0) == 0){
-  Av <- coef(cvfit, s = "lambda.1se")
-}
-
-A <- t(matrix(Av[2:nrow(Av)], nrow = N, ncol = N, byrow = TRUE))
-image(A)
-
-
-#####################
-# TEST
 
 source("simulations.R")
+source("mcSimulations.R")
 source("estimateVAR.R")
-sim <- simulateVAR(N = 200)
+source("utils.R")
+
+direct <- "results/"
+
+#########
+# LASSO #
+#########
+
+N <- 10
+rho <- 0.5
+s <- 0.05
+nobs <- 30
+
+sim <- simulateVAR(N = N, nobs = nobs, rho = rho, sparsity = s)
 genA <- sim$A
-data <- sim$data$series
+rets <- sim$data$series
 
-resSCAD <- estimateVAR(data, penalty = "SCAD")
-ASCAD <- resSCAD$A
+optLambda1se <- list(parallel = TRUE, ncores = 2, lambda = "lambda.1se")
+optPar <- list(parallel = TRUE, ncores = 2)
 
+res <- estimateVAR(rets, options = optPar)
 
-resLASSO <- estimateVAR(data)
-ALASSO <- resLASSO$A
+A <- res$A
 
-resLASSO2 <- estimateVAR(data, options = list(lambda = "lambda.1se"))
-ALASSO2 <- resLASSO2$A
+L <- A
+L[L!=0] <- 1
+L[L==0] <- 0
 
-par(mfrow = c(2,2))
-image(ASCAD[30:1, ])
-image(genA[200:1, ])
-image(ALASSO[200:1, ])
-image(ALASSO2[30:1, ])
+genL <- genA
+genL[genL!=0] <- 1
+genL[genL==0] <- 0
+
+cat("Relative Accuracy: ") 
+1 - sum(abs(L-genL))/N^2 - (1 - sum(genL)/N^2)  # accuracy    -(1 - sum(genL)/N^2)
+cat("Relative Sparsity: ")
+abs(sum(L)/N^2 - sum(genL)/N^2)                 # sparsity
+cat("Relative l2: ")
+l2norm(A-genA) / l2norm(genA)
+cat("Relative Froebenius: ")
+frobNorm(A-genA) / frobNorm(genA)
+
+par(mfrow = c(1,2))
+image(genA[N:1, ])
+image(A[N:1, ])
+
+############
+
+results <- mcSimulations(N = N, rho = rho, options = optLambda1se)
+res <- mcSimulations(N = N, rho = rho, options = optPar)
+colMeans(results)
+colMeans(res)

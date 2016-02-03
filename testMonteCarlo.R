@@ -1,64 +1,31 @@
-library(glmnet)
-library(Matrix)
-library(corrplot)
 
-source("simulations.R")
+source("mcSimulations.R")
 
-N <- 50
-s <- simulateVAR(nobs = 200, N = N, rho = 0.5, sparsity = 0.15)
-rets <- s$data$series
-genA <- s$A
+##
+# ALL
+##
 
-#################################
-N <- ncol(rets)
-d <- nrow(rets)
+g <- expand.grid(nobs = c(50,250), N = c(30,50,100,200), rho = c(0.1,0.5,0.9), sparsity = c(0.05,0.1,0.15), 
+                 penalty = c("ENET", "SCAD", "MCP"), lambda = c("lambda.min", "lambda.1se"), stringsAsFactors = FALSE)
+save(file = "results/ENET/grid.RData", g)
 
-for (i in 1:N){
-  rets[, i] <- scale(rets[, i])
+opt <- list(parallel = TRUE, ncores = 2)
+
+for (i in 1:nrow(g)) {
+  
+  nobs <- g$nobs[i]
+  N <- g$N[i]
+  rho <- g$rho[i]
+  sparsity <- g$sparsity[i]
+  penalty <- g$penalty[i]
+  
+  opt$lambda <- g$lambda[i] 
+  
+  results <- mcSimulations(N = N, nobs = nobs, rho = rho, sparsity = sparsity, penalty = penalty, options = opt)
+  
+  fileName <- paste0("results/ENET/results_", as.character(i), ".RData")
+  
+  save(file = fileName, results)
+  
 }
 
-tmpX <- rets[1:(d-1), ]
-tmpY <- rets[2:d, ] 
-
-I <- diag(N)
-X <- Matrix(I %x% tmpX, sparse = TRUE)
-Y <- as.vector(tmpY)
-gc()
-
-t <- Sys.time()
-cvfit = cv.glmnet(X, Y, alpha = 0.95, nlambda = 100, type.measure="mse")
-elapsed <- Sys.time() - t
-
-Av <- coef(cvfit, s = "lambda.min")
-A <- matrix(Av[2:nrow(Av)], nrow = N, ncol = N, byrow = TRUE)
-Av2 <- coef(cvfit, s = "lambda.1se")
-A2 <- matrix(Av2[2:nrow(Av)], nrow = N, ncol = N, byrow = TRUE)
-######################
-L <- A
-L[L!=0] <- 1
-L[L==0] <- 0
-
-L2 <- A2
-L2[L2!=0] <- 1
-L2[L2==0] <- 0
-
-genL <- genA
-genL[genL!=0] <- 1
-genL[genL==0] <- 0
-
-cat("Accuracy L:", 1 - sum(abs(L-genL))/N^2, sep = " ")
-cat("Accuracy L2:", 1 - sum(abs(L2-genL))/N^2, sep = " ")
-cat("Sparsities:\n", "L: ", sum(L)/N^2, "\n L2: ", sum(L2)/N^2, "\n genL: ", sum(genL)/N^2)
-
-A <- atan(A) * (2/pi)
-A2 <- atan(A2) * (2/pi)
-genA <- atan(genA) * (2/pi)
-
-par(mfrow = c(2,2))
-image(A, col = rainbow(12))
-#corrplot(A, method = "square")
-image(genA, col = rainbow(12))
-#corrplot(genA, method = "square")
-plot(cvfit)
-image(A2, col = rainbow(12))
-#corrplot(A2, method = "square")

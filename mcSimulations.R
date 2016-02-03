@@ -1,11 +1,11 @@
 library(glmnet)
 library(Matrix)
 
+source("simulations.R")
+source("utils.R")
+source("estimateVAR.R")
+
 mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, penalty = "ENET", options = NULL) {
-  
-  source("simulations.R")
-  source("utils.R")
-  source("estimateVAR.R")
   
   results <- matrix(0, nMC, 5)
   
@@ -29,10 +29,10 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, 
       genL[genL!=0] <- 1
       genL[genL==0] <- 0
       
-      results[i, 1] <- 1 - sum(abs(L-genL))/N^2   # accuracy
+      results[i, 1] <- 1 - sum(abs(L-genL))/N^2   # accuracy    -(1 - sum(genL)/N^2)
       results[i, 2] <- abs(sum(L)/N^2 - sparsity) # sparsity
-      results[i, 3] <- l2norm(L-genL)
-      results[i, 4] <- frobNorm(L-genL)
+      results[i, 3] <- l2norm(A-genA) / l2norm(genA)
+      results[i, 4] <- frobNorm(A-genA) / frobNorm(genA)
       results[i, 5] <- res$mse
       setTxtProgressBar(pb, i)
     }
@@ -40,7 +40,7 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, 
   close(pb)
   
   results <- as.data.frame(results)
-  colnames(results) <- c("accuracy", "sparsity", "l2", "frob", "mse")
+  colnames(results) <- c("accuracy", "sparDiff", "l2", "frob", "mse")
   
   return(results)
   

@@ -27,7 +27,7 @@ simulateVAR <- function(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, method 
     I <- diag(1 - rho, nrow = N)
     r <- matrix(0, nrow = N, ncol = N)
     r[1:l, 1:l] <- rho
-    r[l:N, l:N] <- rho
+    r[(l+1):N, (l+1):N] <- rho
     T <- I + r
       
   } else if (covariance == "toeplitz"){

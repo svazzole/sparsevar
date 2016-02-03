@@ -7,3 +7,4 @@ Per tutte le simulazioni: mse, accuracy, l2, froebnius.
   - [ ] MC+: n = 30, 50
 * TODO Più lags
 * TODO VECM con LS 
+* TODO Confrontare risultati con Basu

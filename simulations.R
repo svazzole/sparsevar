@@ -4,7 +4,7 @@ library(MTS)
 # Other files needed
 source("createSparseMatrix.R")
 
-simulateVAR <- function(nobs = 250, rho = 0.75, N = 100, sparsity = 0.05, method = "normal"){
+simulateVAR <- function(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, method = "normal", covariance = "toeplitz"){
   
   # Create sparse matrix for VAR
   A <- createSparseMatrix(sparsity = sparsity, N = N, method = method)
@@ -12,9 +12,34 @@ simulateVAR <- function(nobs = 250, rho = 0.75, N = 100, sparsity = 0.05, method
     A <- createSparseMatrix(sparsity = sparsity, N = N, method = method)
   }
   
-  # Covariance Matrix: Toeplitz
-  r <- rho^(1:N)
-  T <- toeplitz(r) 
+  # Covariance Matrix: Toeplitz, Block1 or Block2
+  if (covariance == "block1"){
+    
+    l <- floor(N/2)
+    I <- diag(1 - rho, nrow = N)
+    r <- matrix(0, nrow = N, ncol = N)
+    r[1:l, 1:l] <- rho
+    T <- I + r
+      
+  } else if (covariance == "block2") {
+  
+    l <- floor(N/2)
+    I <- diag(1 - rho, nrow = N)
+    r <- matrix(0, nrow = N, ncol = N)
+    r[1:l, 1:l] <- rho
+    r[l:N, l:N] <- rho
+    T <- I + r
+      
+  } else if (covariance == "toeplitz"){
+    
+    r <- rho^(1:N)
+    T <- toeplitz(r) 
+  
+  } else {
+    
+    stop("Unknown covariance matrix type. Possible choices are: toeplitz, block1, block2")
+    
+  }
   
   # Matrix for MA part
   theta <- matrix(0, N, N)

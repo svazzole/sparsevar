@@ -5,7 +5,7 @@ source("simulations.R")
 source("utils.R")
 source("estimateVAR.R")
 
-mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, penalty = "ENET", options = NULL) {
+mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, penalty = "ENET", covariance = "toeplitz", options = NULL) {
   
   results <- matrix(0, nMC, 5)
   
@@ -13,7 +13,7 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, 
     
   for (i in 1:nMC){
 
-      s <- simulateVAR(nobs = nobs, N = N, rho = rho, sparsity = sparsity)
+      s <- simulateVAR(nobs = nobs, N = N, rho = rho, sparsity = sparsity, covariance = covariance)
       rets <- s$data$series
       genA <- s$A
       

@@ -2,7 +2,7 @@
 
 Some R functions useful to estimate sparse VAR models.
 
-For the moment only VAR(1) is implemented.
+At the moment only VAR(1) is implemented.
 
 The functions included are:
 - `simulateVAR`: to generate a sparse VAR multivariate time series
@@ -19,6 +19,12 @@ Use `simulateVAR`. The parameters for the function are:
 - `method`: `"normal"` or `"bimodal"`.
 
 ```
-sim <- simulateVAR(N = 100,nobs = 250, rho = 0.75, sparsity = 0.05, method = "normal")
+sim <- simulateVAR(N = 100, nobs = 250, rho = 0.75, sparsity = 0.05, method = "normal")
 ```
 
+## Estimation
+
+Use `estimateVAR`. The parameters are:
+- `rets`: the multivariate time series (variables in columns, observations in rows);
+- `penalty`: the penalty used in Least Squares (LS). Possible values are: "ENET", "SCAD" or "MCP";
+- `options`: list of options (...).

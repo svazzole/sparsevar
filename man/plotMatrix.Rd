@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotMatrix.R
 \name{plotMatrix}
 \alias{plotMatrix}
-\title{Plot the matrix}
+\title{Matrix plot}
 \usage{
 plotMatrix(M)
 }
@@ -10,13 +10,15 @@ plotMatrix(M)
 \item{M}{the matrix to plot}
 }
 \value{
-The sum of \code{x} and \code{y}.
+An \code{image} plot with a particular color palette
 }
 \description{
-Plot the matrix
+Plot a sparse matrix
 }
 \examples{
-add(1, 1)
-add(10, 1)
+plotMatrix(M)
+}
+\author{
+Simone Vazzoler
 }
 

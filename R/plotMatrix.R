@@ -1,10 +1,13 @@
-#' Plot the matrix
+#' @title Matrix plot
+#' 
+#' @description Plot a sparse matrix
 #' 
 #' @param M the matrix to plot
-#' @return The sum of \code{x} and \code{y}.
+#' @return An \code{image} plot with a particular color palette
 #' @examples
-#' add(1, 1)
-#' add(10, 1)
+#' plotMatrix(M)
+#' 
+#' @author Simone Vazzoler
 
 plotMatrix <- function(M){
   

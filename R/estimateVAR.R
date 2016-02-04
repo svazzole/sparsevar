@@ -1,7 +1,19 @@
-library(glmnet)
-library(Matrix)
-library(ncvreg)
-library(doMC)
+#' @title Multivariate VAR estimation
+#' 
+#' @description A wrapper to estimate a (possibly big) multivariate VAR time series
+#' using penalized least squares methods, such as ENET, SCAD or MC+.
+#' @param rets the data from the time series: variables in columns and observations in 
+#' rows
+#' @param penalty the penalty function to use. Possible values are \code{"ENET"}, \code{"SCAD"}
+#' or \code{"MCP"}
+#' @param options options for the function
+#' @author Simone Vazzoler
+
+
+# library(glmnet)
+# library(Matrix)
+# library(ncvreg)
+# library(doMC)
 
 estimateVAR <- function(rets, penalty = "ENET", options = NULL){
 
@@ -13,7 +25,7 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
   rets <- as.matrix(rets)
   
   # scale the matrix columns
-  for (i in 1:nc){
+  for (i in 1:nc) {
     rets[, i] <- scale(rets[, i])
   }
   
@@ -30,7 +42,6 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
     I <- Diagonal(nc)
     X <- kronecker(I, tmpX)
 
-    # cat("ENET estimation...")
     # fit the ENET model
     t <- Sys.time()
     fit <- varENET(X, y, options)
@@ -50,7 +61,6 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
     I <- diag(nc)
     X <- as.matrix(I %x% tmpX)
     
-    # cat("SCAD estimation...")
     # fit the SCAD model
     t <- Sys.time()
     fit <- varSCAD(X, y, options)
@@ -66,7 +76,6 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
     I <- diag(nc)
     X <- as.matrix(I %x% tmpX)
     
-    # cat("MCP estimation...")
     # fit the MCP model
     t <- Sys.time()
     fit <- varMCP(X, y, options)
@@ -84,7 +93,6 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
   }
   
   output = list()
-  
   output$A <- A
   output$fit <- fit
   output$mse <- mse

@@ -1,3 +1,17 @@
+#' @title Matrix norms
+#' 
+#' @description Some matrix norms
+#' @usage 
+#' l2norm(M)
+#' l1norm(M)
+#' maxNorm(M)
+#' frobNorm(M)
+#' spectralRadius(M)
+#' operatorNorm(M)
+#' @param M
+#' 
+#' @author Simone Vazzoler
+
 l2norm <- function(M) {
   
   #s <- sqrt(sum(M^2))

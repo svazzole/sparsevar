@@ -1,13 +1,21 @@
-# library(glmnet)
-# library(Matrix)
-
+#' @title Monte Carlo simulations
+#'
+#' @description This function generates monte carlo ...
+#' @param N
+#' @param nobs
+#' @param nMC
+#' @param rho
+#' @param sparsity
+#' @param penalty
+#' @param covariance
+#' @param options
+#' 
+#' @return A list containing ...
+#' 
+#' @author Simone Vazzoler
 
 mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, penalty = "ENET", covariance = "toeplitz", options = NULL) {
 
-#   source("simulations.R")
-#   source("utils.R")
-#   source("estimateVAR.R")
-  
   results <- matrix(0, nMC, 5)
   
   pb <- txtProgressBar(min = 0, max = nMC, style = 3)

@@ -26,5 +26,5 @@ sim <- simulateVAR(N = 100, nobs = 250, rho = 0.75, sparsity = 0.05, method = "n
 
 Use `estimateVAR`. The parameters are:
 - `rets`: the multivariate time series (variables in columns, observations in rows);
-- `penalty`: the penalty used in Least Squares (LS). Possible values are: "ENET", "SCAD" or "MCP";
+- `penalty`: the penalty used in Least Squares (LS). Possible values are: `"ENET"`, `"SCAD"` or `"MCP"`;
 - `options`: list of options (...).

@@ -7,13 +7,9 @@
 #' @param penalty the penalty function to use. Possible values are \code{"ENET"}, \code{"SCAD"}
 #' or \code{"MCP"}
 #' @param options options for the function
+#' 
 #' @author Simone Vazzoler
 
-
-# library(glmnet)
-# library(Matrix)
-# library(ncvreg)
-# library(doMC)
 
 estimateVAR <- function(rets, penalty = "ENET", options = NULL){
 

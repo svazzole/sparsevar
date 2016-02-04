@@ -5,3 +5,6 @@ docs/
 results/
 todo.org
 .RData
+fig/
+*.pdf
+data/

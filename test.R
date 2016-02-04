@@ -53,3 +53,47 @@ results <- mcSimulations(N = N, rho = rho, options = optLambda1se)
 res <- mcSimulations(N = N, rho = rho, options = optPar)
 colMeans(results)
 colMeans(res)
+
+
+###########
+# Altro test
+
+library(Matrix)
+source("simulations.R")
+
+sim <- simulateVAR(N = 30)
+
+source("createSparseMatrix.R")
+
+T <- createSparseMatrix(100, 0.05, method = "bimodal", stationary = TRUE)
+Mod(eigen(T)$values)
+
+T <- createSparseMatrix(100, 0.05, stationary = TRUE)
+mLambda <- Mod(eigen(T)$values)[1]
+
+mult <- 0.95/mLambda
+
+T <- mult * T
+Mod(eigen(T)$values)
+
+T1 <- createSparseMatrix(200, 0.25, stationary = TRUE)
+T2 <- as.matrix(1/(sqrt(200)) * rsparsematrix(200,200,0.25,rand.x = rnorm))
+
+
+hist(T1[T1!=0])
+hist(T2[T2!=0])
+
+
+T1 <- createSparseMatrix(100, 0.05, stationary = TRUE)
+T2 <- createSparseMatrix(200, 0.05, stationary = TRUE)
+T3 <- createSparseMatrix(400, 0.05, stationary = TRUE)
+T4 <- createSparseMatrix(800, 0.05, stationary = TRUE)
+
+par(mfrow = c(2,2))
+hist(T1[T1!=0])
+hist(T2[T2!=0])
+hist(T3[T3!=0])
+hist(T4[T4!=0])
+
+max(Mod(eigen(T4)$values))
+

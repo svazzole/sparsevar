@@ -1,3 +1,9 @@
+###########################################################
+# What about using rsparsematrix from the library Matrix? #
+###########################################################
+# Which are the differences between a matrix created with #
+# createSparseMatrix and rsparsematrix ?                  #
+###########################################################
 
 createSparseMatrix <- function(N, sparsity, method = "normal") {
   
@@ -17,6 +23,18 @@ createSparseMatrix <- function(N, sparsity, method = "normal") {
     t <- sample(t, N^2)
     Atmp <- (matrix(t, nrow = N, ncol = N))
      
+  } else if (method == "test") {
+  
+    n <- floor(sparsity * N^2)
+    nonZeroEntries <- rnorm(n, mean = 0, sd = 1)
+    entries <- sample(x = 1:N^2, size = n, replace = FALSE)
+    
+    Atmp <- numeric(length = N^2)
+    Atmp[entries] <- nonZeroEntries
+    
+    A <- matrix(Atmp, nrow = N, ncol = N)
+    return(A)
+    
   } else {
     
     stop("Unknown method. Possible methods are normal or bimodal.")

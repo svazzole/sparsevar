@@ -6,11 +6,18 @@ source("createSparseMatrix.R")
 
 simulateVAR <- function(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, method = "normal", covariance = "toeplitz"){
   
-  # Create sparse matrix for VAR
-  A <- createSparseMatrix(sparsity = sparsity, N = N, method = method)
+#  # Create sparse matrix for VAR
+#   A <- createSparseMatrix(sparsity = sparsity, N = N, method = method)
+#   while (max(Mod(eigen(A)$values)) > 1) {
+#     A <- createSparseMatrix(sparsity = sparsity, N = N, method = method)
+#   }
+
+  A <- rsparsematrix(nrow = N, ncol = N, density = sparsity, rand.x = rnorm)
   while (max(Mod(eigen(A)$values)) > 1) {
-    A <- createSparseMatrix(sparsity = sparsity, N = N, method = method)
+    A <- rsparsematrix(nrow = N, ncol = N, density = sparsity, rand.x = rnorm)
   }
+  
+  A <- as.matrix(A)
   
   # Covariance Matrix: Toeplitz, Block1 or Block2
   if (covariance == "block1"){

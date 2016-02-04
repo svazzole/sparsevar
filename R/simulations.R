@@ -1,8 +1,8 @@
 # Libraries
-library(MTS)
+# library(MTS)
 
 # Other files needed
-source("createSparseMatrix.R")
+# source("createSparseMatrix.R")
 
 simulateVAR <- function(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, method = "normal", covariance = "toeplitz"){
   

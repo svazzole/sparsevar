@@ -141,7 +141,7 @@ sica <- function(X, y, a = 1e-3, lambda = 1e-2, inival = integer(), maxiter = 50
         for (k in 1:length(ind)) {
             setr <- ind;
             I <- setr[k];
-            setr[k] <- [];
+            setr[k] <- numeric(0);
             
             # % solve
             # %
@@ -203,7 +203,7 @@ sica <- function(X, y, a = 1e-3, lambda = 1e-2, inival = integer(), maxiter = 50
         for (k in 1:length(ind)) {
             setr <- ind
             I <- setr[k]
-            setr[k] <- []
+            setr[k] <- numeric(0)
             
             ## % solve
             ## %
@@ -252,34 +252,36 @@ sica <- function(X, y, a = 1e-3, lambda = 1e-2, inival = integer(), maxiter = 50
     for (k in 1:length(ind)) {
         setr <- ind
         I <- setr[k]
-        setr[k] = []
+        setr[k] <- numeric(0)
         
         ## % solve
         ## %
         ## % min_beta  2^(-1) (beta - z)^2 + lambda rho_a(|beta|)
         ## %
         ## % for scalar beta
-        if isempty(setr)
-            z = cvec(I);
-        else
-            z = (cvec(I) - XXmat(I, setr)*beta(setr));
-        end
-        beta(I) = usica(z, a, lambda);
-    end
+        if (length(setr) == 0) {
+          z <- cvec[I];
+        } else {            
+          z <- (cvec[I] - XXmat(I, setr)*beta(setr));
+        }
+        
+        beta[I] <- usica(z, a, lambda);
+    }
     
-    ind = find(beta);
-    update = norm(beta - betaold);
+    ind <- find(beta);
+    update <- norm(beta - betaold);
     
-    setr = setdiff(1:p, ind);
-    if isempty(setr)
-        resc = 0;
-    else
-        resc = abs(cvec(setr) - XXmat(setr, ind)*beta(ind));
-    end
+    setr <- setdiff(1:p, ind);
     
-    indm = find(resc > lambda*(1 + a^(-1)));
+    if (length(setr) == 0) {
+      resc <- 0;
+    } else {
+      resc <- abs(cvec(setr) - XXmat(setr, ind)*beta(ind));
+    }
+    
+    indm <- find(resc > lambda*(1 + a^(-1)));
     ind <- union(c(t(setr(indm)), ind), varset);
-end
+}
 
   # % rescale beta vector to original scale
   beta <- beta/t(Xsca);

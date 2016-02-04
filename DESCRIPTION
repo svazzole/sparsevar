@@ -6,9 +6,9 @@ Authors@R: c(person("Simone", "Developer", role = c("aut", "cre"),
                      email = "svazzole@gmail.com"))
 Author: Simone Vazzoler
 Maintainer: Simone Vazzoler <svazzole@gmail.com>
-Depends: R (>= 1.8.0), Matrix, ncvreg, doMC, glmnet
+Depends: R (>= 1.8.0), Matrix, ncvreg, doMC, glmnet, MTS
 Suggests: 
-Description: A short (one paragraph) description of what
+Description: A short (one paragraph) description of what mdi
   the package does and why it may be useful.
 License: GPL (>= 2)
 URL: 

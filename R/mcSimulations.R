@@ -14,6 +14,7 @@
 #' 
 #' @author Simone Vazzoler
 
+
 mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, penalty = "ENET", covariance = "toeplitz", options = NULL) {
 
   results <- matrix(0, nMC, 5)

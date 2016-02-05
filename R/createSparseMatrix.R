@@ -21,6 +21,7 @@
 # createSparseMatrix and rsparsematrix ?                  #
 ###########################################################
 
+
 createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALSE) {
   
   if (method == "normal") {

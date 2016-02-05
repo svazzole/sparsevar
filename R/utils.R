@@ -12,6 +12,7 @@
 #' 
 #' @author Simone Vazzoler
 
+
 l2norm <- function(M) {
   
   #s <- sqrt(sum(M^2))

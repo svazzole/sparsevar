@@ -9,6 +9,7 @@
 #' 
 #' @author Simone Vazzoler
 
+
 plotMatrix <- function(M){
   
   nr <- nrow(M)

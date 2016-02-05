@@ -32,7 +32,7 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
   # vectorization for VAR
   y <- as.vector(tmpY)
   
-  if (penalty == "ENET"){
+  if (penalty == "ENET") {
 
     # Hadamard product for data
     I <- Diagonal(nc)

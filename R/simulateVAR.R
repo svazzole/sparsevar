@@ -13,15 +13,28 @@
 #' @author Simone Vazzoler
 #'
 #' @export
-simulateVAR <- function(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, method = "normal", covariance = "toeplitz"){
+
+simulateVAR <- function(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, p = 1, method = "normal", covariance = "toeplitz") {
   
- # Create sparse matrix for VAR
-  A <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
-  
-  while (max(Mod(eigen(A)$values)) > 1) {
-    
+ # Create sparse matrices for VAR
+  if (p==1) {
+    # only 1 lag
     A <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
-  
+    while (max(Mod(eigen(A)$values)) > 1) {
+      A <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
+    }
+  } else {
+    # p lags
+    A <- list()
+    cA <- matrix(0, nrow = N, ncol = N * p)
+    for (i in 1:p) {
+      A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
+      while (max(Mod(eigen(A[[i]])$values)) > 1) {
+        A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
+      }
+      cA[1:N, ((i-1) * N) + (1:N)] <- A[[i]]
+    }
+    
   }
 
   # Covariance Matrix: Toeplitz, Block1 or Block2
@@ -57,7 +70,7 @@ simulateVAR <- function(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, method 
   theta <- matrix(0, N, N)
   
   # Generate VAR(1) process 
-  data <- VARMAsim(nobs = nobs, arlags = 1, malags = 0, cnst = 0, phi = A, theta = theta, skip = 200, sigma = T)
+  data <- MTS::VARMAsim(nobs = nobs, arlags = p, malags = 0, cnst = 0, phi = cA, theta = theta, skip = 200, sigma = T)
   
   out <- list()
   out$data <- data

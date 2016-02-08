@@ -6,12 +6,14 @@
 #' rows
 #' @param penalty the penalty function to use. Possible values are \code{"ENET"}, \code{"SCAD"}
 #' or \code{"MCP"}
+#' @param p order of the VAR model (only for \code{"ENET"} penalty)
 #' @param options options for the function
 #' 
 #' @author Simone Vazzoler
 #'
 #' @export
-estimateVAR <- function(rets, penalty = "ENET", options = NULL){
+#' 
+estimateVAR <- function(rets, penalty = "ENET", p = 1, options = NULL){
 
   # get the number of rows and columns
   nr <- nrow(rets)
@@ -29,14 +31,26 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
   tmpX <- rets[1:(nr-1), ]
   tmpY <- rets[2:(nr), ]
   
-  # vectorization for VAR
-  y <- as.vector(tmpY)
-  
   if (penalty == "ENET") {
-
-    # Hadamard product for data
-    I <- Diagonal(nc)
-    X <- kronecker(I, tmpX)
+    
+    if (p == 1) {
+      # vectorization for VAR
+      y <- as.vector(tmpY)
+      # Hadamard product for data
+      I <- Diagonal(nc)
+      X <- kronecker(I, tmpX)
+    } else {
+      # create the data matrix
+      #tmpX <- createDataMatrix(tmpX, p)
+      tmpX <- duplicateMatrix(tmpX, p)
+      #tmpY <- createDataMatrix(tmpY, p)
+      tmpY <- tmpY[(p+1):nrow(tmpY), ]
+      
+      # replicate tmpX p times
+      y <- as.vector(tmpY)
+      I <- Diagonal(nc)
+      X <- kronecker(I, tmpX)
+    }
 
     # fit the ENET model
     t <- Sys.time()
@@ -48,8 +62,14 @@ estimateVAR <- function(rets, penalty = "ENET", options = NULL){
 
     # extract the coefficients and reshape the matrix
     Avector <- coef(fit, s = lambda)
-    A <- matrix(Avector[2:nrow(Avector)], nrow = nc, ncol = nc, byrow = TRUE)
-
+    if (p == 1) {
+      A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc, byrow = TRUE)
+    } else {
+      # A <- Avector
+      A <- matrix(Avector[2:length(Avector)], ncol = nc*p, byrow = TRUE) 
+      A <- splitMatrix(A, p)
+    }
+    
     mse <- min(fit$cvm)
     
   } else if (penalty == "SCAD") {
@@ -140,5 +160,60 @@ varMCP <- function(X, y, options = NULL) {
   cvfit = cv.ncvreg(X, y, nfolds = nf, penalty = "MCP", eps = e)
   
   return(cvfit)
+  
+}
+
+# createDataMatrix <- function(data, p) {
+#   
+#   nr <- nrow(data)
+#   nc <- ncol(data)
+# 
+#   tmpX <- matrix(0, nrow = (nr-1) * p, ncol = nc)
+#   ix <- matrix(1:(nr*p), ncol = p, nrow = nr, byrow = TRUE)
+#   
+#   for (i in p:nr) {
+#     
+#     tmpIx <- ix[i-p+1, ]
+#     tmpX[tmpIx, ] <- data[((i-p+1):i), ]
+#     
+#   }
+#   
+#   return(tmpX)
+#   
+# }
+
+splitMatrix <- function(M, p) {
+  
+  nr <- nrow(M)
+  
+  A <- list()
+  
+  for (i in 1:p) {
+    
+    ix <- ((i-1) * nr) + (1:nr)
+    A[[p-(i-1)]] <- M[1:nr, ix]  
+    
+  }
+
+  return(A)
+}
+
+duplicateMatrix <- function(M, p) {
+  
+  nr <- nrow(M)
+  nc <- ncol(M)
+  
+  finalM <- M
+  
+  for (i in 1:(p-1)) {
+    
+    tmpM <- matrix(0, nrow = nr, ncol = nc)
+    tmpM[(i+1):nr, ] <- M[1:(nr-i), ]
+    finalM <- cbind(finalM, tmpM)
+    
+  }
+  
+  finalM <- finalM[(p+1):nr, ]
+  return(finalM)
   
 }

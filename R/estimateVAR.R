@@ -31,16 +31,17 @@ estimateVAR <- function(rets, penalty = "ENET", p = 1, options = NULL){
   tmpX <- rets[1:(nr-1), ]
   tmpY <- rets[2:(nr), ]
   
+  # create the data matrix
+  tmpX <- duplicateMatrix(tmpX, p)
+  tmpY <- tmpY[p:nrow(tmpY), ]
+  y <- as.vector(tmpY)
+  
+  # Hadamard product for data
+  I <- Diagonal(nc)
+  X <- kronecker(I, tmpX)
+  
   if (penalty == "ENET") {
     
-    # create the data matrix
-    tmpX <- duplicateMatrix(tmpX, p)
-    tmpY <- tmpY[p:nrow(tmpY), ]
-    
-    y <- as.vector(tmpY)
-    # Hadamard product for data
-    I <- Diagonal(nc)
-    X <- kronecker(I, tmpX)
     # fit the ENET model
     t <- Sys.time()
     fit <- varENET(X, y, options)
@@ -59,8 +60,8 @@ estimateVAR <- function(rets, penalty = "ENET", p = 1, options = NULL){
     
   } else if (penalty == "SCAD") {
     
-    I <- diag(nc)
-    X <- as.matrix(I %x% tmpX)
+    # convert from sparse matrix to std matrix
+    X <- as.matrix(X)
     
     # fit the SCAD model
     t <- Sys.time()
@@ -69,13 +70,15 @@ estimateVAR <- function(rets, penalty = "ENET", p = 1, options = NULL){
     
     # extract the coefficients and reshape the matrix
     Avector <- coef(fit, s = "lambda.min")
-    A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc, byrow = TRUE)
+    A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
+    A <- splitMatrix(A, p)
+    
     mse <- min(fit$cve)
     
   } else if (penalty == "MCP") {
     
-    I <- diag(nc)
-    X <- as.matrix(I %x% tmpX)
+    # convert from sparse matrix to std matrix
+    X <- as.matrix(X)
     
     # fit the MCP model
     t <- Sys.time()
@@ -84,7 +87,9 @@ estimateVAR <- function(rets, penalty = "ENET", p = 1, options = NULL){
     
     # extract the coefficients and reshape the matrix
     Avector <- coef(fit, s = "lambda.min")
-    A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc, byrow = TRUE)
+    A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
+    A <- splitMatrix(A, p)
+    
     mse <- min(fit$cve)
     
   } else {
@@ -120,7 +125,7 @@ varENET <- function(X,y, options = NULL) {
     stop("The number of cores must be > 1")
   }
     
-  cvfit = cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = parall)
+  cvfit = glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = parall)
   
   return(cvfit)
   
@@ -131,7 +136,7 @@ varSCAD <- function(X, y, options = NULL) {
   e <- ifelse(is.null(options$eps), 0.01, options$eps)
   nf <- ifelse(is.null(options$nfolds), 10, options$nfolds)
   
-  cvfit = cv.ncvreg(X, y, nfolds = nf, penalty = "SCAD", eps = e)
+  cvfit = ncvreg::cv.ncvreg(X, y, nfolds = nf, penalty = "SCAD", eps = e)
   
   return(cvfit)
   
@@ -142,7 +147,7 @@ varMCP <- function(X, y, options = NULL) {
   e <- ifelse(is.null(options$eps), 0.01, options$eps)
   nf <- ifelse(is.null(options$nfolds), 10, options$nfolds)
 
-  cvfit = cv.ncvreg(X, y, nfolds = nf, penalty = "MCP", eps = e)
+  cvfit = ncvreg::cv.ncvreg(X, y, nfolds = nf, penalty = "MCP", eps = e)
   
   return(cvfit)
   

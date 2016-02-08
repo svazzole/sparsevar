@@ -8,8 +8,8 @@
 #' plotMatrix(M)
 #' 
 #' @author Simone Vazzoler
-
-
+#'
+#' @export
 plotMatrix <- function(M){
   
   nr <- nrow(M)

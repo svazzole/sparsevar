@@ -13,15 +13,8 @@
 #' M <- createSparseMatrix(N = 30, sparsity = 0.05, method = "normal", stationary = TRUE)
 #' 
 #' @author Simone Vazzoler
-
-###########################################################
-# What about using rsparsematrix from the library Matrix? #
-###########################################################
-# Which are the differences between a matrix created with #
-# createSparseMatrix and rsparsematrix ?                  #
-###########################################################
-
-
+#'
+#' @export
 createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALSE) {
   
   if (method == "normal") {

@@ -11,7 +11,8 @@
 #' @return A list containing ...
 #' 
 #' @author Simone Vazzoler
-
+#'
+#' @export
 simulateVAR <- function(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, method = "normal", covariance = "toeplitz"){
   
  # Create sparse matrix for VAR

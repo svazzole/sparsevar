@@ -9,8 +9,8 @@
 #' @param options options for the function
 #' 
 #' @author Simone Vazzoler
-
-
+#'
+#' @export
 estimateVAR <- function(rets, penalty = "ENET", options = NULL){
 
   # get the number of rows and columns

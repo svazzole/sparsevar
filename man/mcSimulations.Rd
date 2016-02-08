@@ -8,27 +8,29 @@ mcSimulations(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
   penalty = "ENET", covariance = "toeplitz", options = NULL)
 }
 \arguments{
-\item{N}{}
+\item{N}{dimension of the multivariate time series.}
 
-\item{nobs}{}
+\item{nobs}{number of observations to be generated.}
 
-\item{nMC}{}
+\item{nMC}{number of Monte Carlo simulations.}
 
-\item{rho}{}
+\item{rho}{base value for the covariance.}
 
-\item{sparsity}{}
+\item{sparsity}{density of non zero entries of the VAR matrices.}
 
-\item{penalty}{}
+\item{penalty}{penalty function to use for LS estimation. Possible values are \code{"ENET"},
+\code{"SCAD"} or \code{"MCP"}.}
 
-\item{covariance}{}
+\item{covariance}{type of covariance matrix to be used in the generation of the SVAR model.}
 
-\item{options}{}
+\item{options}{(TODO: complete)}
 }
 \value{
 A list containing ...
 }
 \description{
-This function generates monte carlo ...
+This function generates monte carlo simultaions of SVAR and its
+estimation.
 }
 \author{
 Simone Vazzoler

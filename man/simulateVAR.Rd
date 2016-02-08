@@ -4,27 +4,31 @@
 \alias{simulateVAR}
 \title{VAR simulation}
 \usage{
-simulateVAR(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05,
+simulateVAR(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, p = 1,
   method = "normal", covariance = "toeplitz")
 }
 \arguments{
-\item{N}{}
+\item{N}{dimension of the time series.}
 
-\item{nobs}{}
+\item{nobs}{number of observations to be generated.}
 
-\item{rho}{}
+\item{rho}{base value for the covariance matrix.}
 
-\item{sparsity}{}
+\item{sparsity}{density (in percentage) of the number of nonzero elements of the VAR matrices.}
 
-\item{method}{}
+\item{p}{number of lags of the VAR model.}
 
-\item{covariance}{}
+\item{method}{which method to use to generate the VAR matrix. Possible values
+are \code{"normal"} or \code{"bimodal"}.}
+
+\item{covariance}{type of covariance matrix to use in the simulation. Possible
+values: \code{"toeplitz"}, \code{"block1"} or \code{"block2"}.}
 }
 \value{
 A list containing ...
 }
 \description{
-This function generates a multivariate VAR time series
+This function generates a simulated multivariate VAR time series.
 }
 \author{
 Simone Vazzoler

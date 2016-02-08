@@ -7,7 +7,7 @@
 #' @param penalty the penalty function to use. Possible values are \code{"ENET"}, \code{"SCAD"}
 #' or \code{"MCP"}
 #' @param p order of the VAR model (only for \code{"ENET"} penalty)
-#' @param options options for the function
+#' @param options options for the function (TODO: specify)
 #' 
 #' @author Simone Vazzoler
 #'
@@ -33,25 +33,14 @@ estimateVAR <- function(rets, penalty = "ENET", p = 1, options = NULL){
   
   if (penalty == "ENET") {
     
-    if (p == 1) {
-      # vectorization for VAR
-      y <- as.vector(tmpY)
-      # Hadamard product for data
-      I <- Diagonal(nc)
-      X <- kronecker(I, tmpX)
-    } else {
-      # create the data matrix
-      #tmpX <- createDataMatrix(tmpX, p)
-      tmpX <- duplicateMatrix(tmpX, p)
-      #tmpY <- createDataMatrix(tmpY, p)
-      tmpY <- tmpY[(p+1):nrow(tmpY), ]
-      
-      # replicate tmpX p times
-      y <- as.vector(tmpY)
-      I <- Diagonal(nc)
-      X <- kronecker(I, tmpX)
-    }
-
+    # create the data matrix
+    tmpX <- duplicateMatrix(tmpX, p)
+    tmpY <- tmpY[p:nrow(tmpY), ]
+    
+    y <- as.vector(tmpY)
+    # Hadamard product for data
+    I <- Diagonal(nc)
+    X <- kronecker(I, tmpX)
     # fit the ENET model
     t <- Sys.time()
     fit <- varENET(X, y, options)
@@ -62,13 +51,9 @@ estimateVAR <- function(rets, penalty = "ENET", p = 1, options = NULL){
 
     # extract the coefficients and reshape the matrix
     Avector <- coef(fit, s = lambda)
-    if (p == 1) {
-      A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc, byrow = TRUE)
-    } else {
-      # A <- Avector
-      A <- matrix(Avector[2:length(Avector)], ncol = nc*p, byrow = TRUE) 
-      A <- splitMatrix(A, p)
-    }
+
+    A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE) 
+    A <- splitMatrix(A, p)
     
     mse <- min(fit$cvm)
     
@@ -198,22 +183,22 @@ splitMatrix <- function(M, p) {
   return(A)
 }
 
-duplicateMatrix <- function(M, p) {
+duplicateMatrix <- function(data, p) {
   
-  nr <- nrow(M)
-  nc <- ncol(M)
+  nr <- nrow(data)
+  nc <- ncol(data)
   
-  finalM <- M
+  outputData <- data
   
   for (i in 1:(p-1)) {
     
-    tmpM <- matrix(0, nrow = nr, ncol = nc)
-    tmpM[(i+1):nr, ] <- M[1:(nr-i), ]
-    finalM <- cbind(finalM, tmpM)
+    tmpData <- matrix(0, nrow = nr, ncol = nc)
+    tmpData[(i+1):nr, ] <- data[1:(nr-i), ]
+    outputData <- cbind(outputData, tmpData)
     
   }
   
-  finalM <- finalM[(p+1):nr, ]
-  return(finalM)
+  outputData <- outputData[p:nr, ]
+  return(outputData)
   
 }

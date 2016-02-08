@@ -1,19 +1,23 @@
 #' @title VAR simulation
 #'
-#' @description This function generates a multivariate VAR time series
-#' @param N
-#' @param nobs
-#' @param rho
-#' @param sparsity
-#' @param method
-#' @param covariance
+#' @description This function generates a simulated multivariate VAR time series.
+#' 
+#' @param N dimension of the time series. 
+#' @param p number of lags of the VAR model.
+#' @param nobs number of observations to be generated.
+#' @param rho base value for the covariance matrix.
+#' @param sparsity density (in percentage) of the number of nonzero elements of the VAR matrices.
+#' @param method which method to use to generate the VAR matrix. Possible values
+#' are \code{"normal"} or \code{"bimodal"}.
+#' @param covariance type of covariance matrix to use in the simulation. Possible 
+#' values: \code{"toeplitz"}, \code{"block1"} or \code{"block2"}.
 #' 
 #' @return A list containing ...
 #' 
 #' @author Simone Vazzoler
 #'
 #' @export
-
+#' 
 simulateVAR <- function(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, p = 1, method = "normal", covariance = "toeplitz") {
   
  # Create sparse matrices for VAR

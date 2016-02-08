@@ -1,20 +1,23 @@
 #' @title Monte Carlo simulations
 #'
-#' @description This function generates monte carlo ...
-#' @param N
-#' @param nobs
-#' @param nMC
-#' @param rho
-#' @param sparsity
-#' @param penalty
-#' @param covariance
-#' @param options
+#' @description This function generates monte carlo simultaions of SVAR and its
+#' estimation.
+#' @param N dimension of the multivariate time series.
+#' @param nobs number of observations to be generated.
+#' @param nMC number of Monte Carlo simulations.
+#' @param rho base value for the covariance.
+#' @param sparsity density of non zero entries of the VAR matrices.
+#' @param penalty penalty function to use for LS estimation. Possible values are \code{"ENET"}, 
+#' \code{"SCAD"} or \code{"MCP"}.
+#' @param covariance type of covariance matrix to be used in the generation of the SVAR model.
+#' @param options (TODO: complete)
 #' 
 #' @return A list containing ...
 #' 
 #' @author Simone Vazzoler
 #'
 #' @export
+#' 
 mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, penalty = "ENET", covariance = "toeplitz", options = NULL) {
 
   results <- matrix(0, nMC, 5)

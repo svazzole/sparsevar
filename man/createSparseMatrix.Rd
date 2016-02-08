@@ -15,7 +15,7 @@ createSparseMatrix(N, sparsity, method = "normal", stationary = FALSE)
 \code{"normal"} (default) or \code{"bimodal"}.}
 
 \item{stationary}{should the spectral radius of the matrix be smaller than 1?
-Possible values are \code{TRUE} or \code{FALSE}}
+Possible values are \code{TRUE} or \code{FALSE}. Default is \code{FALSE}.}
 }
 \value{
 An NxN sparse matrix.

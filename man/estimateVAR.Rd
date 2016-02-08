@@ -4,7 +4,7 @@
 \alias{estimateVAR}
 \title{Multivariate VAR estimation}
 \usage{
-estimateVAR(rets, penalty = "ENET", options = NULL)
+estimateVAR(rets, penalty = "ENET", p = 1, options = NULL)
 }
 \arguments{
 \item{rets}{the data from the time series: variables in columns and observations in
@@ -13,7 +13,9 @@ rows}
 \item{penalty}{the penalty function to use. Possible values are \code{"ENET"}, \code{"SCAD"}
 or \code{"MCP"}}
 
-\item{options}{options for the function}
+\item{p}{order of the VAR model (only for \code{"ENET"} penalty)}
+
+\item{options}{options for the function (TODO: specify)}
 }
 \description{
 A wrapper to estimate a (possibly big) multivariate VAR time series

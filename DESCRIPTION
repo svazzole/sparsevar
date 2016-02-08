@@ -1,6 +1,6 @@
 Package: svar
-Version: 0.0.1-1
-Date: 2016-02-04
+Version: 0.0.1-2
+Date: 2016-02-08
 Title: A package for Sparse VAR estimation
 Authors@R: c(person("Simone", "Developer", role = c("aut", "cre"),
                      email = "svazzole@gmail.com"))
@@ -8,9 +8,8 @@ Author: Simone Vazzoler
 Maintainer: Simone Vazzoler <svazzole@gmail.com>
 Depends: R (>= 1.8.0), Matrix, ncvreg, doMC, glmnet, MTS
 Suggests: 
-Description: A short (one paragraph) description of what mdi
-  the package does and why it may be useful.
-License: GPL (>= 2)
+Description: This package is for sparse VAR estimation.
+License: GPL v2
 URL: 
 BugReports:
 

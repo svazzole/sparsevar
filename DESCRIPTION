@@ -1,4 +1,4 @@
-Package: sparseVAR
+Package: svar
 Version: 0.0.1-1
 Date: 2016-02-04
 Title: A package for Sparse VAR estimation

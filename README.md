@@ -14,6 +14,7 @@ To install:
 install.packages("devtools")
 devtools::install_github("svazzole/svar")
 ```
+Check [here](https://www.rstudio.com/products/rpackages/devtools/) which are the dependencies of `devtools` for your OS.
 
 ## Simulations
 

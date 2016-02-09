@@ -181,7 +181,8 @@ splitMatrix <- function(M, p) {
   for (i in 1:p) {
     
     ix <- ((i-1) * nr) + (1:nr)
-    A[[p-(i-1)]] <- M[1:nr, ix]  
+    # A[[p-(i-1)]] <- M[1:nr, ix]  
+    A[[i]] <- M[1:nr, ix]  
     
   }
 

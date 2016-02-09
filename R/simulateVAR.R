@@ -73,8 +73,10 @@ simulateVAR <- function(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, p = 1, 
   # Matrix for MA part
   theta <- matrix(0, N, N)
   
+  ar <- 1:p
+  
   # Generate VAR(1) process 
-  data <- MTS::VARMAsim(nobs = nobs, arlags = p, malags = 0, cnst = 0, phi = cA, theta = theta, skip = 200, sigma = T)
+  data <- MTS::VARMAsim(nobs = nobs, arlags = ar, malags = 0, cnst = 0, phi = cA, theta = theta, skip = 200, sigma = T)
   
   out <- list()
   out$data <- data

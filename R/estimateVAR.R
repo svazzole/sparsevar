@@ -34,6 +34,7 @@ estimateVAR <- function(rets, penalty = "ENET", p = 1, options = NULL){
   # create the data matrix
   tmpX <- duplicateMatrix(tmpX, p)
   tmpY <- tmpY[p:nrow(tmpY), ]
+
   y <- as.vector(tmpY)
   
   # Hadamard product for data
@@ -196,12 +197,14 @@ duplicateMatrix <- function(data, p) {
   
   outputData <- data
   
-  for (i in 1:(p-1)) {
-    
-    tmpData <- matrix(0, nrow = nr, ncol = nc)
-    tmpData[(i+1):nr, ] <- data[1:(nr-i), ]
-    outputData <- cbind(outputData, tmpData)
-    
+  if (p > 1) {
+    for (i in 1:(p-1)) {
+      
+      tmpData <- matrix(0, nrow = nr, ncol = nc)
+      tmpData[(i+1):nr, ] <- data[1:(nr-i), ]
+      outputData <- cbind(outputData, tmpData)
+      
+    }
   }
   
   outputData <- outputData[p:nr, ]

@@ -28,11 +28,11 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, 
 
       s <- simulateVAR(nobs = nobs, N = N, rho = rho, sparsity = sparsity, covariance = covariance)
       rets <- s$data$series
-      genA <- s$A
+      genA <- s$A[[1]]
       
       res <- estimateVAR(rets, penalty = penalty, options = options)
       
-      A <- res$A
+      A <- res$A[[1]]
       
       L <- A
       L[L!=0] <- 1

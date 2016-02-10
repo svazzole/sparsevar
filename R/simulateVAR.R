@@ -21,13 +21,15 @@
 simulateVAR <- function(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, p = 1, method = "normal", covariance = "toeplitz") {
   
  # Create sparse matrices for VAR
-  if (p==1) {
-    # only 1 lag
-    A <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
-    while (max(Mod(eigen(A)$values)) > 1) {
-      A <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
-    }
-  } else {
+  # if (p==1) {
+  # 
+  #   # only 1 lag
+  #   A <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
+  #   while (max(Mod(eigen(A)$values)) > 1) {
+  #     A <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
+  #   }
+  # 
+  # } else {
     # p lags
     A <- list()
     cA <- matrix(0, nrow = N, ncol = N * p)
@@ -39,7 +41,7 @@ simulateVAR <- function(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, p = 1, 
       cA[1:N, ((i-1) * N) + (1:N)] <- A[[i]]
     }
     
-  }
+  # }
 
   # Covariance Matrix: Toeplitz, Block1 or Block2
   if (covariance == "block1"){

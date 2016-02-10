@@ -5,7 +5,7 @@
 # # ALL
 # ##
 # 
-# g <- expand.grid(nobs = c(50,250), N = c(30,50,100,200), rho = c(0.1,0.5,0.9), sparsity = c(0.05,0.1,0.15), 
+# g <- expand.grid(nobs = c(50,250), N = c(30,50,100,200), rho = c(0.1,0.5,0.9), sparsity = c(0.05,0.1,0.15),
 #                  penalty = c("ENET", "SCAD", "MCP"), lambda = c("lambda.min", "lambda.1se"), stringsAsFactors = FALSE)
 # save(file = "results/ENET/grid.RData", g)
 # 

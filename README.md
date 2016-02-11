@@ -30,11 +30,11 @@ Use `estimateVAR`. The arguments of the function are:
 Global options:
 - `parallel`: `TRUE` or `FALSE` (default). Parallel cross-validation (on the folds);
 - `ncores`: if `parallel = TRUE` then you must specify the number of cores used for the parallelization (default = `1`).
-- `nfolds`: 
+- `nfolds`: number of folds to use in the cross validation (default `nfolds = 10`)
 
 `penalty = "ENET` options:
 - `lambda`: `"lambda.min"` (default) or `"lambda.1se"`;
-- `alpha`: a value in [0,1] (default `alpha = 1`). `alpha = 1` is LASSO regression, `alpha = 0` is Ridge LS;
+- `alpha`: a value in (0,1) (default `alpha = 1`). `alpha = 1` is LASSO regression, `alpha = 0` is Ridge LS;
 - `type.measure`: `"mse"` (default) or `"mae"`;
 - `nlambda`: number of lambdas used for cross validation.
 

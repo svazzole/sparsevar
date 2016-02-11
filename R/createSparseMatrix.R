@@ -33,7 +33,7 @@ createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALS
     
     # normal distributed nonzero entries
     n <- floor(sparsity * N^2)
-    nonZeroEntries <- rnorm(n, mean = 0.6, sd = sqrt(0.6))
+    nonZeroEntries <- rnorm(n, mean = 0, sd = 1)
     entries <- sample(x = 1:N^2, size = n, replace = FALSE)
     
     Atmp <- numeric(length = N^2)
@@ -65,7 +65,8 @@ createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALS
 
   if (stationary == TRUE) {
     # if spectral radius < 1 is needed, return the re-normalized matrix  
-    return(1/sqrt(2.3 * sparsity* N) * A)
+    K <- 1.5
+    return(1/sqrt(K * sparsity* N) * A)
   
   } else {
     

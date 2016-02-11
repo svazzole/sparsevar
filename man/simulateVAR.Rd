@@ -4,19 +4,19 @@
 \alias{simulateVAR}
 \title{VAR simulation}
 \usage{
-simulateVAR(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, p = 1,
+simulateVAR(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   method = "normal", covariance = "toeplitz")
 }
 \arguments{
 \item{N}{dimension of the time series.}
+
+\item{p}{number of lags of the VAR model.}
 
 \item{nobs}{number of observations to be generated.}
 
 \item{rho}{base value for the covariance matrix.}
 
 \item{sparsity}{density (in percentage) of the number of nonzero elements of the VAR matrices.}
-
-\item{p}{number of lags of the VAR model.}
 
 \item{method}{which method to use to generate the VAR matrix. Possible values
 are \code{"normal"} or \code{"bimodal"}.}
@@ -25,7 +25,12 @@ are \code{"normal"} or \code{"bimodal"}.}
 values: \code{"toeplitz"}, \code{"block1"} or \code{"block2"}.}
 }
 \value{
-A list containing ...
+A a list of NxN matrices ordered by lag
+
+data a list with two elements: \code{series} the multivariate time series and
+\code{noises} the time series of errors
+
+S the variance/covariance matrix of the process
 }
 \description{
 This function generates a simulated multivariate VAR time series.

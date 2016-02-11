@@ -4,18 +4,27 @@
 \alias{estimateVAR}
 \title{Multivariate VAR estimation}
 \usage{
-estimateVAR(rets, penalty = "ENET", p = 1, options = NULL)
+estimateVAR(rets, p = 1, penalty = "ENET", options = NULL)
 }
 \arguments{
-\item{rets}{the data from the time series: variables in columns and observations in
+\item{\code{rets}}{the data from the time series: variables in columns and observations in
 rows}
 
-\item{penalty}{the penalty function to use. Possible values are \code{"ENET"}, \code{"SCAD"}
-or \code{"MCP"}}
+\item{\code{p}}{order of the VAR model (only for \code{"ENET"} penalty)}
 
-\item{p}{order of the VAR model (only for \code{"ENET"} penalty)}
+\item{\code{penalty}}{the penalty function to use. Possible values are \code{"ENET"},
+\code{"SCAD"} or \code{"MCP"}}
 
-\item{options}{options for the function (TODO: specify)}
+\item{\code{options}}{options for the function (TODO: specify)}
+}
+\value{
+\code{A} the list (of length p) of the estimated matrices of the process
+
+\code{fit} the results of the penalized LS estimation
+
+\code{mse} the mean square error of the cross validation
+
+\code{time} elapsed time for the estimation
 }
 \description{
 A wrapper to estimate a (possibly big) multivariate VAR time series

@@ -5,7 +5,8 @@
 \title{Monte Carlo simulations}
 \usage{
 mcSimulations(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
-  penalty = "ENET", covariance = "toeplitz", options = NULL)
+  penalty = "ENET", covariance = "toeplitz", options = NULL,
+  method = "normal")
 }
 \arguments{
 \item{N}{dimension of the multivariate time series.}
@@ -26,11 +27,11 @@ mcSimulations(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
 \item{options}{(TODO: complete)}
 }
 \value{
-A list containing ...
+a \code{nMc}x5 matrix with the results of the Monte Carlo estimation
 }
 \description{
-This function generates monte carlo simultaions of SVAR and its
-estimation.
+This function generates monte carlo simultaions of sparse VAR and
+its estimation (at the moment only for VAR(1) processes).
 }
 \author{
 Simone Vazzoler

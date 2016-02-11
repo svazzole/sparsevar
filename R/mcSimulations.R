@@ -1,7 +1,7 @@
 #' @title Monte Carlo simulations
 #'
-#' @description This function generates monte carlo simultaions of SVAR and its
-#' estimation.
+#' @description This function generates monte carlo simultaions of sparse VAR and 
+#' its estimation (at the moment only for VAR(1) processes).
 #' @param N dimension of the multivariate time series.
 #' @param nobs number of observations to be generated.
 #' @param nMC number of Monte Carlo simulations.
@@ -12,7 +12,7 @@
 #' @param covariance type of covariance matrix to be used in the generation of the SVAR model.
 #' @param options (TODO: complete)
 #' 
-#' @return A list containing ...
+#' @return a \code{nMc}x5 matrix with the results of the Monte Carlo estimation
 #' 
 #' @author Simone Vazzoler
 #'

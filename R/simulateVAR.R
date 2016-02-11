@@ -12,36 +12,29 @@
 #' @param covariance type of covariance matrix to use in the simulation. Possible 
 #' values: \code{"toeplitz"}, \code{"block1"} or \code{"block2"}.
 #' 
-#' @return A list containing ...
+#' @return A a list of NxN matrices ordered by lag
+#' @return data a list with two elements: \code{series} the multivariate time series and
+#' \code{noises} the time series of errors
+#' @return S the variance/covariance matrix of the process
 #' 
 #' @author Simone Vazzoler
 #'
 #' @export
 #' 
-simulateVAR <- function(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, p = 1, method = "normal", covariance = "toeplitz") {
+simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05, 
+                        method = "normal", covariance = "toeplitz") {
   
- # Create sparse matrices for VAR
-  # if (p==1) {
-  # 
-  #   # only 1 lag
-  #   A <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
-  #   while (max(Mod(eigen(A)$values)) > 1) {
-  #     A <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
-  #   }
-  # 
-  # } else {
-    # p lags
-    A <- list()
-    cA <- matrix(0, nrow = N, ncol = N * p)
-    for (i in 1:p) {
+  # Create the list of the VAR matrices
+  A <- list()
+  cA <- matrix(0, nrow = N, ncol = N * p)
+  for (i in 1:p) {
+    A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
+    while (max(Mod(eigen(A[[i]])$values)) > 1) {
       A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
-      while (max(Mod(eigen(A[[i]])$values)) > 1) {
-        A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
-      }
-      cA[1:N, ((i-1) * N) + (1:N)] <- A[[i]]
     }
-    
-  # }
+    A[[i]] <- 1/sqrt(p) * A[[i]]
+    cA[1:N, ((i-1) * N) + (1:N)] <- A[[i]]
+  }
 
   # Covariance Matrix: Toeplitz, Block1 or Block2
   if (covariance == "block1"){

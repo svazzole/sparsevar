@@ -18,7 +18,9 @@
 #'
 #' @export
 #' 
-mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, penalty = "ENET", covariance = "toeplitz", options = NULL) {
+mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, 
+                          penalty = "ENET", covariance = "toeplitz", 
+                          options = NULL, method = "normal") {
 
   results <- matrix(0, nMC, 5)
   
@@ -26,7 +28,7 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, 
     
   for (i in 1:nMC){
 
-      s <- simulateVAR(nobs = nobs, N = N, rho = rho, sparsity = sparsity, covariance = covariance)
+      s <- simulateVAR(nobs = nobs, N = N, rho = rho, sparsity = sparsity, covariance = covariance, method = method)
       rets <- s$data$series
       genA <- s$A[[1]]
       

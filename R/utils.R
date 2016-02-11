@@ -57,3 +57,27 @@ operatorNorm <- function(M) {
   return(sqrt(spectralRadius(t(M) %*% M)))
   
 }
+
+snr <- function(sig, err) {
+  
+  nc <- ncol(sig)
+  SNR <- numeric(nc)
+  
+  s <- rowMeans(sig)
+  e <- rowMeans(err)
+  
+  return (var(s)/var(e))
+  
+  for(i in 1:nc) {
+    SNR[i] <- var(sig[,i])/var(err[,i])
+  }
+
+  return(SNR)
+  
+  # M1 <- sig %*% t(sig)
+  # M2 <- err %*% t(err)
+  # m1 <- Mod((eigen(M1)$values)[1])
+  # m2 <- Mod((eigen(M2)$values)[1])
+  # return(sqrt(m1/m2))
+  
+}

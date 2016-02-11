@@ -4,16 +4,16 @@
 #' using penalized least squares methods, such as ENET, SCAD or MC+.
 #' @param rets the data from the time series: variables in columns and observations in 
 #' rows
+#' @param p order of the VAR model (only for \code{"ENET"} penalty)
 #' @param penalty the penalty function to use. Possible values are \code{"ENET"}, \code{"SCAD"}
 #' or \code{"MCP"}
-#' @param p order of the VAR model (only for \code{"ENET"} penalty)
 #' @param options options for the function (TODO: specify)
 #' 
 #' @author Simone Vazzoler
 #'
 #' @export
 #' 
-estimateVAR <- function(rets, penalty = "ENET", p = 1, options = NULL){
+estimateVAR <- function(rets, p = 1, penalty = "ENET", options = NULL) {
 
   # get the number of rows and columns
   nr <- nrow(rets)

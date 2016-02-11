@@ -83,6 +83,7 @@ simulateVAR <- function(N = 100, nobs = 250, rho = 0.5, sparsity = 0.05, p = 1, 
   out <- list()
   out$data <- data
   out$A <- A
+  out$S <- T
   
   return(out)
   

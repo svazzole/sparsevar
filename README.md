@@ -48,6 +48,11 @@ results <- estimateVAR(rets)
 ```
 will estimate VAR(1) process using LASSO regression on the dataset `rets`.
 
+The command
+```
+results <- estimateVAR(rets, p = 3, penalty = "ENET", options = list(parallel = TRUE, ncores = 5, alpha = 0.95, type.measure = "mae", lambda = "lambda.1se"))
+```
+will estimate a VAR(3) model on the dataset `rets` using the penalty `"ENET"` with `alpha = 0.95` (between LASSO and Ridge). For the cross validation it will use `"mae"` (mean absolute error) insteadof mean square error and it will choose as model the one correspondent to the lambda which is at 1 std deviation from the minimum. Moreover it will parallelize the cross validation over 5 cores.
 
 ## Simulations
 

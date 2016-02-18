@@ -16,7 +16,7 @@ plotMatrix <- function(M){
   nr <- nrow(M)
   nc <- ncol(M)
   colfunc<-colorRampPalette(c("red","white","royalblue"))  
-  image(1:nr, 1:nc, t(M), col=colfunc(39), xlab = "Row number", ylab = "Column number")
+  image(1:nr, 1:nc, t(M[,nc:1]), col=colfunc(39), xlab = "Row number", ylab = "Column number")
   
 }
 

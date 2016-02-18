@@ -1,12 +1,12 @@
 Package: svar
-Version: 0.0.1-3
+Version: 0.0.2
 Date: 2016-02-11
 Title: A package for Sparse VAR estimation
 Authors@R: c(person("Simone", "Developer", role = c("aut", "cre"),
                      email = "svazzole@gmail.com"))
 Author: Simone Vazzoler
 Maintainer: Simone Vazzoler <svazzole@gmail.com>
-Depends: R (>= 1.8.0), Matrix, ncvreg, doMC, glmnet, MTS
+Depends: R (>= 1.8.0), Matrix, ncvreg, parallel, glmnet, MTS
 Suggests: 
 Description: This package is for sparse VAR estimation.
 License: GPL v2

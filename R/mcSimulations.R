@@ -22,7 +22,7 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
                           penalty = "ENET", covariance = "toeplitz", 
                           options = NULL, method = "normal") {
 
-  results <- matrix(0, nMC, 5)
+  results <- matrix(0, nMC, 7)
   
   pb <- txtProgressBar(min = 0, max = nMC, style = 3)
     
@@ -31,10 +31,12 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
       s <- simulateVAR(nobs = nobs, N = N, rho = rho, sparsity = sparsity, covariance = covariance, method = method)
       rets <- s$data$series
       genA <- s$A[[1]]
+      spRad <- max(Mod(eigen(genA)$values))
       
       res <- estimateVAR(rets, penalty = penalty, options = options)
       
       A <- res$A[[1]]
+      estSpRad <- max(Mod(eigen(A)$values))
       
       L <- A
       L[L!=0] <- 1
@@ -49,13 +51,15 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
       results[i, 3] <- l2norm(A-genA) / l2norm(genA)
       results[i, 4] <- frobNorm(A-genA) / frobNorm(genA)
       results[i, 5] <- res$mse
+      results[i, 6] <- spRad
+      results[i, 7] <- estSpRad
       setTxtProgressBar(pb, i)
     }
   
   close(pb)
   
   results <- as.data.frame(results)
-  colnames(results) <- c("accuracy", "sparDiff", "l2", "frob", "mse")
+  colnames(results) <- c("accuracy", "sparDiff", "l2", "frob", "mse", "spRad", "estSpRad")
   
   return(results)
   

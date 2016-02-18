@@ -124,14 +124,17 @@ varENET <- function(X,y, options = NULL) {
   ncores <- ifelse(is.null(options$ncores), 1, options$ncores)
 
   if(parall == TRUE) {
-    cl <- registerDoMC(ncores)
+    if(ncores < 1) {
+      stop("The number of cores must be > 1")
+    } else {
+      #cl <- registerDoMC(ncores)
+      cl <- parallel::makeCluster(ncores)
+      cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = TRUE)
+      parallel::stopCluster(cl)
+    }
+  } else {
+    cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = FALSE)
   }
-
-  if(ncores < 1) {
-    stop("The number of cores must be > 1")
-  }
-    
-  cvfit = glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = parall)
   
   return(cvfit)
   
@@ -141,9 +144,21 @@ varSCAD <- function(X, y, options = NULL) {
   
   e <- ifelse(is.null(options$eps), 0.01, options$eps)
   nf <- ifelse(is.null(options$nfolds), 10, options$nfolds)
+  parall <- ifelse(is.null(options$parallel), FALSE, options$parallel)
+  ncores <- ifelse(is.null(options$ncores), 1, options$ncores)
   
-  cvfit = ncvreg::cv.ncvreg(X, y, nfolds = nf, penalty = "SCAD", eps = e)
-  
+  if(parall == TRUE) {
+    if(ncores < 1) {
+      stop("The number of cores must be > 1")
+    } else {
+      cl <- parallel::makeCluster(ncores)
+      cvfit <- ncvreg::cv.ncvreg(X, y, nfolds = nf, penalty = "SCAD", eps = e, cluster = cl)
+      parallel::stopCluster(cl)
+    }
+  } else {
+    cvfit <- ncvreg::cv.ncvreg(X, y, nfolds = nf, penalty = "SCAD", eps = e)
+  }
+
   return(cvfit)
   
 }
@@ -152,31 +167,25 @@ varMCP <- function(X, y, options = NULL) {
   
   e <- ifelse(is.null(options$eps), 0.01, options$eps)
   nf <- ifelse(is.null(options$nfolds), 10, options$nfolds)
-
-  cvfit = ncvreg::cv.ncvreg(X, y, nfolds = nf, penalty = "MCP", eps = e)
+  parall <- ifelse(is.null(options$parallel), FALSE, options$parallel)
+  ncores <- ifelse(is.null(options$ncores), 1, options$ncores)
+  
+  if(parall == TRUE) {
+    if(ncores < 1) {
+      stop("The number of cores must be > 1")
+    } else {
+      cl <- parallel::makeCluster(ncores)
+      cvfit <- ncvreg::cv.ncvreg(X, y, nfolds = nf, penalty = "MCP", eps = e, cluster = cl)
+      parallel::stopCluster(cl)
+    }
+  } else {
+    cvfit <- ncvreg::cv.ncvreg(X, y, nfolds = nf, penalty = "MCP", eps = e)
+  }
   
   return(cvfit)
   
 }
 
-# createDataMatrix <- function(data, p) {
-#   
-#   nr <- nrow(data)
-#   nc <- ncol(data)
-# 
-#   tmpX <- matrix(0, nrow = (nr-1) * p, ncol = nc)
-#   ix <- matrix(1:(nr*p), ncol = p, nrow = nr, byrow = TRUE)
-#   
-#   for (i in p:nr) {
-#     
-#     tmpIx <- ix[i-p+1, ]
-#     tmpX[tmpIx, ] <- data[((i-p+1):i), ]
-#     
-#   }
-#   
-#   return(tmpX)
-#   
-# }
 
 splitMatrix <- function(M, p) {
   

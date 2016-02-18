@@ -45,8 +45,8 @@ createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALS
     # bimodal distributed nonzero entries
     n <- floor(sparsity * N^2)
     
-    nonZeroEntriesLeft <- rnorm(n, mean = -1, sd = 1)
-    nonZeroEntriesRight <- rnorm(n, mean = 1, sd = 1)
+    nonZeroEntriesLeft <- rnorm(n, mean = -1, sd = sqrt(0.5))
+    nonZeroEntriesRight <- rnorm(n, mean = 1, sd = sqrt(0.5))
     
     nonZeroEntries <- sample(x = c(nonZeroEntriesLeft, nonZeroEntriesRight), size = n, replace = FALSE)
     
@@ -65,10 +65,11 @@ createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALS
 
   if (stationary == TRUE) {
     # if spectral radius < 1 is needed, return the re-normalized matrix  
-    # K <- 1.5
     K <- 1
-    return(1/sqrt(K * sparsity * N) * A)
-  
+    # K <- 0.05
+    return(1/(K * sqrt(sparsity * N)) * A)
+    # return(1/(max(Mod(eigen(A)$values)) + 0.01) * A)
+    
   } else {
     
     return(A)

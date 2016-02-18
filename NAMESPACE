@@ -2,6 +2,7 @@
 
 export(createSparseMatrix)
 export(estimateVAR)
+export(estimateVECM)
 export(mcSimulations)
 export(plotMatrix)
 export(simulateVAR)

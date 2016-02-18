@@ -28,9 +28,9 @@ estimateVAR <- function(rets, p = 1, penalty = "ENET", options = NULL) {
   rets <- as.matrix(rets)
   
   # scale the matrix columns
-  for (i in 1:nc) {
-    rets[, i] <- scale(rets[, i])
-  }
+  # for (i in 1:nc) {
+  #   rets[, i] <- scale(rets[, i])
+  # }
   
   # create Xs and Ys (temp variables)
   tmpX <- rets[1:(nr-1), ]

@@ -4,6 +4,7 @@ Some R functions useful to estimate sparse VAR models.
 
 The functions included are:
 - `estimateVAR`: to estimate a sparse VAR multivariate time series with ENET, SCAD or MC+;
+- `estimateVECM`: to estimate a sparse VECM (Vector Error Correction Model) using LS with penalty (again: ENET, SCAD or MC+);
 - `simulateVAR`: to generate a sparse VAR multivariate time series;
 - `mcSimulations`: to generate Monte Carlo simulations of SVAR and the relative estimation;
 - `createSparseMatrix`: used to create sparse matrices with a given density;
@@ -40,6 +41,12 @@ Global options:
 
 `penalty = "SCAD"` or `"MCP"` options:
 - `eps`: convergence tolerance
+
+Output:
+- `A`: a list of length `p` containing the matrices estimated for the VAR(p) model;
+- `time`: elapsed time for the estimation;
+- `mse`: the mean square error of the cross validation;
+- `fit`: the estimated model.
 
 ### Examples
 

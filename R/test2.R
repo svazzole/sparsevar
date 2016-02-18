@@ -9,10 +9,10 @@
 # 
 # library(rhdf5)
 # 
-# rets <- t(h5read("data/2011.h5","rets/block0_values"))
-# rets <- rets[3:nrow(rets), 1:30]
-# prices <- t(h5read("data/2011.h5","prices/block0_values"))
-# prices <- prices[3:nrow(prices), 1:30]
+# rets <- t(h5read("data/2012.h5","rets/block0_values"))
+# rets <- rets[3:nrow(rets), 1:75]
+# prices <- t(h5read("data/2012.h5","prices/block0_values"))
+# prices <- prices[3:nrow(prices), 1:75]
 # 
 # 
 # res <- estimateVAR(rets, options = list(parallel = TRUE, ncores = 2))
@@ -54,4 +54,4 @@
 # plotMatrix(res1$G[[1]])
 # plotMatrix(res2$Pi)
 # plotMatrix(res2$G[[1]])
-# 
+

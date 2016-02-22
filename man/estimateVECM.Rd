@@ -4,13 +4,14 @@
 \alias{estimateVECM}
 \title{Multivariate VECM estimation}
 \usage{
-estimateVECM(data, p = 2, penalty = "ENET", options = NULL)
+estimateVECM(data, p = 1, penalty = "ENET", logScale = TRUE,
+  options = NULL)
 }
 \arguments{
 \item{\code{rets}}{the data from the time series: variables in columns and observations in
 rows}
 
-\item{\code{p}}{order of the VAR model (only for \code{"ENET"} penalty)}
+\item{\code{p}}{order of the VECM model (only for \code{"ENET"} penalty)}
 
 \item{\code{penalty}}{the penalty function to use. Possible values are \code{"ENET"},
 \code{"SCAD"} or \code{"MCP"}}
@@ -18,7 +19,9 @@ rows}
 \item{\code{options}}{options for the function (TODO: specify)}
 }
 \value{
-\code{A} the list (of length p) of the estimated matrices of the process
+\code{Pi} the matrix \code{Pi} for the VECM model
+
+\code{G} the list (of length p) of the estimated matrices of the process
 
 \code{fit} the results of the penalized LS estimation
 

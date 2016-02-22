@@ -4,12 +4,13 @@
 #' using penalized least squares methods, such as ENET, SCAD or MC+.
 #' @param \code{rets} the data from the time series: variables in columns and observations in 
 #' rows
-#' @param \code{p} order of the VAR model (only for \code{"ENET"} penalty)
+#' @param \code{p} order of the VECM model (only for \code{"ENET"} penalty)
 #' @param \code{penalty} the penalty function to use. Possible values are \code{"ENET"}, 
 #' \code{"SCAD"} or \code{"MCP"}
 #' @param \code{options} options for the function (TODO: specify)
 #' 
-#' @return \code{A} the list (of length p) of the estimated matrices of the process
+#' @return \code{Pi} the matrix \code{Pi} for the VECM model 
+#' @return \code{G} the list (of length p) of the estimated matrices of the process
 #' @return \code{fit} the results of the penalized LS estimation
 #' @return \code{mse} the mean square error of the cross validation
 #' @return \code{time} elapsed time for the estimation
@@ -18,10 +19,21 @@
 #'
 #' @export
 #' 
-estimateVECM <- function(data, p = 2, penalty = "ENET", options = NULL) {
+estimateVECM <- function(data, p = 2, penalty = "ENET", logScale = TRUE, 
+                         options = NULL) {
   
   nr <- nrow(data)
   nc <- ncol(data)
+  
+  # add one to the order of VAR
+  # p <- p + 1
+  
+  # by default log-scale the data
+  if (logScale == TRUE) {
+    for (i in 1:nc) {
+      data[, i] <- log(data[, i])
+    }
+  }
   
   resultsVAR <- estimateVAR(data, p = p, penalty = penalty, options = options)
   
@@ -42,6 +54,7 @@ estimateVECM <- function(data, p = 2, penalty = "ENET", options = NULL) {
   output <- list()
   output$Pi <- Pi
   output$G <- G
+  output$fit <- resultsVAR$fit
   output$mse <- resultsVAR$mse
   output$time <- resultsVAR$time
   

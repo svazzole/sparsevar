@@ -2,57 +2,72 @@
 title: "svar package"
 author: "Simone Vazzoler"
 date: "`r Sys.Date()`"
-output: rmarkdown::pdf_vignette
+output: 
+  rmarkdown::pdf_document
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+## Estimation of a VAR model
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+Use `estimateVAR`. The arguments of the function are:
+  
+  * `rets`: the multivariate time series (variables in columns, observations in rows);
+  * `p`: the order of the VAR model to be estimated;
+  * `penalty`: the penalty used in Least Squares (LS). Possible values are: `"ENET"`, `"SCAD"` or `"MCP"`;
+  * `options`: list of options. Some will depend on the penalty and some are global.
 
-## Vignette Info
+Global options:
 
-Note the various macros within the `vignette` setion of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+  * `parallel`: `TRUE` or `FALSE` (default). Parallel cross-validation (on the folds);
+  * `ncores`: if `parallel = TRUE` then you must specify the number of cores used for the parallelization (default = `1`).
+  * `nfolds`: number of folds to use in the cross validation (default `nfolds = 10`)
 
-## Styles
+`penalty = "ENET` options:
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+  * `lambda`: `"lambda.min"` (default) or `"lambda.1se"`;
+  * `alpha`: a value in (0,1) (default `alpha = 1`). `alpha = 1` is LASSO regression, `alpha = 0` is Ridge LS;
+  * `type.measure`: `"mse"` (default) or `"mae"`;
+  * `nlambda`: number of lambdas used for cross validation.
 
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
+`penalty = "SCAD"` or `"MCP"` options:
+  * `eps`: convergence tolerance
 
-## Figures
+Output:
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
+  * `A`: a list of length `p` containing the matrices estimated for the VAR(p) model;
+  * `time`: elapsed time for the estimation;
+  * `mse`: the mean square error of the cross validation;
+  * `fit`: the estimated model.
 
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+### Examples
+
+```{r, eval=FALSE}
+results <- estimateVAR(rets)
+```
+will estimate VAR(1) process using LASSO regression on the dataset `rets`.
+
+The command
+```{r, eval=FALSE}
+results <- estimateVAR(rets, p = 3, penalty = "ENET", 
+                       options = list(parallel = TRUE, ncores = 5, alpha = 0.95, 
+                                      type.measure = "mae", lambda = "lambda.1se"))
+```
+will estimate a VAR(3) model on the dataset `rets` using the penalty `"ENET"` with `alpha = 0.95` (between LASSO and Ridge). For the cross validation it will use `"mae"` (mean absolute error) insteadof mean square error and it will choose as model the one correspondent to the lambda which is at 1 std deviation from the minimum. Moreover it will parallelize the cross validation over 5 cores.
+
+### Simulations
+
+Use `simulateVAR`. The parameters for the function are:
+
+  * `N`: the dimension of the process;
+  * `nobs`: the number of observations of the process;
+  * `rho`: the variance/covariance "intensity";
+  * `sparsity`: the percentage of non zero elements in the matrix of the VAR;
+  * `method`: `"normal"` or `"bimodal"`.
+
+```{r, eval=FALSE}
+sim <- simulateVAR(N = 100, nobs = 250, rho = 0.75, sparsity = 0.05, method = "normal")
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))

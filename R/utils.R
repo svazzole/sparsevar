@@ -2,58 +2,55 @@
 #' 
 #' @description Some matrix norms
 #' @usage 
-#' l2norm(M)
-#' l1norm(M)
-#' maxNorm(M)
-#' frobNorm(M)
-#' spectralRadius(M)
-#' operatorNorm(M)
-#' @param M
+#' \code{l2norm(M)}
+#' \code{l1norm(M)}
+#' \code{lInftyNorm(M)}
+#' \code{maxNorm(M)}
+#' \code{frobNorm(M)}
+#' \code{spectralRadius(M)}
+#' \code{spectralNorm(M)}
+#' @param M the matrix (real or complex valued)
 #' 
 #' @author Simone Vazzoler
 
-
+#' @export
 l2norm <- function(M) {
-  
-  #s <- sqrt(sum(M^2))
   s <- sqrt(spectralRadius(t(M) %*% M))
   return(s)
-  
 }
 
+#' @export
 l1norm <- function(M) {
-  
-  c <- max(colSums(abs(M)))
+  c <- max(colSums(Mod(M)))
   return(c)
-  
 }
 
+#' @export
+lInftyNorm <- function(M) {
+  c <- max(rowSums(Mod(M)))
+  return(c)
+}
+
+#' @export
 maxNorm <- function(M) {
-  
   return(max(abs(M)))
-  
 }
 
+#' @export
 frobNorm <- function(M) {
-  
   A <- (t(M) %*% M)
   A <-  A * diag(nrow(A))
-
   return(sqrt(sum(A)))
-
 }
 
+#' @export
 spectralRadius <- function(M) {
-  
   e <- eigen(M)
-  maxEig <- max(abs(e$values))
-  
+  maxEig <- max(Mod(e$values))
   return(maxEig)
-  
 }
 
-operatorNorm <- function(M) {
-  
+#' @export
+spectralNorm <- function(M) {
   return(sqrt(spectralRadius(t(M) %*% M)))
-  
 }

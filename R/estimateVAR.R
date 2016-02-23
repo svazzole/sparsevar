@@ -1,15 +1,15 @@
 #' @title Multivariate VAR estimation
 #' 
-#' @description A wrapper to estimate a (possibly big) multivariate VAR time series
+#' @description A function to estimate a (possibly big) multivariate VAR time series
 #' using penalized least squares methods, such as ENET, SCAD or MC+.
-#' @param \code{rets} the data from the time series: variables in columns and observations in 
+#' @param \code{data} the data from the time series: variables in columns and observations in 
 #' rows
-#' @param \code{p} order of the VAR model (only for \code{"ENET"} penalty)
+#' @param \code{p} order of the VAR model
 #' @param \code{penalty} the penalty function to use. Possible values are \code{"ENET"}, 
 #' \code{"SCAD"} or \code{"MCP"}
 #' @param \code{options} options for the function (TODO: specify)
 #' 
-#' @return \code{A} the list (of length p) of the estimated matrices of the process
+#' @return \code{A} the list (of length \code{p}) of the estimated matrices of the process
 #' @return \code{fit} the results of the penalized LS estimation
 #' @return \code{mse} the mean square error of the cross validation
 #' @return \code{time} elapsed time for the estimation
@@ -18,23 +18,23 @@
 #'
 #' @export
 #' 
-estimateVAR <- function(rets, p = 1, penalty = "ENET", options = NULL) {
+estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
 
   # get the number of rows and columns
-  nr <- nrow(rets)
-  nc <- ncol(rets)
+  nr <- nrow(data)
+  nc <- ncol(data)
   
   # make sure the data is in matrix format
-  rets <- as.matrix(rets)
+  data <- as.matrix(data)
   
   # scale the matrix columns
   # for (i in 1:nc) {
-  #   rets[, i] <- scale(rets[, i])
+  #   data[, i] <- scale(data[, i])
   # }
   
   # create Xs and Ys (temp variables)
-  tmpX <- rets[1:(nr-1), ]
-  tmpY <- rets[2:(nr), ]
+  tmpX <- data[1:(nr-1), ]
+  tmpY <- data[2:(nr), ]
   
   # create the data matrix
   tmpX <- duplicateMatrix(tmpX, p)

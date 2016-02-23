@@ -6,10 +6,18 @@ Authors@R: c(person("Simone", "Developer", role = c("aut", "cre"),
                      email = "svazzole@gmail.com"))
 Author: Simone Vazzoler
 Maintainer: Simone Vazzoler <svazzole@gmail.com>
-Depends: R (>= 1.8.0), Matrix, ncvreg, parallel, glmnet, MTS
-Suggests: knitr
+Depends:
+    R (>= 1.8.0),
+    Matrix,
+    ncvreg,
+    parallel,
+    glmnet,
+    MTS
+Suggests:
+    knitr
 Description: This package is for sparse VAR/VECM time series models estimation.
 License: GPL v2
 URL: http://github.com/svazzole/svar
 BugReports: http://github.com/svazzole/svar
 VignetteBuilder: knitr
+RoxygenNote: 5.0.1

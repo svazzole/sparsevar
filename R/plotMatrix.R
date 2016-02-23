@@ -20,7 +20,7 @@ plotMatrix <- function(M){
   image(M)
   #image(1:nr, 1:nc, t(M)[,nc:1], col=colfunc(39), xlab = "Column Number", ylab = "Row number", yaxt = "n", xaxt = "n")
   #axis(1, at = 1:nc, labels = as.character(1:nc)) 
-#  axis(2, at = 1:nc, labels = as.character(nc:1), las = 2) 
+  #axis(2, at = 1:nc, labels = as.character(nc:1), las = 2) 
   #axis(2, at = 1:nc, labels = as.character(nc:1)) 
   
 }

@@ -37,7 +37,7 @@ estimateVECM <- function(data, p = 2, penalty = "ENET", logScale = TRUE,
     # }
     data <- log(data)
     data[is.na(data)] <- 0
-    data[is.infinite(data)] <- 0
+    # data[is.infinite(data)] <- 0
   }
   
   resultsVAR <- estimateVAR(data, p = p, penalty = penalty, options = options)

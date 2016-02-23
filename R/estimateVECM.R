@@ -30,9 +30,12 @@ estimateVECM <- function(data, p = 2, penalty = "ENET", logScale = TRUE,
   
   # by default log-scale the data
   if (logScale == TRUE) {
-    for (i in 1:nc) {
-      data[, i] <- log(data[, i])
-    }
+    # for (i in 1:nc) {
+    #   data[, i] <- log(data[, i])
+    # }
+    data <- log(data)
+    data[is.na(data)] <- 0
+    data[is.infinite(data)] <- 0
   }
   
   resultsVAR <- estimateVAR(data, p = p, penalty = penalty, options = options)

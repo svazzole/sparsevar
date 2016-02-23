@@ -4,7 +4,7 @@
 \alias{estimateVECM}
 \title{Multivariate VECM estimation}
 \usage{
-estimateVECM(data, p = 1, penalty = "ENET", logScale = TRUE,
+estimateVECM(data, p = 2, penalty = "ENET", logScale = TRUE,
   options = NULL)
 }
 \arguments{

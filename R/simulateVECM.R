@@ -21,8 +21,10 @@
 #'
 #' @export
 #' 
-simulateVECM <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05, 
+simulateVECM <- function(N = 100, p = 2, nobs = 250, rho = 0.5, sparsity = 0.05, 
                          method = "normal", covariance = "toeplitz") {
+  
+  p <- p + 1
   
   # Create the list of the VAR matrices
   A <- list()
@@ -74,6 +76,17 @@ simulateVECM <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   
   # Generate VAR(1) process 
   data <- MTS::VARMAsim(nobs = nobs, arlags = ar, malags = 0, cnst = 0, phi = cA, theta = theta, skip = 200, sigma = T)
+  
+  # Create the matrices of VECM
+  I <- diag(x = 1, nrow = N, ncol = N)
+  Pi <- -(I - matrixSum(M, ix = 1))
+  
+  # Gamma matrices
+  G <- list()
+  
+  for (k in 1:(p-1)) {
+    G[[k]] <- - matrixSum(M, ix = k+1)
+  }
   
   out <- list()
   out$data <- data

@@ -69,37 +69,35 @@ sica <- function(X, y, a = 1e-3, lambda = 1e-2, inival = integer(), maxiter = 50
     a <- 1
     
     # % first round of iteration
-    beta <- inival;
-    iter <- 1;
-    update <- 1;
-    ind <- 1:p;
+    beta <- inival
+    iter <- 1
+    update <- 1
+    ind <- 1:p
     
-    while ((iter <= maxiter) & (update > tol)){
+    while ((iter <= maxiter) & (update > tol)) {
       
       iter <- iter + 1
       betaold <- beta
-    
-      for (k in 1:length(ind)){
+      
+      for (k in 1:length(ind)) {
         setr <- ind
         I <- setr[k]
         setr[k] <- numeric()
       }
-    
+      
       # % solve
       # %
       # % min_beta  2^(-1) (beta - z)^2 + lambda rho_a(|beta|)
       # %
       # % for scalar beta
-      if (length(setr) == 0){
+      if (length(setr) == 0) {
         z <- cvec[I]
       } else{
         z <- (cvec[I] - XXmat[I, setr]%*%beta[setr])
       }
-      
-      beta[I] <- usica(z, a, lambda);
-    
+      beta[I] <- usica(z, a, lambda)
     }
-
+    
     # TODO: check
     ind <- which(beta != 0)
     update <- sqrt(sum((beta - betaold)^2))
@@ -114,79 +112,79 @@ sica <- function(X, y, a = 1e-3, lambda = 1e-2, inival = integer(), maxiter = 50
     indm <- which(resc > lambda*(1 + a^(-1)))
     ind <- union(c(setr(indm), ind), varset)    
   }
-
+  
   # TODO: check this two lines
-  varset <- union(which(beta != 0), varset);
-  inival <- beta;
-
-# % Second stabilization using an intermediate SICA penalty with a relatively 
-# % large shape parameter a = 1/3, making the maximum concavity lambda*2*(1/a + 1/a^2) 
-# % of the penalty lambda*rho_a at a relatively low level
-
+  varset <- union(which(beta != 0), varset)
+  inival <- beta
+  
+  # % Second stabilization using an intermediate SICA penalty with a relatively 
+  # % large shape parameter a = 1/3, making the maximum concavity lambda*2*(1/a + 1/a^2) 
+  # % of the penalty lambda*rho_a at a relatively low level
+  
   if ((a0 < 1/3) & (lambda*24 > 1e-2)) {
-        
-    a <- 1/3;
+    
+    a <- 1/3
     
     # % first round of iteration
-    beta <- inival;
-    iter <- 1;
-    update <- 1;
-    ind <- 1:p;
+    beta <- inival
+    iter <- 1
+    update <- 1
+    ind <- 1:p
     
-    while ((iter <= maxiter) & (update > tol)){
-          
-        iter <- iter + 1;
-        betaold <- beta;
+    while ((iter <= maxiter) & (update > tol)) { 
+      
+      iter <- iter + 1
+      betaold <- beta
+      
+      for (k in 1:length(ind)) {
+        setr <- ind
+        I <- setr[k]
+        setr[k] <- numeric(0)
         
-        for (k in 1:length(ind)) {
-            setr <- ind;
-            I <- setr[k];
-            setr[k] <- numeric(0);
-            
-            # % solve
-            # %
-            # % min_beta  2^(-1) (beta - z)^2 + lambda rho_a(|beta|)
-            # %
-            # % for scalar beta
-
-            if (length(setr) == 0) {
-                z <- cvec[I]
-            } else {
-                z <- (cvec[I] - XXmat(I, setr)*beta(setr));
-            }
-            
-            beta[I] <- usica(z, a, lambda);
-        }
+        # % solve
+        # %
+        # % min_beta  2^(-1) (beta - z)^2 + lambda rho_a(|beta|)
+        # %
+        # % for scalar beta
         
-        ind <- which(beta != 0);
-        # TODO: check substitute for norm
-        # update <- norm(beta - betaold);
-        update <- sqrt(sum((beta - betaold)^2));
-        
-        setr <- setdiff(1:p, ind);
-
-        if (length(setr) == 0){
-            resc <- 0;
+        if (length(setr) == 0) {
+          z <- cvec[I]
         } else {
-            resc <- abs(cvec(setr) - XXmat(setr, ind)*beta(ind));
+          z <- (cvec[I] - XXmat(I, setr)*beta(setr))
         }
         
-        indm <- which(resc > lambda*(1 + a^(-1)));
-        ind <- union(c(t(setr(indm)), ind), varset);
+        beta[I] <- usica(z, a, lambda)
+      }
+      
+      ind <- which(beta != 0)
+      # TODO: check substitute for norm
+      # update <- norm(beta - betaold);
+      update <- sqrt(sum((beta - betaold)^2))
+      
+      setr <- setdiff(1:p, ind)
+      
+      if (length(setr) == 0){
+        resc <- 0
+      } else {
+        resc <- abs(cvec(setr) - XXmat(setr, ind)*beta(ind))
+      }
+      
+      indm <- which(resc > lambda*(1 + a^(-1)))
+      ind <- union(c(t(setr(indm)), ind), varset)
     }
     
-    varset <- union(which(beta != 0), varset);
-    inival <- beta;
+    varset <- union(which(beta != 0), varset)
+    inival <- beta
   }
-
-########################################################################
-# CHECK & CONVERT
-########################################################################
-    
-## % Third stabilization using an intermediate SICA penalty with a relatively 
-## % large shape parameter a = 0.1, making the maximum concavity lambda*2*(1/a + 1/a^2) 
-## % of the penalty lambda*rho_a at a relatively low level
-
+  
+  ########################################################################
+  # CHECK & CONVERT
+  ########################################################################
+  
+  ## % Third stabilization using an intermediate SICA penalty with a relatively 
+  ## % large shape parameter a = 0.1, making the maximum concavity lambda*2*(1/a + 1/a^2) 
+  ## % of the penalty lambda*rho_a at a relatively low level
+  
   if ((a0 < 0.1) & (lambda*220 > 1e-2)) {
     a <- 0.1
     
@@ -197,59 +195,10 @@ sica <- function(X, y, a = 1e-3, lambda = 1e-2, inival = integer(), maxiter = 50
     ind <- 1:p
     
     while ((iter <= maxiter) & (update > tol)) {
-        iter <- iter + 1
-        betaold <- beta
-        
-        for (k in 1:length(ind)) {
-            setr <- ind
-            I <- setr[k]
-            setr[k] <- numeric(0)
-            
-            ## % solve
-            ## %
-            ## % min_beta  2^(-1) (beta - z)^2 + lambda rho_a(|beta|)
-            ## %
-            ## % for scalar beta
-            if (length(setr) > 0) {
-                z <- cvec[I]
-            } else {
-                z <- (cvec[I] - XXmat(I, setr)*beta[setr]);
-            }
-            beta[I] <- usica(z, a, lambda)
-        }
-        
-        ind <- which(beta != 0)
-        update <- sqrt(sum((beta - betaold)^2))
-        
-        setr <- setdiff(1:p, ind)
-        if (length(setr) == 0) {
-            resc <- 0
-        } else {
-            resc  <- abs(cvec(setr) - XXmat(setr, ind)*beta(ind))
-        }
-        
-        indm <- which(resc > lambda*(1 + a^(-1)))
-        ind <- union(c(t(setr(indm)), ind), varset)
-    }
-    
-    varset <- union(which(beta != 0), varset)
-    inival <- beta
-  }
-
-    # % Final solution
-    a <- a0
-    # % first round of iteration
-    beta <- inival
-    iter <- 1
-    update <- 1
-    ind <- 1:p
-
-    while ((iter <= maxiter) & (update > tol)){
-        
-    iter <- iter + 1
-    betaold <- beta
-    
-    for (k in 1:length(ind)) {
+      iter <- iter + 1
+      betaold <- beta
+      
+      for (k in 1:length(ind)) {
         setr <- ind
         I <- setr[k]
         setr[k] <- numeric(0)
@@ -259,40 +208,89 @@ sica <- function(X, y, a = 1e-3, lambda = 1e-2, inival = integer(), maxiter = 50
         ## % min_beta  2^(-1) (beta - z)^2 + lambda rho_a(|beta|)
         ## %
         ## % for scalar beta
-        if (length(setr) == 0) {
-          z <- cvec[I];
-        } else {            
-          z <- (cvec[I] - XXmat(I, setr)*beta(setr));
+        if (length(setr) > 0) {
+          z <- cvec[I]
+        } else {
+          z <- (cvec[I] - XXmat(I, setr)*beta[setr]);
         }
-        
-        beta[I] <- usica(z, a, lambda);
+        beta[I] <- usica(z, a, lambda)
+      }
+      
+      ind <- which(beta != 0)
+      update <- sqrt(sum((beta - betaold)^2))
+      
+      setr <- setdiff(1:p, ind)
+      if (length(setr) == 0) {
+        resc <- 0
+      } else {
+        resc  <- abs(cvec(setr) - XXmat(setr, ind)*beta(ind))
+      }
+      
+      indm <- which(resc > lambda*(1 + a^(-1)))
+      ind <- union(c(t(setr(indm)), ind), varset)
     }
     
-    ind <- find(beta);
-    update <- norm(beta - betaold);
+    varset <- union(which(beta != 0), varset)
+    inival <- beta
+  }
+  
+  # % Final solution
+  a <- a0
+  # % first round of iteration
+  beta <- inival
+  iter <- 1
+  update <- 1
+  ind <- 1:p
+  
+  while ((iter <= maxiter) & (update > tol)) {
     
-    setr <- setdiff(1:p, ind);
+    iter <- iter + 1
+    betaold <- beta
+    
+    for (k in 1:length(ind)) {
+      setr <- ind
+      I <- setr[k]
+      setr[k] <- numeric(0)
+      
+      ## % solve
+      ## %
+      ## % min_beta  2^(-1) (beta - z)^2 + lambda rho_a(|beta|)
+      ## %
+      ## % for scalar beta
+      if (length(setr) == 0) {
+        z <- cvec[I]
+      } else {            
+        z <- (cvec[I] - XXmat(I, setr)*beta(setr))
+      }
+      
+      beta[I] <- usica(z, a, lambda)
+    }
+    
+    ind <- find(beta)
+    update <- norm(beta - betaold)
+    
+    setr <- setdiff(1:p, ind)
     
     if (length(setr) == 0) {
-      resc <- 0;
+      resc <- 0
     } else {
-      resc <- abs(cvec(setr) - XXmat(setr, ind)*beta(ind));
+      resc <- abs(cvec(setr) - XXmat(setr, ind)*beta(ind))
     }
     
-    indm <- find(resc > lambda*(1 + a^(-1)));
-    ind <- union(c(t(setr(indm)), ind), varset);
-}
-
+    indm <- find(resc > lambda*(1 + a^(-1)))
+    ind <- union(c(t(setr(indm)), ind), varset)
+  }
+  
   # % rescale beta vector to original scale
-  beta <- beta/t(Xsca);
-
+  beta <- beta/t(Xsca)
+  
   # % If the size of selected model exceeds n/2, display a warning message
   if (sum(beta != 0) > n/2) {
     cat(" ")
     cat("Warning: The solution found is nonsparse and may be inaccurate. Try a larger lambda!")
     cat(" ")
   }
-
+  
 }
 
 # % usica.m

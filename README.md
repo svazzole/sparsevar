@@ -1,4 +1,4 @@
-# Sparse VAR (SVAR)
+## Sparse VAR (SVAR) [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
 
 Some R functions useful to estimate sparse VAR models.
 
@@ -10,7 +10,7 @@ The functions included are:
 - `createSparseMatrix`: used to create sparse matrices with a given density;
 - `plotMatrix`: useful to plot sparse matrices;
 
-## Installation
+### Installation
 
 To install:
 ```
@@ -20,7 +20,7 @@ devtools::install_github("svazzole/svar")
 Check [here](https://www.rstudio.com/products/rpackages/devtools/) to understand which are the dependencies of `devtools` for your OS.
 
 
-## Estimation
+### Estimation
 
 Use `estimateVAR`. The arguments of the function are:
 - `rets`: the multivariate time series (variables in columns, observations in rows);
@@ -61,7 +61,7 @@ results <- estimateVAR(rets, p = 3, penalty = "ENET", options = list(parallel = 
 ```
 will estimate a VAR(3) model on the dataset `rets` using the penalty `"ENET"` with `alpha = 0.95` (between LASSO and Ridge). For the cross validation it will use `"mae"` (mean absolute error) insteadof mean square error and it will choose as model the one correspondent to the lambda which is at 1 std deviation from the minimum. Moreover it will parallelize the cross validation over 5 cores.
 
-## Simulations
+### Simulations
 
 Use `simulateVAR`. The parameters for the function are:
 - `N`: the dimension of the process;

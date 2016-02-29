@@ -4,7 +4,7 @@
 \alias{simulateVECM}
 \title{VECM simulation}
 \usage{
-simulateVECM(N = 100, p = 2, nobs = 250, rho = 0.5, sparsity = 0.05,
+simulateVECM(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   method = "normal", covariance = "toeplitz")
 }
 \arguments{

@@ -21,7 +21,7 @@
 #'
 #' @export
 #' 
-simulateVECM <- function(N = 100, p = 2, nobs = 250, rho = 0.5, sparsity = 0.05, 
+simulateVECM <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05, 
                          method = "normal", covariance = "toeplitz") {
   
   p <- p + 1

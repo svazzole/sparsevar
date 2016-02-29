@@ -12,7 +12,10 @@ Depends:
     ncvreg,
     parallel,
     glmnet,
-    MTS
+    MTS,
+    ggplot2,
+    reshape2,
+    grid
 Suggests:
     knitr
 Description: This package is for sparse VAR/VECM time series models estimation.

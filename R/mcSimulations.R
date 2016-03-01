@@ -33,7 +33,7 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
       genA <- s$A[[1]]
       spRad <- max(Mod(eigen(genA)$values))
       
-      res <- estimateVAR(rets, penalty = penalty, options = options)
+      res <- estimateVAR(data = rets, penalty = penalty, options = options)
       
       A <- res$A[[1]]
       estSpRad <- max(Mod(eigen(A)$values))

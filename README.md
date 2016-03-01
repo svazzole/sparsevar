@@ -22,4 +22,4 @@ The functions included are:
 - `plotMatrix`: useful to plot sparse matrices;
 
 ### References
-[1] Basu, Sumanta; Michailidis, George. Regularized estimation in sparse high-dimensional time series models. Ann. Statist. 43 (2015), no. 4, 1535--1567. doi:10.1214/15-AOS1315. (http://projecteuclid.org/euclid.aos/1434546214)
+[[1](http://projecteuclid.org/euclid.aos/1434546214)] Basu, Sumanta; Michailidis, George. Regularized estimation in sparse high-dimensional time series models. Ann. Statist. 43 (2015), no. 4, 1535--1567. doi:10.1214/15-AOS1315. 

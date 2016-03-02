@@ -14,13 +14,15 @@
 #' 
 #' @return a \code{nMc}x5 matrix with the results of the Monte Carlo estimation
  
-#' @export' 
+#' @export
 mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, 
                           penalty = "ENET", covariance = "toeplitz", 
                           options = NULL, method = "normal") {
 
-  results <- matrix(0, nMC, 7)
+  results <- list()
   
+  results$confusionMatrix <- matrix(0, nMC, 4)
+  results$matrixNorms <- matrix(0, nMC, 6)
   pb <- txtProgressBar(min = 0, max = nMC, style = 3)
     
   for (i in 1:nMC){
@@ -43,21 +45,25 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
       genL[genL!=0] <- 1
       genL[genL==0] <- 0
       
-      results[i, 1] <- 1 - sum(abs(L-genL))/N^2   # accuracy    -(1 - sum(genL)/N^2)
-      results[i, 2] <- abs(sum(L)/N^2 - sparsity) # sparsity
-      results[i, 3] <- l2norm(A-genA) / l2norm(genA)
-      results[i, 4] <- frobNorm(A-genA) / frobNorm(genA)
-      results[i, 5] <- res$mse
-      results[i, 6] <- spRad
-      results[i, 7] <- estSpRad
+      results$confusionMatrix[i, 1:4] <- prop.table(table(Predicted = L, Real = genL))
+      results$accuracy[i] <- 1 -sum(abs(L-genL))/N^2   # accuracy    -(1 - sum(genL)/N^2)
+      results$matrixNorms[i, 1] <- abs(sum(L)/N^2 - sparsity) # sparsity
+      results$matrixNorms[i, 2] <- l2norm(A-genA) / l2norm(genA)
+      results$matrixNorms[i, 3] <- frobNorm(A-genA) / frobNorm(genA)
+      results$matrixNorms[i, 4] <- res$mse
+      results$matrixNorms[i, 5] <- spRad
+      results$matrixNorms[i, 6] <- estSpRad
       setTxtProgressBar(pb, i)
     }
   
   close(pb)
   
-  results <- as.data.frame(results)
-  colnames(results) <- c("accuracy", "sparDiff", "l2", "frob", "mse", "spRad", "estSpRad")
+  results$confusionMatrix <- as.data.frame(results$confusionMatrix)
+  colnames(results$confusionMatrix) <- c("TP", "FP", "FN", "TN")
+  results$matrixNorms <- as.data.frame(results$matrixNorms)
+  colnames(results$matrixNorms) <- c("sparDiff", "l2", "frob", "mse", "spRad", "estSpRad")
   
   return(results)
   
 }
+

@@ -2,9 +2,9 @@ Package: svar
 Version: 0.0.3
 Date: 2016-02-23
 Title: A package for Sparse VAR/VECM estimation
-Authors@R: c(person("Simone", "Developer", role = c("aut", "cre"),
-                     email = "svazzole@gmail.com"))
-Author: Simone Vazzoler
+Authors@R: c(person("Simone", "Vazzoler", role = c("aut", "cre"),
+                     email = "svazzole@gmail.com"),
+             person("Lorenzo", "Frattarolo", role = "aut"))
 Maintainer: Simone Vazzoler <svazzole@gmail.com>
 Depends:
     R (>= 1.8.0),
@@ -18,7 +18,8 @@ Depends:
     grid
 Suggests:
     knitr
-Description: This package is for sparse VAR/VECM time series models estimation.
+Description: This package is a wrapper for sparse VAR/VECM time series models estimation 
+             using penalties like ENET, SCAD and MCP. 
 License: GPL v2
 URL: http://github.com/svazzole/svar
 BugReports: http://github.com/svazzole/svar

@@ -60,7 +60,7 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
     
     if (!is.null(options$threshold)){
       if (options$threshold == TRUE) {
-        tr <- 1 / sqrt(p*nc)
+        tr <- 1 / sqrt(p*nc*log(nr))
         L <- abs(A) >= tr
         A <- A * L
       }
@@ -82,8 +82,14 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
     # extract the coefficients and reshape the matrix
     Avector <- coef(fit, s = "lambda.min")
     A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
+    if (!is.null(options$threshold)){
+      if (options$threshold == TRUE) {
+        tr <- 1 / sqrt(p*nc*log(nr))
+        L <- abs(A) >= tr
+        A <- A * L
+      }
+    }
     A <- splitMatrix(A, p)
-    
     mse <- min(fit$cve)
     
   } else if (penalty == "MCP") {
@@ -99,8 +105,14 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
     # extract the coefficients and reshape the matrix
     Avector <- coef(fit, s = "lambda.min")
     A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
+    if (!is.null(options$threshold)){
+      if (options$threshold == TRUE) {
+        tr <- 1 / sqrt(p*nc*log(nr))
+        L <- abs(A) >= tr
+        A <- A * L
+      }
+    }
     A <- splitMatrix(A, p)
-    
     mse <- min(fit$cve)
     
   } else {

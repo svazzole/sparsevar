@@ -30,7 +30,4 @@ rows}
 A function to estimate a (possibly big) multivariate VAR time series
 using penalized least squares methods, such as ENET, SCAD or MC+.
 }
-\author{
-Simone Vazzoler
-}
 

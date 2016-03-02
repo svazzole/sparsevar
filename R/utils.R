@@ -11,7 +11,6 @@
 #' \code{spectralNorm(M)}
 #' @param M the matrix (real or complex valued)
 #' 
-#' @author Simone Vazzoler
 
 #' @export
 l2norm <- function(M) {

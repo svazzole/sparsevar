@@ -25,9 +25,5 @@ Creates a sparse square matrix with a given sparsity and distribution.
 }
 \examples{
 M <- createSparseMatrix(N = 30, sparsity = 0.05, method = "normal", stationary = TRUE)
-
-}
-\author{
-Simone Vazzoler
 }
 

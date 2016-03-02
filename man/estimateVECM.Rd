@@ -36,7 +36,4 @@ this is set to \code{TRUE}}
 A function to estimate a (possibly big) multivariate VECM time series
 using penalized least squares methods, such as ENET, SCAD or MC+.
 }
-\author{
-Simone Vazzoler
-}
 

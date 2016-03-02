@@ -18,7 +18,4 @@
 \description{
 Some matrix norms
 }
-\author{
-Simone Vazzoler
-}
 

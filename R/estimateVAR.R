@@ -13,11 +13,8 @@
 #' @return \code{fit} the results of the penalized LS estimation
 #' @return \code{mse} the mean square error of the cross validation
 #' @return \code{time} elapsed time for the estimation
-#'
-#' @author Simone Vazzoler
-#'
+
 #' @export
-#' 
 estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
 
   # get the number of rows and columns

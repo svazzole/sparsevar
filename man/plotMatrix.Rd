@@ -19,7 +19,4 @@ Plot a sparse matrix
 plotMatrix(M)
 
 }
-\author{
-Simone Vazzoler
-}
 

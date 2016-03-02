@@ -16,11 +16,8 @@
 #' @return \code{fit} the results of the penalized LS estimation
 #' @return \code{mse} the mean square error of the cross validation
 #' @return \code{time} elapsed time for the estimation
-#'
-#' @author Simone Vazzoler
-#'
+
 #' @export
-#' 
 estimateVECM <- function(data, p = 2, penalty = "ENET", logScale = TRUE, 
                          options = NULL) {
   

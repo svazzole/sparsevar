@@ -16,11 +16,8 @@
 #' @return data a list with two elements: \code{series} the multivariate time series and
 #' \code{noises} the time series of errors
 #' @return S the variance/covariance matrix of the process
-#' 
-#' @author Simone Vazzoler
-#'
+
 #' @export
-#' 
 simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05, 
                         method = "normal", covariance = "toeplitz") {
   

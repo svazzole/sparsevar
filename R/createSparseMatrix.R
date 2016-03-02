@@ -11,11 +11,9 @@
 #' @return An NxN sparse matrix. 
 #' @examples
 #' M <- createSparseMatrix(N = 30, sparsity = 0.05, method = "normal", stationary = TRUE)
-#' 
-#' @author Simone Vazzoler
-#'
+ 
+
 #' @export
-#' 
 createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALSE) {
   
   if (method == "normal") {
@@ -64,11 +62,11 @@ createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALS
   }
 
   if (stationary == TRUE) {
-    # if spectral radius < 1 is needed, return the re-normalized matrix  
+    # if spectral radius < 1 is needed, return the re-normalize the matrix  
     K <- 1
     # K <- 0.05
     return(1/(K * sqrt(sparsity * N)) * A)
-    # return(1/(max(Mod(eigen(A)$values)) + 0.01) * A)
+    #return(1/(max(Mod(eigen(A)$values)) + 0.01) * A)
     
   } else {
     

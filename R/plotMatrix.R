@@ -44,18 +44,18 @@ plotVAR <- function(A) {
 }
 
 #' @export
-plotComparisonVAR <- function(est, sim) {
+plotComparisonVAR <- function(var1, var2) {
   
-  p <- length(sim$A)
+  p <- length(var2$A)
   
   pl <- list()
   # par(mfrow = c(2,p))
   for (i in 1:p) {
-    pl[[i]] <- plotMatrix(est$A[[i]])
+    pl[[i]] <- plotMatrix(var1$A[[i]])
   }
   #title("Estimate")
   for (i in 1:p) {
-    pl[[i + p]] <- plotMatrix(sim$A[[i]])
+    pl[[i + p]] <- plotMatrix(var2$A[[i]])
   }
   #title("Simulation")
   multiplot(plotlist = pl, cols = p, layout = matrix(1:(2*p), nrow = 2, byrow = TRUE))

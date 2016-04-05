@@ -140,7 +140,13 @@ varENET <- function(X,y, options = NULL) {
   parall <- ifelse(is.null(options$parallel), FALSE, options$parallel)
   ncores <- ifelse(is.null(options$ncores), 1, options$ncores)
   
-  foldsIDs <- ifelse(is.null(options$foldsIDs), numeric(0), options$foldsIDs)
+  if (is.null(options$foldsIDs)) {
+    foldsIDs <- numeric(0)
+  } else {
+    foldsIDs <- options$foldsIDs
+  }
+  
+  #foldsIDs <- ifelse(is.null(options$foldsIDs), numeric(0), options$foldsIDs)
   
   if(parall == TRUE) {
     if(ncores < 1) {

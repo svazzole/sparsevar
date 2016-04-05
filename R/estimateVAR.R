@@ -143,7 +143,9 @@ varENET <- function(X,y, options = NULL) {
   if (is.null(options$foldsIDs)) {
     foldsIDs <- numeric(0)
   } else {
-    foldsIDs <- options$foldsIDs
+    #foldsIDs <- options$foldsIDs
+    nr <- nrow(X)
+    foldsIDs <- sort(rep(seq(10), length = nr))
   }
   
   #foldsIDs <- ifelse(is.null(options$foldsIDs), numeric(0), options$foldsIDs)

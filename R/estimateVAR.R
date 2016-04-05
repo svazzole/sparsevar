@@ -140,7 +140,7 @@ varENET <- function(X,y, options = NULL) {
   parall <- ifelse(is.null(options$parallel), FALSE, options$parallel)
   ncores <- ifelse(is.null(options$ncores), 1, options$ncores)
   
-  foldsIDs <- ifelse(is.null(options$foldsIDs), NULL, options$foldsIDs)
+  foldsIDs <- ifelse(is.null(options$foldsIDs), 0, options$foldsIDs)
   
   if(parall == TRUE) {
     if(ncores < 1) {
@@ -148,7 +148,7 @@ varENET <- function(X,y, options = NULL) {
     } else {
       #cl <- registerDoMC(ncores)
       cl <- parallel::makeCluster(ncores)
-      if (is.null(foldsIDs)) {
+      if (foldsIDs == 0) {
         cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = TRUE)
       } else {
         cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = 10, foldid = foldsIDs, parallel = TRUE)
@@ -156,7 +156,7 @@ varENET <- function(X,y, options = NULL) {
       parallel::stopCluster(cl)
     }
   } else {
-    if (is.null(foldsIDs)) {
+    if (foldsIDs == 0) {
       cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = FALSE)
     } else {
       cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = 10, foldid = foldsIDs, parallel = FALSE)

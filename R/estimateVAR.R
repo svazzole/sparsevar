@@ -151,7 +151,7 @@ varENET <- function(X,y, options = NULL) {
       if (is.null(foldsIDs)) {
         cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = TRUE)
       } else {
-        cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, foldid = foldsIDs, parallel = TRUE)
+        cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, foldid = foldsIDs, parallel = TRUE)
       }
       parallel::stopCluster(cl)
     }
@@ -159,7 +159,7 @@ varENET <- function(X,y, options = NULL) {
     if (is.null(foldsIDs)) {
       cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = FALSE)
     } else {
-      cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, foldid = foldsIDs, parallel = FALSE)
+      cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, foldid = foldsIDs, parallel = FALSE)
     }
     
   }

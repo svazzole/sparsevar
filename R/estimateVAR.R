@@ -139,18 +139,29 @@ varENET <- function(X,y, options = NULL) {
   nf <- ifelse(is.null(options$nfolds), 10, options$nfolds)
   parall <- ifelse(is.null(options$parallel), FALSE, options$parallel)
   ncores <- ifelse(is.null(options$ncores), 1, options$ncores)
-
+  
+  foldsIDs <- ifelse(is.null(options$foldsIDs), NULL, options$foldsIDs)
+  
   if(parall == TRUE) {
     if(ncores < 1) {
       stop("The number of cores must be > 1")
     } else {
       #cl <- registerDoMC(ncores)
       cl <- parallel::makeCluster(ncores)
-      cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = TRUE)
+      if (is.null(foldsIDs)) {
+        cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = TRUE)
+      } else {
+        cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, foldid = foldsIDs, parallel = TRUE)
+      }
       parallel::stopCluster(cl)
     }
   } else {
-    cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = FALSE)
+    if (is.null(foldsIDs)) {
+      cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = FALSE)
+    } else {
+      cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, foldid = foldsIDs, parallel = FALSE)
+    }
+    
   }
   
   return(cvfit)

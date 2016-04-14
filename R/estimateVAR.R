@@ -23,11 +23,14 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
   
   # make sure the data is in matrix format
   data <- as.matrix(data)
-  
+
+  scale <- ifelse(is.null(options$scale), FALSE, TRUE)  
   # scale the matrix columns
-  # for (i in 1:nc) {
-  #   data[, i] <- scale(data[, i])
-  # }
+  if (scale == TRUE) {
+    for (i in 1:nc) {
+      data[, i] <- scale(data[, i])
+    }
+  }
   
   # create Xs and Ys (temp variables)
   tmpX <- data[1:(nr-1), ]
@@ -139,17 +142,18 @@ varENET <- function(X,y, options = NULL) {
   nf <- ifelse(is.null(options$nfolds), 10, options$nfolds)
   parall <- ifelse(is.null(options$parallel), FALSE, options$parallel)
   ncores <- ifelse(is.null(options$ncores), 1, options$ncores)
-  
+
+  # Assign ids to the CV-folds (useful for replication of results)  
   if (is.null(options$foldsIDs)) {
     foldsIDs <- numeric(0)
   } else {
-    #foldsIDs <- options$foldsIDs
     nr <- nrow(X)
-    foldsIDs <- sort(rep(seq(10), length = nr))
+    foldsIDs <- sort(rep(seq(nf), length = nr))
   }
   
-  #foldsIDs <- ifelse(is.null(options$foldsIDs), numeric(0), options$foldsIDs)
-  
+  ##############################################################################
+  # TODO: change parallel backend (parallel -> doMC)
+  ##############################################################################
   if(parall == TRUE) {
     if(ncores < 1) {
       stop("The number of cores must be > 1")

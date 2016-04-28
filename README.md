@@ -1,4 +1,4 @@
-## Sparse VAR (SVAR) [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html) [![Version](https://img.shields.io/badge/version-0.0.3-oran.svg)](https://github.com/svazzole/svar)
+## Sparse VAR (sparsevar) [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html) [![Version](https://img.shields.io/badge/version-0.0.3-oran.svg)](https://github.com/svazzole/svar)
 
 Some R functions useful to estimate sparse VAR / VECM models.
 
@@ -7,7 +7,7 @@ Some R functions useful to estimate sparse VAR / VECM models.
 To install:
 ```
 install.packages("devtools")
-devtools::install_github("svazzole/svar")
+devtools::install_github("svazzole/sparsevar")
 ```
 Check [here](https://www.rstudio.com/products/rpackages/devtools/) to understand which are the dependencies of `devtools` for your OS.
 

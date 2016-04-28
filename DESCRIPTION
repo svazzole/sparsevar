@@ -1,4 +1,4 @@
-Package: svar
+Package: sparsevar
 Version: 0.0.3
 Date: 2016-02-23
 Title: A package for Sparse VAR/VECM estimation
@@ -21,7 +21,7 @@ Suggests:
 Description: This package is a wrapper for sparse VAR/VECM time series models estimation 
              using penalties like ENET, SCAD and MCP. 
 License: GPL v2
-URL: http://github.com/svazzole/svar
-BugReports: http://github.com/svazzole/svar
+URL: http://github.com/svazzole/sparsevar
+BugReports: http://github.com/svazzole/sparsevar
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1

@@ -10,4 +10,4 @@ fig/
 data/
 .Rproj.user
 inst/doc
-vignettes/svar_cache/
+vignettes/sparsevar_cache/

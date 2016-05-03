@@ -24,12 +24,10 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
   # make sure the data is in matrix format
   data <- as.matrix(data)
 
-  scale <- ifelse(is.null(options$scale), FALSE, TRUE)  
   # scale the matrix columns
+  scale <- ifelse(is.null(options$scale), FALSE, options$scale)  
   if (scale == TRUE) {
-    for (i in 1:nc) {
-      data[, i] <- scale(data[, i])
-    }
+    data <- apply(FUN = scale, X = data, MARGIN = 2)
   }
   
   # create Xs and Ys (temp variables)
@@ -48,19 +46,17 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
   
   if (penalty == "ENET") {
     
+    # By default repeatedCV = FALSE
+    options$repeatedCV <- ifelse(is.null(options$repeatedCV), FALSE, TRUE)
+    
     # fit the ENET model
     t <- Sys.time()
     fit <- varENET(X, y, options)
     elapsed <- Sys.time() - t
     
-    if (is.null(options$repeatedCV)) {
-      options$repeatedCV <- FALSE
-    } 
-    
     if (options$repeatedCV == FALSE){
       # extract what is needed
       lambda <- ifelse(is.null(options$lambda), "lambda.min", options$lambda)
-      
       # extract the coefficients and reshape the matrix
       Avector <- coef(fit, s = lambda)
       A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
@@ -69,68 +65,52 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
       A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
     }
     
-    if (!is.null(options$threshold)) {
-      if (options$threshold == TRUE) {
-        tr <- 1 / sqrt(p*nc*log(nr))
-        L <- abs(A) >= tr
-        A <- A * L
-      }
-    }
-    
-    A <- splitMatrix(A, p)
     mse <- min(fit$cvm)
     
   } else if (penalty == "SCAD") {
     
-    # convert from sparse matrix to std matrix
+    # convert from sparse matrix to std matrix (SCAD does not work with sparse matrices)
     X <- as.matrix(X)
-    
     # fit the SCAD model
     t <- Sys.time()
     fit <- varSCAD(X, y, options)
     elapsed <- Sys.time() - t
-    
     # extract the coefficients and reshape the matrix
     Avector <- coef(fit, s = "lambda.min")
     A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
-    if (!is.null(options$threshold)){
-      if (options$threshold == TRUE) {
-        tr <- 1 / sqrt(p*nc*log(nr))
-        L <- abs(A) >= tr
-        A <- A * L
-      }
-    }
-    A <- splitMatrix(A, p)
     mse <- min(fit$cve)
     
   } else if (penalty == "MCP") {
     
-    # convert from sparse matrix to std matrix
+    # convert from sparse matrix to std matrix (MCP does not work with sparse matrices)
     X <- as.matrix(X)
-    
     # fit the MCP model
     t <- Sys.time()
     fit <- varMCP(X, y, options)
     elapsed <- Sys.time() - t
-    
     # extract the coefficients and reshape the matrix
     Avector <- coef(fit, s = "lambda.min")
     A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
-    if (!is.null(options$threshold)){
-      if (options$threshold == TRUE) {
-        tr <- 1 / sqrt(p*nc*log(nr))
-        L <- abs(A) >= tr
-        A <- A * L
-      }
-    }
-    A <- splitMatrix(A, p)
     mse <- min(fit$cve)
     
   } else {
     
+    # Unknown penalty error
     stop("Unkown penalty. Available penalties are: ENET, SCAD, MCP.")
-  
+    
   }
+  
+  # If threshold = TRUE then set to zero all the entries that are small
+  if (!is.null(options$threshold)) {
+    if (options$threshold == TRUE) {
+      tr <- 1 / sqrt(p*nc*log(nr))
+      L <- abs(A) >= tr
+      A <- A * L
+    }
+  }
+  
+  # Get back the list of VAR matrices (of length p)
+  A <- splitMatrix(A, p)
   
   output = list()
   output$A <- A
@@ -150,7 +130,7 @@ varENET <- function(X,y, options = NULL) {
   nf <- ifelse(is.null(options$nfolds), 10, options$nfolds)
   parall <- ifelse(is.null(options$parallel), FALSE, options$parallel)
   ncores <- ifelse(is.null(options$ncores), 1, options$ncores)
-  repeatedCV <- ifelse(is.null(options$repeatedCV), FALSE, TRUE)
+  repeatedCV <- options$repeatedCV #ifelse(is.null(options$repeatedCV), FALSE, TRUE)
   
   if (repeatedCV == TRUE) {
     
@@ -164,7 +144,9 @@ varENET <- function(X,y, options = NULL) {
     fit$Avector <- b
     fit$cvm <- cvm
     return(fit)
+    
   } 
+  
   # Assign ids to the CV-folds (useful for replication of results)  
   if (is.null(options$foldsIDs)) {
     foldsIDs <- numeric(0)
@@ -252,13 +234,11 @@ varMCP <- function(X, y, options = NULL) {
 splitMatrix <- function(M, p) {
   
   nr <- nrow(M)
-  
   A <- list()
   
   for (i in 1:p) {
     
     ix <- ((i-1) * nr) + (1:nr)
-    # A[[p-(i-1)]] <- M[1:nr, ix]  
     A[[i]] <- M[1:nr, ix]  
     
   }

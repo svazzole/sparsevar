@@ -1,6 +1,6 @@
 ---
-title: "svar package"
-author: "Simone Vazzoler"
+title: "sparsevar package"
+author: ""
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::pdf_document
@@ -9,6 +9,52 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+# Introduction
+
+`sparsevar` is an R package that estimates sparse VAR and VECM model using penalized least squares 
+methods (PLS).
+
+The authors of `sparsevar` are [...] and the R package is mantained by Simone Vazzoler.
+
+# Installation 
+
+The simplest way to install the package is by using the CRAN repositories, by typing in the
+R console
+```{r, eval=FALSE}
+install.packages("sparsevar", repos = "http://cran.us.r-project.org")
+```
+
+It is also possible to install the developing version of the package by typing
+```{r, eval=FALSE}
+install.packages("devtools", repos = "http://cran.us.r-project.org")
+devtools::install_github("svazzole/sparsevar")
+```
+
+# Quick start
+
+To load the `sparsevar` package simply type
+```{r}
+suppressMessages(library(sparsevar))
+```
+
+Then, using a function included in the package, we simply generate a VAR$(2)$ process
+```{r, cache = TRUE}
+set.seed(1)
+sim <- simulateVAR(N = 20, p = 2)
+```
+
+and we estimate the VAR matrix using
+```{r, cache = TRUE}
+est <- estimateVAR(sim$data$series, p = 2, options = list(foldsIDs = TRUE))
+```
+
+The results can be seen by plotting the matrices
+```{r}
+plotComparisonVAR(sim, est)
+```
+
+# Description of the options 
 
 ## Estimation of a VAR model
 

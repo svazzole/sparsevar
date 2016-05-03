@@ -15,7 +15,8 @@ Depends:
     MTS,
     ggplot2,
     reshape2,
-    grid
+    grid, 
+    caret
 Suggests:
     knitr
 Description: This package is a wrapper for sparse VAR/VECM time series models estimation 

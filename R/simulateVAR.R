@@ -10,7 +10,7 @@
 #' @param method which method to use to generate the VAR matrix. Possible values
 #' are \code{"normal"} or \code{"bimodal"}.
 #' @param covariance type of covariance matrix to use in the simulation. Possible 
-#' values: \code{"toeplitz"}, \code{"block1"} or \code{"block2"}.
+#' values: \code{"toeplitz"}, \code{"block1"}, \code{"block2"} or simply \code{"diagonal"}.
 #' 
 #' @return A a list of NxN matrices ordered by lag
 #' @return data a list with two elements: \code{series} the multivariate time series and
@@ -58,6 +58,10 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
     r <- rho^(1:N)
     T <- toeplitz(r) 
   
+  } else if (covariance == "diagonal"){
+    
+    T <- diag(x = rho, nrow = N, ncol = N)
+
   } else {
     
     stop("Unknown covariance matrix type. Possible choices are: toeplitz, block1, block2")

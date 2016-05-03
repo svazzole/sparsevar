@@ -53,15 +53,23 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
     fit <- varENET(X, y, options)
     elapsed <- Sys.time() - t
     
-    # extract what is needed
-    lambda <- ifelse(is.null(options$lambda), "lambda.min", options$lambda)
-
-    # extract the coefficients and reshape the matrix
-    Avector <- coef(fit, s = lambda)
-
-    A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
+    if (is.null(options$repeatedCV)) {
+      options$repeatedCV <- FALSE
+    } 
     
-    if (!is.null(options$threshold)){
+    if (options$repeatedCV == FALSE){
+      # extract what is needed
+      lambda <- ifelse(is.null(options$lambda), "lambda.min", options$lambda)
+      
+      # extract the coefficients and reshape the matrix
+      Avector <- coef(fit, s = lambda)
+      A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
+    } else {
+      Avector <- fit$Avector
+      A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
+    }
+    
+    if (!is.null(options$threshold)) {
       if (options$threshold == TRUE) {
         tr <- 1 / sqrt(p*nc*log(nr))
         L <- abs(A) >= tr
@@ -142,7 +150,21 @@ varENET <- function(X,y, options = NULL) {
   nf <- ifelse(is.null(options$nfolds), 10, options$nfolds)
   parall <- ifelse(is.null(options$parallel), FALSE, options$parallel)
   ncores <- ifelse(is.null(options$ncores), 1, options$ncores)
-
+  repeatedCV <- ifelse(is.null(options$repeatedCV), FALSE, TRUE)
+  
+  if (repeatedCV == TRUE) {
+    
+    trCtrl <- caret::trainControl(method = "repeatedcv", number = 5, repeats = 5)
+    lam <- glmnet(X, y, alpha = a)$lambda
+    gr <- expand.grid(.alpha = a, .lambda = lam)
+    fit <- caret::train(x = X, y = y, method = "glmnet", trControl = trCtrl, tuneGrid = gr)
+    b <- coef(fit$finalModel, fit$bestTune$lambda)
+    cvm <- 3
+    fit <- list()
+    fit$Avector <- b
+    fit$cvm <- cvm
+    return(fit)
+  } 
   # Assign ids to the CV-folds (useful for replication of results)  
   if (is.null(options$foldsIDs)) {
     foldsIDs <- numeric(0)

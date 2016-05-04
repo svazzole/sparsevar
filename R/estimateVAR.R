@@ -1,19 +1,23 @@
 #' @title Multivariate VAR estimation
 #' 
-#' @description A function to estimate a (possibly big) multivariate VAR time series
+#' @description A function to estimate a (possibly high-dimensional) multivariate VAR time series
 #' using penalized least squares methods, such as ENET, SCAD or MC+.
-#' @param \code{data} the data from the time series: variables in columns and observations in 
+#' @param data the data from the time series: variables in columns and observations in 
 #' rows
-#' @param \code{p} order of the VAR model
-#' @param \code{penalty} the penalty function to use. Possible values are \code{"ENET"}, 
+#' @param p order of the VAR model
+#' @param penalty the penalty function to use. Possible values are \code{"ENET"}, 
 #' \code{"SCAD"} or \code{"MCP"}
-#' @param \code{options} options for the function (TODO: specify)
+#' @param options list of options for the function. Global options are:
+#' \code{threshold}: \code{TRUE} or \code{FALSE}. If \code{TRUE} all the entries smaller 
+#' than the oracle threshold are set to zero. \code{scale} scale the data?
 #' 
-#' @return \code{A} the list (of length \code{p}) of the estimated matrices of the process
-#' @return \code{fit} the results of the penalized LS estimation
-#' @return \code{mse} the mean square error of the cross validation
-#' @return \code{time} elapsed time for the estimation
-
+#' @return A the list (of length \code{p}) of the estimated matrices of the process
+#' @return fit the results of the penalized LS estimation
+#' @return mse the mean square error of the cross validation
+#' @return time elapsed time for the estimation
+#'
+#' @usage estimateVAR(data, p = 1, penalty = "ENET", options = NULL)
+#' 
 #' @export
 estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
 
@@ -41,7 +45,7 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
   y <- as.vector(tmpY)
   
   # Hadamard product for data
-  I <- Diagonal(nc)
+  I <- Matrix::Diagonal(nc)
   X <- kronecker(I, tmpX)
   
   if (penalty == "ENET") {
@@ -58,7 +62,7 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
       # extract what is needed
       lambda <- ifelse(is.null(options$lambda), "lambda.min", options$lambda)
       # extract the coefficients and reshape the matrix
-      Avector <- coef(fit, s = lambda)
+      Avector <- stats::coef(fit, s = lambda)
       A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
     } else {
       Avector <- fit$Avector
@@ -112,12 +116,12 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
   # Get back the list of VAR matrices (of length p)
   A <- splitMatrix(A, p)
   
+  # Output
   output = list()
   output$A <- A
   output$fit <- fit
   output$mse <- mse
   output$time <- elapsed
-  
   return(output)
   
 }
@@ -131,14 +135,15 @@ varENET <- function(X,y, options = NULL) {
   parall <- ifelse(is.null(options$parallel), FALSE, options$parallel)
   ncores <- ifelse(is.null(options$ncores), 1, options$ncores)
   repeatedCV <- options$repeatedCV #ifelse(is.null(options$repeatedCV), FALSE, TRUE)
+  nRepeats <- ifelse(is.null(options$nRepeats), 3, options$nRepeats)
   
   if (repeatedCV == TRUE) {
     
-    trCtrl <- caret::trainControl(method = "repeatedcv", number = 5, repeats = 5)
-    lam <- glmnet(X, y, alpha = a)$lambda
+    trCtrl <- caret::trainControl(method = "repeatedcv", number = nf, repeats = nRepeats)
+    lam <- glmnet::glmnet(X, y, alpha = a)$lambda
     gr <- expand.grid(.alpha = a, .lambda = lam)
     fit <- caret::train(x = X, y = y, method = "glmnet", trControl = trCtrl, tuneGrid = gr)
-    b <- coef(fit$finalModel, fit$bestTune$lambda)
+    b <- stats::coef(fit$finalModel, fit$bestTune$lambda)
     cvm <- 3
     fit <- list()
     fit$Avector <- b

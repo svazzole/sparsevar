@@ -266,7 +266,7 @@ sica <- function(X, y, a = 1e-3, lambda = 1e-2, inival = integer(), maxiter = 50
       beta[I] <- usica(z, a, lambda)
     }
     
-    ind <- find(beta)
+    ind <- utils::find(beta)
     update <- norm(beta - betaold)
     
     setr <- setdiff(1:p, ind)

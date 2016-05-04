@@ -1,13 +1,12 @@
 Package: sparsevar
 Version: 0.0.3
-Date: 2016-02-23
-Title: A package for Sparse VAR/VECM estimation
+Date: 2016-05-04
+Title: A Package for Sparse VAR/VECM Estimation
 Authors@R: c(person("Simone", "Vazzoler", role = c("aut", "cre"),
                      email = "svazzole@gmail.com"),
              person("Lorenzo", "Frattarolo", role = "aut"))
 Maintainer: Simone Vazzoler <svazzole@gmail.com>
-Depends:
-    R (>= 1.8.0),
+Imports:
     Matrix,
     ncvreg,
     parallel,
@@ -19,9 +18,11 @@ Depends:
     caret
 Suggests:
     knitr
-Description: This package is a wrapper for sparse VAR/VECM time series models estimation 
+Depends:
+    R (>= 1.8.0)
+Description: A wrapper for sparse VAR/VECM time series models estimation 
              using penalties like ENET, SCAD and MCP. 
-License: GPL v2
+License: GPL-2
 URL: http://github.com/svazzole/sparsevar
 BugReports: http://github.com/svazzole/sparsevar
 VignetteBuilder: knitr

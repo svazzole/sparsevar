@@ -58,7 +58,7 @@ simulateVECM <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   } else if (covariance == "toeplitz"){
     
     r <- rho^(1:N)
-    T <- toeplitz(r) 
+    T <- Matrix::toeplitz(r) 
     
   } else {
     
@@ -76,13 +76,13 @@ simulateVECM <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   
   # Create the matrices of VECM
   I <- diag(x = 1, nrow = N, ncol = N)
-  Pi <- -(I - matrixSum(M, ix = 1))
+  Pi <- -(I - matrixSum(A, ix = 1))
   
   # Gamma matrices
   G <- list()
   
   for (k in 1:(p-1)) {
-    G[[k]] <- - matrixSum(M, ix = k+1)
+    G[[k]] <- - matrixSum(A, ix = k+1)
   }
   
   out <- list()

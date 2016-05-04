@@ -9,8 +9,9 @@
 #' @param sparsity density of non zero entries of the VAR matrices.
 #' @param penalty penalty function to use for LS estimation. Possible values are \code{"ENET"}, 
 #' \code{"SCAD"} or \code{"MCP"}.
-#' @param covariance type of covariance matrix to be used in the generation of the SVAR model.
+#' @param covariance type of covariance matrix to be used in the generation of the sparse VAR model.
 #' @param options (TODO: complete)
+#' @param method which type of distribution to use in the generation of the entries of the matrices.
 #' 
 #' @return a \code{nMc}x5 matrix with the results of the Monte Carlo estimation
  
@@ -23,7 +24,7 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
   
   results$confusionMatrix <- matrix(0, nMC, 4)
   results$matrixNorms <- matrix(0, nMC, 6)
-  pb <- txtProgressBar(min = 0, max = nMC, style = 3)
+  pb <- utils::txtProgressBar(min = 0, max = nMC, style = 3)
     
   for (i in 1:nMC){
 
@@ -53,7 +54,7 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
       results$matrixNorms[i, 4] <- res$mse
       results$matrixNorms[i, 5] <- spRad
       results$matrixNorms[i, 6] <- estSpRad
-      setTxtProgressBar(pb, i)
+      utils::setTxtProgressBar(pb, i)
     }
   
   close(pb)

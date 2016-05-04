@@ -11,15 +11,14 @@
 #' @return An NxN sparse matrix. 
 #' @examples
 #' M <- createSparseMatrix(N = 30, sparsity = 0.05, method = "normal", stationary = TRUE)
- 
-
+#'
 #' @export
 createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALSE) {
   
   if (method == "normal") {
     # normal distributed nonzero entries
     n <- floor(sparsity * N^2)
-    nonZeroEntries <- rnorm(n, mean = 0, sd = 1)
+    nonZeroEntries <- stats::rnorm(n, mean = 0, sd = 1)
     entries <- sample(x = 1:N^2, size = n, replace = FALSE)
     
     Atmp <- numeric(length = N^2)
@@ -64,7 +63,6 @@ createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALS
   if (stationary == TRUE) {
     # if spectral radius < 1 is needed, return the re-normalize the matrix  
     K <- 1
-    #K <- 3
     return(1/(K * sqrt(sparsity * N)) * A)
     #return(1/(max(Mod(eigen(A)$values)) + 0.01) * A)
     

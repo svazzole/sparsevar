@@ -22,7 +22,7 @@ simulateVAR(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
 are \code{"normal"} or \code{"bimodal"}.}
 
 \item{covariance}{type of covariance matrix to use in the simulation. Possible 
-values: \code{"toeplitz"}, \code{"block1"} or \code{"block2"}.}
+values: \code{"toeplitz"}, \code{"block1"}, \code{"block2"} or simply \code{"diagonal"}.}
 }
 \value{
 A a list of NxN matrices ordered by lag

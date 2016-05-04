@@ -4,33 +4,32 @@
 \alias{estimateVECM}
 \title{Multivariate VECM estimation}
 \usage{
-estimateVECM(data, p = 2, penalty = "ENET", logScale = TRUE,
-  options = NULL)
+estimateVECM(data, p=2, penalty="ENET", logScale=TRUE, options=NULL)
 }
 \arguments{
-\item{\code{data}}{the data from the time series: variables in columns and observations in 
+\item{data}{the data from the time series: variables in columns and observations in 
 rows}
 
-\item{\code{p}}{order of the VECM model}
+\item{p}{order of the VECM model}
 
-\item{\code{penalty}}{the penalty function to use. Possible values are \code{"ENET"}, 
+\item{penalty}{the penalty function to use. Possible values are \code{"ENET"}, 
 \code{"SCAD"} or \code{"MCP"}}
 
-\item{\code{logScale}}{should the function consider the \code{log} of the inputs? By default
+\item{logScale}{should the function consider the \code{log} of the inputs? By default
 this is set to \code{TRUE}}
 
-\item{\code{options}}{options for the function (TODO: specify)}
+\item{options}{options for the function (TODO: specify)}
 }
 \value{
-\code{Pi} the matrix \code{Pi} for the VECM model
+Pi the matrix \code{Pi} for the VECM model
 
-\code{G} the list (of length \code{p-1}) of the estimated matrices of the process
+G the list (of length \code{p-1}) of the estimated matrices of the process
 
-\code{fit} the results of the penalized LS estimation
+fit the results of the penalized LS estimation
 
-\code{mse} the mean square error of the cross validation
+mse the mean square error of the cross validation
 
-\code{time} elapsed time for the estimation
+time elapsed time for the estimation
 }
 \description{
 A function to estimate a (possibly big) multivariate VECM time series

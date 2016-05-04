@@ -7,27 +7,29 @@
 estimateVAR(data, p = 1, penalty = "ENET", options = NULL)
 }
 \arguments{
-\item{\code{data}}{the data from the time series: variables in columns and observations in 
+\item{data}{the data from the time series: variables in columns and observations in 
 rows}
 
-\item{\code{p}}{order of the VAR model}
+\item{p}{order of the VAR model}
 
-\item{\code{penalty}}{the penalty function to use. Possible values are \code{"ENET"}, 
+\item{penalty}{the penalty function to use. Possible values are \code{"ENET"}, 
 \code{"SCAD"} or \code{"MCP"}}
 
-\item{\code{options}}{options for the function (TODO: specify)}
+\item{options}{list of options for the function. Global options are:
+\code{threshold}: \code{TRUE} or \code{FALSE}. If \code{TRUE} all the entries smaller 
+than the oracle threshold are set to zero. \code{scale} scale the data?}
 }
 \value{
-\code{A} the list (of length \code{p}) of the estimated matrices of the process
+A the list (of length \code{p}) of the estimated matrices of the process
 
-\code{fit} the results of the penalized LS estimation
+fit the results of the penalized LS estimation
 
-\code{mse} the mean square error of the cross validation
+mse the mean square error of the cross validation
 
-\code{time} elapsed time for the estimation
+time elapsed time for the estimation
 }
 \description{
-A function to estimate a (possibly big) multivariate VAR time series
+A function to estimate a (possibly high-dimensional) multivariate VAR time series
 using penalized least squares methods, such as ENET, SCAD or MC+.
 }
 

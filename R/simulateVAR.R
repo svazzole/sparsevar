@@ -16,7 +16,7 @@
 #' @return data a list with two elements: \code{series} the multivariate time series and
 #' \code{noises} the time series of errors
 #' @return S the variance/covariance matrix of the process
-
+#'
 #' @export
 simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05, 
                         method = "normal", covariance = "toeplitz") {
@@ -56,7 +56,7 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   } else if (covariance == "toeplitz"){
     
     r <- rho^(1:N)
-    T <- toeplitz(r) 
+    T <- Matrix::toeplitz(r) 
   
   } else if (covariance == "diagonal"){
     
@@ -70,17 +70,16 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   
   # Matrix for MA part
   theta <- matrix(0, N, N)
-  
   ar <- 1:p
   
-  # Generate VAR(1) process 
+  # Generate the VAR process 
   data <- MTS::VARMAsim(nobs = nobs, arlags = ar, malags = 0, cnst = 0, phi = cA, theta = theta, skip = 200, sigma = T)
   
+  # Output
   out <- list()
   out$data <- data
   out$A <- A
   out$S <- T
-  
   return(out)
   
 }

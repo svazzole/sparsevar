@@ -3,32 +3,30 @@
 #' @description Plot a sparse matrix
 #' 
 #' @param M the matrix to plot
-#' @return An \code{image} plot with a particular color palette
-#' @examples
-#' plotMatrix(M)
+#' @return An \code{image} plot with a particular color palette (black zero entries, red 
+#' for the negative ones and green for the positive)
+#' @usage plotMatrix(M)
 #' 
-
 #' @export
 plotMatrix <- function(M) {
   
   nr <- nrow(M)
   nc <- ncol(M)
   M <- t(M)[, nc:1]
-  ggplot(melt(M), aes(Var1,Var2, fill=value)) + geom_raster() + scale_fill_gradient2(low='red', high='green', mid='black') + xlab("Row") + ylab("Col")
-  
-  # Old plot style
-  # nr <- nrow(M)
-  # nc <- ncol(M)
-  # colfunc<-colorRampPalette(c("red","white","royalblue"))  
-  # # M <- Matrix(M, sparse = TRUE)
-  # # image(M)
-  # image(1:nr, 1:nc, t(M)[,nc:1], col=colfunc(39), xlab = "Column Number", ylab = "Row number", yaxt = "n", xaxt = "n")
-  # axis(1, at = 1:nc, labels = as.character(1:nc))
-  # # axis(2, at = 1:nc, labels = as.character(nc:1), las = 2)
-  # axis(2, at = 1:nc, labels = as.character(nc:1))
+  ggplot2::ggplot(reshape2::melt(M), ggplot2::aes_string(x='Var1', y='Var2', fill='value')) + ggplot2::geom_raster() + 
+           ggplot2::scale_fill_gradient2(low='red', high='green', mid='black') + ggplot2::xlab("Row") + ggplot2::ylab("Col")
   
 }
 
+#' @title VAR plot
+#' 
+#' @description Plot all the matrices of a VAR model
+#' 
+#' @param A the list containing the VAR matrices to be plotted
+#' @return An \code{image} plot with a particular color palette (black zero entries, red 
+#' for the negative ones and green for the positive)
+#' @usage plotVAR(A)
+#' 
 #' @export
 plotVAR <- function(A) {
   
@@ -43,6 +41,16 @@ plotVAR <- function(A) {
   multiplot(plotlist = pl, cols = p)
 }
 
+#' @title Plot VAR models for comparison
+#' 
+#' @description Plot all the matrices of a two VAR models
+#' 
+#' @param var1 the list containing the first VAR model matrices to be plotted
+#' @param var2 the list containing the second VAR model matrices to be plotted
+#' @return An \code{image} plot with a particular color palette (black zero entries, red 
+#' for the negative ones and green for the positive)
+#' @usage plotComparisonVAR(var1, var2)
+#' 
 #' @export
 plotComparisonVAR <- function(var1, var2) {
   
@@ -94,15 +102,15 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
     
   } else {
     # Set up the page
-    grid.newpage()
-    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    grid::grid.newpage()
+    grid::pushViewport(grid::viewport(layout = grid::grid.layout(nrow(layout), ncol(layout))))
     
     # Make each plot, in the correct location
     for (i in 1:numPlots) {
       # Get the i,j matrix positions of the regions that contain this subplot
       matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
       
-      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+      print(plots[[i]], vp = grid::viewport(layout.pos.row = matchidx$row,
                                       layout.pos.col = matchidx$col))
     }
   }

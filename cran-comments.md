@@ -1,3 +1,8 @@
+## Resubmission
+This is a resubmission. In this version I have:
+
+* Fixed all NOTEs
+
 ## Test environments
 * local Xubuntu install, R 3.2.5
 * win-builder (devel and release)

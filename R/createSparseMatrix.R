@@ -30,7 +30,7 @@ createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALS
     
     # normal distributed nonzero entries
     n <- floor(sparsity * N^2)
-    nonZeroEntries <- rnorm(n, mean = 0, sd = 1)
+    nonZeroEntries <- stats::rnorm(n, mean = 0, sd = 1)
     entries <- sample(x = 1:N^2, size = n, replace = FALSE)
     
     Atmp <- numeric(length = N^2)
@@ -42,8 +42,8 @@ createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALS
     # bimodal distributed nonzero entries
     n <- floor(sparsity * N^2)
     
-    nonZeroEntriesLeft <- rnorm(n, mean = -1, sd = sqrt(0.5))
-    nonZeroEntriesRight <- rnorm(n, mean = 1, sd = sqrt(0.5))
+    nonZeroEntriesLeft <- stats::rnorm(n, mean = -1, sd = sqrt(0.5))
+    nonZeroEntriesRight <- stats::rnorm(n, mean = 1, sd = sqrt(0.5))
     
     nonZeroEntries <- sample(x = c(nonZeroEntriesLeft, nonZeroEntriesRight), size = n, replace = FALSE)
     

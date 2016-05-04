@@ -277,7 +277,7 @@ sica <- function(X, y, a = 1e-3, lambda = 1e-2, inival = integer(), maxiter = 50
       resc <- abs(cvec(setr) - XXmat(setr, ind)*beta(ind))
     }
     
-    indm <- find(resc > lambda*(1 + a^(-1)))
+    indm <- utils::find(resc > lambda*(1 + a^(-1)))
     ind <- union(c(t(setr(indm)), ind), varset)
   }
   

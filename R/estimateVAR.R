@@ -80,7 +80,7 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
     fit <- varSCAD(X, y, options)
     elapsed <- Sys.time() - t
     # extract the coefficients and reshape the matrix
-    Avector <- coef(fit, s = "lambda.min")
+    Avector <- stats::coef(fit, s = "lambda.min")
     A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
     mse <- min(fit$cve)
     
@@ -93,7 +93,7 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
     fit <- varMCP(X, y, options)
     elapsed <- Sys.time() - t
     # extract the coefficients and reshape the matrix
-    Avector <- coef(fit, s = "lambda.min")
+    Avector <- stats::coef(fit, s = "lambda.min")
     A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
     mse <- min(fit$cve)
     

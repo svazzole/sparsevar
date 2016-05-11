@@ -1,8 +1,8 @@
 ## Sparse VAR (sparsevar) 
 [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html) 
 [![Version](https://img.shields.io/badge/version-0.0.3-oran.svg)](https://github.com/svazzole/sparsevar)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/sparsevar)](https://cran.r-project.org/package=forecast)
-[![Downloads](http://cranlogs.r-pkg.org/badges/sparsevar)](https://cran.r-project.org/package=forecast)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/sparsevar)](https://cran.r-project.org/package=sparsevar)
+[![Downloads](http://cranlogs.r-pkg.org/badges/sparsevar)](https://cran.r-project.org/package=sparsevar)
 
 Some R functions useful to estimate sparse VAR / VECM models.
 

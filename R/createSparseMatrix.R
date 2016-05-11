@@ -54,6 +54,18 @@ createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALS
     
     A <- matrix(Atmp, nrow = N, ncol = N)
 
+  } else if (method == "full") {
+    
+    e <- runif(N, min=-1, max=1)
+    D <- diag(e)
+    
+    P <- matrix(0,N,N)
+    while (det(P)==0) {
+      P <- createSparseMatrix(N = N, sparsity = 1, method = "bimodal")
+    }
+    A <- solve(P) %*% D %*% P
+    stationary <- FALSE
+    
   } else {
     # invalid method
     stop("Unknown method. Possible methods are normal or bimodal.")

@@ -144,6 +144,7 @@ varENET <- function(X,y, options = NULL) {
     gr <- expand.grid(.alpha = a, .lambda = lam)
     fit <- caret::train(x = X, y = y, method = "glmnet", trControl = trCtrl, tuneGrid = gr)
     b <- stats::coef(fit$finalModel, fit$bestTune$lambda)
+    # TODO: extract cross-validation mse
     cvm <- 3
     fit <- list()
     fit$Avector <- b

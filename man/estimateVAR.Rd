@@ -20,13 +20,13 @@ rows}
 than the oracle threshold are set to zero. \code{scale} scale the data?}
 }
 \value{
-A the list (of length \code{p}) of the estimated matrices of the process
+\code{A} the list (of length \code{p}) of the estimated matrices of the process
 
-fit the results of the penalized LS estimation
+\code{fit} the results of the penalized LS estimation
 
-mse the mean square error of the cross validation
+\code{mse} the mean square error of the cross validation
 
-time elapsed time for the estimation
+\code{time} elapsed time for the estimation
 }
 \description{
 A function to estimate a (possibly high-dimensional) multivariate VAR time series

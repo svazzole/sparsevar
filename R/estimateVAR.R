@@ -11,10 +11,10 @@
 #' \code{threshold}: \code{TRUE} or \code{FALSE}. If \code{TRUE} all the entries smaller 
 #' than the oracle threshold are set to zero. \code{scale} scale the data?
 #' 
-#' @return A the list (of length \code{p}) of the estimated matrices of the process
-#' @return fit the results of the penalized LS estimation
-#' @return mse the mean square error of the cross validation
-#' @return time elapsed time for the estimation
+#' @return \code{A} the list (of length \code{p}) of the estimated matrices of the process
+#' @return \code{fit} the results of the penalized LS estimation
+#' @return \code{mse} the mean square error of the cross validation
+#' @return \code{time} elapsed time for the estimation
 #'
 #' @usage estimateVAR(data, p = 1, penalty = "ENET", options = NULL)
 #' 

@@ -15,7 +15,8 @@
 #' @return \code{fit} the results of the penalized LS estimation
 #' @return \code{mse} the mean square error of the cross validation
 #' @return \code{time} elapsed time for the estimation
-#'
+#' @return \code{residuals} the time series of the residuals 
+#' 
 #' @usage estimateVAR(data, p = 1, penalty = "ENET", options = NULL)
 #' 
 #' @export
@@ -116,12 +117,16 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
   # Get back the list of VAR matrices (of length p)
   A <- splitMatrix(A, p)
   
+  # Now that we have the matrices compute the residuals
+  res <- computeResiduals(data, A)
+  
   # Output
   output = list()
   output$A <- A
   output$fit <- fit
   output$mse <- mse
   output$time <- elapsed
+  output$residuals <- res
   return(output)
   
 }
@@ -272,4 +277,26 @@ duplicateMatrix <- function(data, p) {
   outputData <- outputData[p:nr, ]
   return(outputData)
   
+}
+
+computeResiduals <- function(data, A) {
+  
+  nr <- nrow(data)
+  nc <- ncol(data)
+  p <- length(A)
+  
+  res <- matrix(0, ncol = nc, nrow = nr)
+  f <- matrix(0, ncol = nc, nrow = nr)
+  
+  for (i in 1:p) {
+    
+    tmpD <- rbind(matrix(0, nrow = i, ncol = nc), data[1:(nrow(data)-i), ])
+    tmpF <- t(A[[i]] %*% t(tmpD))
+    f <- f + tmpF  
+    
+  }
+  
+  res <- data - f
+  return(res)
+    
 }

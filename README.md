@@ -1,6 +1,6 @@
 ## Sparse VAR (sparsevar) 
 [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html) 
-[![Version](https://img.shields.io/badge/version-0.0.3-oran.svg)](https://github.com/svazzole/sparsevar)
+[![Version](https://img.shields.io/badge/version-0.0.4-oran.svg)](https://github.com/svazzole/sparsevar)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/sparsevar)](https://cran.r-project.org/package=sparsevar)
 [![Downloads](http://cranlogs.r-pkg.org/badges/sparsevar)](https://cran.r-project.org/package=sparsevar)
 
@@ -43,6 +43,17 @@ The results can be seen by plotting the matrices
 plotComparisonVAR(sim, est)
 ```
 the first row of the plot is made by the matrices of the simulated process and the second row is formed by their estimates.
+
+One can also estimate the variance/covariance matrix of the residuals with 
+```{r}
+M <- cov(est$residuals)
+plotMatrix(M)
+```
+
+and compare with the covariance matrix of the errors of the generating process
+```{r}
+plotMatrix(sim$S)
+```
 
 ### Usage
 

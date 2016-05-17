@@ -53,6 +53,7 @@ estimateVECM <- function(data, p = 2, penalty = "ENET", logScale = TRUE,
   output$fit <- resultsVAR$fit
   output$mse <- resultsVAR$mse
   output$time <- resultsVAR$time
+  output$residuals <- resultsVAR$residuals
   
   return(output)
   

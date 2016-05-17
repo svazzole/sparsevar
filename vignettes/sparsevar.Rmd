@@ -1,6 +1,6 @@
 ---
 title: "sparsevar package"
-author: ""
+author: "Lorenzo Frattarolo and Simone Vazzoler"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::pdf_document
@@ -13,9 +13,11 @@ vignette: >
 # Introduction
 
 `sparsevar` is an R package that estimates sparse VAR and VECM model using penalized least squares 
-methods (PLS).
+methods (PLS). It is possible to use `ENET`, `SCAD` or `MC+` penalties and the sparsity parameter is 
+estimated using cross-validation. When using `ENET` it is possible to estimate VAR(1) of dimension 
+up to 200, while using one of the other two is better not to go beyond 50. If you are estimating a VAR($p$) model then the limits are roughly $200/p$ and $50/p$, respectively.
 
-The authors of `sparsevar` are [...] and the R package is mantained by Simone Vazzoler.
+The authors of `sparsevar` are Lorenzo Frattarolo and Simone Vazzoler and the R package is mantained by Simone Vazzoler. This vignette describes the usage of `sparsevar` in R.
 
 # Installation 
 
@@ -35,10 +37,10 @@ devtools::install_github("svazzole/sparsevar")
 
 To load the `sparsevar` package simply type
 ```{r}
-suppressMessages(library(sparsevar))
+library(sparsevar)
 ```
 
-Using a function included in the package, we simply generate a $20\times 20$ VAR$(2)$ process
+Using the function `simulateVAR` included in the package, we simply generate a $20\times 20$ VAR$(2)$ process
 ```{r, cache = TRUE}
 set.seed(1)
 sim <- simulateVAR(N = 20, p = 2)
@@ -54,6 +56,8 @@ The results can be seen by plotting the matrices
 plotComparisonVAR(sim, est)
 ```
 
+where in the first row there are the two matrices of the simulated process while in the second the estimated matrices are plotted.
+
 # Description of the package's functions 
 
 ## Estimation of a VAR or VECM models
@@ -63,7 +67,7 @@ Use `estimateVAR` for VAR model estimation or `estimateVECM` for VECM estimation
 The common arguments for the two functions are:
   
   * `data`: the multivariate time series (variables in columns, observations in rows);
-  * `p`: the order of the VAR model to be estimated; default `p=1` for `estimateVAR` and `p=2`
+  * `p`: the order of the VAR model to be estimated; default `p = 1` for `estimateVAR` and `p = 2`
     for `estimateVECM`.
   * `penalty`: the penalty used in least squares. Possible values are: `"ENET"`, `"SCAD"` or `"MCP"`;
   * `options`: list of options. Some of them depend on the penalty and some are global.
@@ -94,7 +98,8 @@ The common arguments for the two functions are:
   * `A`: a list of length `p` containing the matrices estimated for the VAR(p) model;
   * `time`: elapsed time for the estimation;
   * `mse`: the mean square error of the cross validation;
-  * `fit`: the estimated model.
+  * `fit`: the estimated model;
+  * `residuals`: the estimated residuals.
 
 ## Simulation of VAR models
 
@@ -119,7 +124,7 @@ results <- estimateVAR(rets, p = 3, penalty = "ENET",
                        options = list(parallel = TRUE, ncores = 5, alpha = 0.95, 
                                       type.measure = "mae", lambda = "lambda.1se"))
 ```
-will estimate a VAR(3) model on the dataset `rets` using the penalty `"ENET"` with `alpha = 0.95` (between LASSO and Ridge). For the cross validation it will use `"mae"` (mean absolute error) insteadof mean square error and it will choose as model the one correspondent to the lambda which is at 1 std deviation from the minimum. Moreover it will parallelize the cross validation over 5 cores.
+will estimate a VAR(3) model on the dataset `rets` using the penalty `"ENET"` with `alpha = 0.95` (between LASSO and Ridge). For the cross validation it will use `"mae"` (mean absolute error) instead of mean square error and it will choose as model the one correspondent to the lambda which is at 1 std deviation from the minimum. Moreover it will parallelize the cross validation over 5 cores.
 
 ## Simulations' examples
 

@@ -139,7 +139,7 @@ varENET <- function(X,y, options = NULL) {
   nf <- ifelse(is.null(options$nfolds), 10, options$nfolds)
   parall <- ifelse(is.null(options$parallel), FALSE, options$parallel)
   ncores <- ifelse(is.null(options$ncores), 1, options$ncores)
-  repeatedCV <- options$repeatedCV #ifelse(is.null(options$repeatedCV), FALSE, TRUE)
+  repeatedCV <- options$repeatedCV # ifelse(is.null(options$repeatedCV), FALSE, TRUE)
   nRepeats <- ifelse(is.null(options$nRepeats), 3, options$nRepeats)
   
   if (repeatedCV == TRUE) {
@@ -149,11 +149,10 @@ varENET <- function(X,y, options = NULL) {
     gr <- expand.grid(.alpha = a, .lambda = lam)
     fit <- caret::train(x = X, y = y, method = "glmnet", trControl = trCtrl, tuneGrid = gr)
     b <- stats::coef(fit$finalModel, fit$bestTune$lambda)
-    # TODO: extract cross-validation mse
-    cvm <- 3
+    cvm <- min(fit$results$RMSE)^2 # extract the MSE
     fit <- list()
     fit$Avector <- b
-    fit$cvm <- cvm
+    fit$cvm <- cvm  
     return(fit)
     
   } 
@@ -166,21 +165,16 @@ varENET <- function(X,y, options = NULL) {
     foldsIDs <- sort(rep(seq(nf), length = nr))
   }
   
-  ##############################################################################
-  # TODO: change parallel backend (parallel -> doMC)
-  ##############################################################################
   if(parall == TRUE) {
     if(ncores < 1) {
       stop("The number of cores must be > 1")
     } else {
-      #cl <- registerDoMC(ncores)
-      cl <- parallel::makeCluster(ncores)
+      cl <- doMC::registerDoMC(cores = ncores) # using doMC as in glmnet vignettes
       if (length(foldsIDs) == 0) {
         cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = TRUE)
       } else {
         cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, foldid = foldsIDs, parallel = TRUE)
       }
-      parallel::stopCluster(cl)
     }
   } else {
     if (length(foldsIDs) == 0) {

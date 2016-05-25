@@ -11,6 +11,6 @@
 #' \code{spectralRadius}, \code{spectralNorm}
 #' 
 #' @docType package
-#' @name svar 
+#' @name sparsevar 
 #'
 NULL

@@ -4,7 +4,7 @@
 #' It performs the estimation of the matrices of the models using penalized 
 #' least squares methods such as LASSO, SCAD and MCP. 
 #'
-#' @section svar functions:
+#' @section sparsevar functions:
 #' \code{estimateVAR}, \code{estimateVECM}, \code{simulateVAR}, \code{createSparseMatrix},
 #' \code{mcSimulations}, \code{plotMatrix}, \code{plotVAR}, \code{plotComparisonVAR},
 #' \code{l2norm}, \code{l1norm}, \code{lInftyNorm}, \code{maxNorm}, \code{frobNorm},

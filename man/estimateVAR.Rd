@@ -27,6 +27,8 @@ than the oracle threshold are set to zero. \code{scale} scale the data?}
 \code{mse} the mean square error of the cross validation
 
 \code{time} elapsed time for the estimation
+
+\code{residuals} the time series of the residuals
 }
 \description{
 A function to estimate a (possibly high-dimensional) multivariate VAR time series

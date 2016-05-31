@@ -64,7 +64,7 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
 
   } else {
     
-    stop("Unknown covariance matrix type. Possible choices are: toeplitz, block1, block2")
+    stop("Unknown covariance matrix type. Possible choices are: toeplitz, block1, block2 or diagonal")
     
   }
   

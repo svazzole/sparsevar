@@ -53,13 +53,14 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
     
     # By default repeatedCV = FALSE
     options$repeatedCV <- ifelse(is.null(options$repeatedCV), FALSE, TRUE)
+    options$timeSlice <- ifelse(is.null(options$timeSlice), FALSE, TRUE)
     
     # fit the ENET model
     t <- Sys.time()
     fit <- varENET(X, y, options)
     elapsed <- Sys.time() - t
     
-    if (options$repeatedCV == FALSE){
+    if ((options$repeatedCV == FALSE) && (options$timeSlice == FALSE)){
       # extract what is needed
       lambda <- ifelse(is.null(options$lambda), "lambda.min", options$lambda)
       # extract the coefficients and reshape the matrix
@@ -141,13 +142,35 @@ varENET <- function(X,y, options = NULL) {
   ncores <- ifelse(is.null(options$ncores), 1, options$ncores)
   repeatedCV <- options$repeatedCV # ifelse(is.null(options$repeatedCV), FALSE, TRUE)
   nRepeats <- ifelse(is.null(options$nRepeats), 3, options$nRepeats)
+  timeSlice <- options$timeSlice
   
   if (repeatedCV == TRUE) {
     
-    trCtrl <- caret::trainControl(method = "repeatedcv", number = nf, repeats = nRepeats)
+    # Suppress warnings... Is this correct?
+    options(warn = -1)
+    trCtrl <- caret::trainControl(method = "repeatedcv", number = nf, repeats = nRepeats, returnData = FALSE)
     lam <- glmnet::glmnet(X, y, alpha = a)$lambda
     gr <- expand.grid(.alpha = a, .lambda = lam)
-    fit <- caret::train(x = X, y = y, method = "glmnet", trControl = trCtrl, tuneGrid = gr)
+    fit <- caret::train(x = X, y = y, method = "glmnet", trControl = trCtrl, tuneGrid = gr, metric = "RMSE")
+    b <- stats::coef(fit$finalModel, fit$bestTune$lambda)
+    cvm <- min(fit$results$RMSE)^2 # extract the MSE
+    fit <- list()
+    fit$Avector <- b
+    fit$cvm <- cvm  
+    return(fit)
+    
+  } 
+  
+  if (timeSlice == TRUE) {
+    
+    # Suppress warnings... Is this correct?
+    options(warn = -1)
+    inWind <- nrow(X) - 50
+    trCtrl <- caret::trainControl(method = "timeslice", returnData = FALSE,
+                                  initialWindow = inWind, horizon = 1, fixedWindow = FALSE)
+    lam <- glmnet::glmnet(X, y, alpha = a)$lambda
+    gr <- expand.grid(.alpha = a, .lambda = lam)
+    fit <- caret::train(x = X, y = y, method = "glmnet", trControl = trCtrl, tuneGrid = gr, metric = "RMSE")
     b <- stats::coef(fit$finalModel, fit$bestTune$lambda)
     cvm <- min(fit$results$RMSE)^2 # extract the MSE
     fit <- list()

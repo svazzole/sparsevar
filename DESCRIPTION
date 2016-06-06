@@ -1,10 +1,11 @@
 Package: sparsevar
-Version: 0.0.4
-Date: 2016-05-04
+Version: 0.0.5
+Date: 2016-06-06
 Title: A Package for Sparse VAR/VECM Estimation
 Authors@R: c(person("Simone", "Vazzoler", role = c("aut", "cre"),
                      email = "svazzole@gmail.com"),
-             person("Lorenzo", "Frattarolo", role = "aut"))
+             person("Lorenzo", "Frattarolo", role = "aut"),
+             person("Monica", "Billio", role = "aut"))
 Maintainer: Simone Vazzoler <svazzole@gmail.com>
 Imports:
     Matrix,

@@ -1,6 +1,6 @@
 ---
-title: "sparsevar package"
-author: "Lorenzo Frattarolo and Simone Vazzoler"
+title: "The sparsevar package"
+author: "Monica Billio, Lorenzo Frattarolo and Simone Vazzoler"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::pdf_document
@@ -14,10 +14,10 @@ vignette: >
 
 `sparsevar` is an R package that estimates sparse VAR and VECM model using penalized least squares 
 methods (PLS). It is possible to use `ENET`, `SCAD` or `MC+` penalties and the sparsity parameter is 
-estimated using cross-validation. When using `ENET` it is possible to estimate VAR(1) of dimension 
+estimated using cross-validation, repeated cross-validation and time slicing. When using `ENET` it is possible to estimate VAR(1) of dimension 
 up to 200, while using one of the other two is better not to go beyond 50. If you are estimating a VAR($p$) model then the limits are roughly $200/p$ and $50/p$, respectively.
 
-The authors of `sparsevar` are Lorenzo Frattarolo and Simone Vazzoler and the R package is mantained by Simone Vazzoler. This vignette describes the usage of `sparsevar` in R.
+The authors of `sparsevar` are Monica Billio, Lorenzo Frattarolo and Simone Vazzoler and the R package is mantained by Simone Vazzoler. This vignette describes the usage of `sparsevar` in R.
 
 # Installation 
 

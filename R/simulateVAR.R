@@ -25,10 +25,10 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   A <- list()
   cA <- matrix(0, nrow = N, ncol = N * p)
   for (i in 1:p) {
-    A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
+    A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE, p = p)
     l <- max(Mod(eigen(A[[i]])$values))
     while ((l > 1) | (l == 0)) {
-      A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE)
+      A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE, p = p)
       l <- max(Mod(eigen(A[[i]])$values))
     }
     A[[i]] <- 1/sqrt(p) * A[[i]]

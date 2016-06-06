@@ -4,7 +4,8 @@
 \alias{createSparseMatrix}
 \title{Create Sparse Matrix}
 \usage{
-createSparseMatrix(N, sparsity, method = "normal", stationary = FALSE)
+createSparseMatrix(N, sparsity, method = "normal", stationary = FALSE,
+  p = 1)
 }
 \arguments{
 \item{N}{the dimension of the square matrix}
@@ -16,6 +17,8 @@ createSparseMatrix(N, sparsity, method = "normal", stationary = FALSE)
 
 \item{stationary}{should the spectral radius of the matrix be smaller than 1? 
 Possible values are \code{TRUE} or \code{FALSE}. Default is \code{FALSE}.}
+
+\item{p}{normalization constant (used for VAR of order greater than 1, default = 1)}
 }
 \value{
 An NxN sparse matrix.

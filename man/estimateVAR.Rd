@@ -15,9 +15,23 @@ rows}
 \item{penalty}{the penalty function to use. Possible values are \code{"ENET"}, 
 \code{"SCAD"} or \code{"MCP"}}
 
-\item{options}{list of options for the function. Global options are:
-\code{threshold}: \code{TRUE} or \code{FALSE}. If \code{TRUE} all the entries smaller 
-than the oracle threshold are set to zero. \code{scale} scale the data?}
+\item{options}{a list containing the options for the estimation. Global options are:
+\code{threshold}: if \code{TRUE} all the entries smaller than the oracle threshold are set to zero; 
+\code{scale}: scale the data (default = FALSE)?
+\code{nfolds}: the number of folds used for cross validation (default = 10);
+\code{parallel}: if \code{TRUE} use multicore backend (default = FALSE);
+\code{ncores}: if \code{parallel} is \code{TRUE}, specify the number of cores to use
+for parallel evaluation. Options for ENET estimation: 
+\code{alpha}: the value of alpha to use in elastic net (0 is Ridge regression, 1 is LASSO (default));
+\code{type.measure}: the measure to use for error evaluation (\code{"mse"} or \code{"mae"});
+\code{nlambda}: the number of lambdas to use in the cross validation (default = 100);
+\code{repeatedCV}: use repeated cross validation (default = FALSE);
+\code{nRepeats}: the number of repeats in the repeated cross validation (default = 3);
+\code{timeSlice}: use time slice validation (default = FALSE);
+\code{leaveOutLast}: in the time slice validation leave out the last \code{leaveOutLast} observations
+(default = 15);
+\code{horizon}: the horizon to use for estimating mse/mae (default = 1);
+\code{fixedWindow}: use fixed window (default) or expanding window (FALSE).}
 }
 \value{
 \code{A} the list (of length \code{p}) of the estimated matrices of the process

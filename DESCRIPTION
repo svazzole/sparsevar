@@ -1,6 +1,6 @@
 Package: sparsevar
 Version: 0.0.5
-Date: 2016-06-06
+Date: 2016-06-07
 Title: A Package for Sparse VAR/VECM Estimation
 Authors@R: c(person("Simone", "Vazzoler", role = c("aut", "cre"),
                      email = "svazzole@gmail.com"),
@@ -11,7 +11,7 @@ Imports:
     Matrix,
     ncvreg,
     parallel,
-    doMC,
+    doParallel,
     glmnet,
     MTS,
     ggplot2,

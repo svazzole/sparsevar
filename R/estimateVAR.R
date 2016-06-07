@@ -209,7 +209,8 @@ varENET <- function(X,y, options = NULL) {
     if(ncores < 1) {
       stop("The number of cores must be > 1")
     } else {
-      cl <- doMC::registerDoMC(cores = ncores) # using doMC as in glmnet vignettes
+        # cl <- doMC::registerDoMC(cores = ncores) # using doMC as in glmnet vignettes
+        cl <- doParallel::registerDoParallel(cores = ncores)
       if (length(foldsIDs) == 0) {
         cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = TRUE)
       } else {

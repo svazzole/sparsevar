@@ -57,7 +57,7 @@ createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALS
 
   } else if (method == "full") {
     
-    e <- runif(N, min=-1, max=1)
+    e <- stats::runif(N, min=-1, max=1)
     D <- diag(e)
     
     P <- matrix(0,N,N)

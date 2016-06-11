@@ -9,12 +9,12 @@ Some R functions useful to estimate sparse VAR / VECM models.
 ### Installation
 
 To install the stable version from CRAN:
-```
+```{r}
 install.package("sparsevar")
 ```
 
 To install the developing version:
-```
+```{r}
 install.packages("devtools")
 devtools::install_github("svazzole/sparsevar")
 ```

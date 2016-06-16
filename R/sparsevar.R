@@ -8,7 +8,7 @@
 #' \code{estimateVAR}, \code{estimateVECM}, \code{simulateVAR}, \code{createSparseMatrix},
 #' \code{plotMatrix}, \code{plotVAR}, \code{plotComparisonVAR},
 #' \code{l2norm}, \code{l1norm}, \code{lInftyNorm}, \code{maxNorm}, \code{frobNorm},
-#' \code{spectralRadius}, \code{spectralNorm}
+#' \code{spectralRadius}, \code{spectralNorm}, \code{impulseResponse}
 #' 
 #' @docType package
 #' @name sparsevar 

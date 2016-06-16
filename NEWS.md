@@ -1,3 +1,7 @@
+# sparsevar 0.0.6
+
+- Added impulse response function for VAR processes
+
 # sparsevar 0.0.5
 
 - Added timeSlice estimation

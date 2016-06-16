@@ -16,17 +16,20 @@ impulseResponse <- function(dataVar, len = 20) {
   
   bigA <- companionVAR(dataVar)
   
-  irf <- matrix(0, ncol = len, nrow = nr^2)
+  irf <- array(data = rep(0,len*nr^2), dim = c(nr,nr,len)) #matrix(0, ncol = len, nrow = nr^2)
   
   Atmp <- diag(nrow = nrow(bigA), ncol = ncol(bigA))
-  irf[,1] <- as.vector(t(Atmp))[1:nr^2]
+  #irf[,1] <- as.vector(t(Atmp))[1:nr^2]
+  irf[ , , 1] <- Atmp[1:nr, 1:nr]
   
   for (k in 1:(len-1)) {
     
     Atmp <- Atmp %*% bigA
-    irf[,(k+1)] <- as.vector(t(Atmp))[1:nr^2]
+    #irf[,(k+1)] <- as.vector(t(Atmp))[1:nr^2]
+    irf[ , , (k+1)] <- Atmp[1:nr, 1:nr]
     
   }
+  
   return(irf)
 }
 
@@ -50,4 +53,24 @@ companionVAR <- function(v) {
   }
   
   return(bigA)
+}
+
+#' @export
+checkImpulseZero <- function(irf) {
+  
+  nx <- dim(irf)[1]
+  ny <- dim(irf)[2]
+  nz <- dim(irf)[3]
+  
+  logicalIrf <- matrix(0, nx, ny)
+  
+  for (z in 1:nz) {
+    
+    logicalIrf <- logicalIrf + abs(irf[ , , z])
+    
+  }
+  
+  logicalIrf <- logicalIrf == 0
+  
+  return(which(logicalIrf == TRUE, arr.ind = TRUE))
 }

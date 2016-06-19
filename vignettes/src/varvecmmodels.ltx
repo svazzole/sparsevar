@@ -1,0 +1,150 @@
+\section[VAR/VECM models]{VAR/VECM models}
+
+\begin{defin}
+A VAR$(p)$ process is a model of the following type:
+\begin{equation}
+  \label{eq:varp}
+  y_t = \nu + A_1 y_{t-1} + A_2 y_{t-2} + \ldots + A_p y_{t-p} + \varepsilon_t
+\end{equation}
+for $t = 0, \pm 1, \pm 2, \ldots$, where $y_t = (y_{1t},\ldots,y_{Kt})^T\in\mathbb{R}^K$ is a $K\times 1$ random vector, the $A_i$ are fixed (i.e. not varying with time) $K\times K$ real matrices, $\nu = (\nu_1,\ldots,\nu_K)^T$ is a fixed vector for the mean $\mathbb E (y_t)$ and $\varepsilon_t = (\varepsilon_{1t}, \ldots, \varepsilon_{Kt})^T$ is a $K$-dimensional white noise (or innovation process) with $\mathbb E(\varepsilon_t)=0$, $\mathbb{E}(\varepsilon_t\varepsilon_t^T) = \Sigma_\varepsilon$ and $\mathbb{E}(\varepsilon_t\varepsilon_s^T) = 0$ for $s\neq t$.
+\end{defin}
+We recall that a VAR$(1)$ process is called \textbf{stable} if $\rho(A_1) < 1$ where
+  \begin{equation}
+    \label{eq:spectralRadiusDefin}
+    \rho(A) = \max\{|\lambda_1|,\ldots,|\lambda_K|\}
+  \end{equation}
+with $\lambda_j\in\mbox{spec}(A)$. In other words a VAR$(1)$ process is called stable if the matrix $A_1$ has all the eigenvalues inside the unit circle.
+It is a well known fact that this is equivalent to saying that a VAR$(1)$ process is stable if and only if $\det(\mathbb{I}_K - A_1z)\neq 0$ for $|z|\leq 1$.
+We can generalize this condition to a VAR$(p)$ process: if $y_t\sim\mbox{VAR}(p)$ as in Equation (\ref{eq:varp}) then we can rewrite it as 
+\begin{equation}
+  \label{eq:varpvar1}
+  Y_t = \boldsymbol{\nu} + \boldsymbol{A}Y_{t-1} + U_t
+\end{equation}
+where 
+\begin{gather*}
+  Y_t = 
+\begin{pmatrix}
+  y_t\\y_{t-1}\\\vdots\\ y_{t-p+1}
+\end{pmatrix}
+\in\mathbb{R}^{Kp};
+\quad\boldsymbol{\nu} = 
+\begin{pmatrix}
+  \nu\\0\\\vdots\\0
+\end{pmatrix}
+\in\mathbb{R}^{Kp}\\
+\boldsymbol{A} = 
+\begin{pmatrix}
+A_1 & A_2 & \ldots & A_{p-1} & A_p\\
+\mathbb{I}_K & \mathbb{O} & \ldots & \mathbb{O} & \mathbb{O}\\
+\mathbb{O} & \mathbb{I}_K & \ldots & \mathbb{O} & \mathbb{O}\\
+\vdots & \vdots & \ddots & \vdots & \vdots\\
+\mathbb{O} & \mathbb{O} & \ldots & \mathbb{I}_K & \mathbb{O}
+\end{pmatrix}\in\mbox{M}_{Kp\times Kp}(\mathbb{R});
+\quad U_t = 
+\begin{pmatrix}
+u_t \\ 0 \\ \vdots \\ 0
+\end{pmatrix}\in\mathbb{R}^{Kp}
+\end{gather*}
+So $Y_t$ is a VAR$(1)$ process that is stable if the usual condition on VAR$(1)$ processes holds true: 
+\begin{equation*}
+\det\left(\mathbb{I}_{Kp} - \boldsymbol{A}z\right)\neq 0
+\quad\mbox{for}\,\,\, |z|\leq 1 
+\end{equation*}
+\begin{prop}
+\begin{equation}
+\det\left(\mathbb{I}_{Kp} - \boldsymbol{A}z\right)\neq 0
+\quad\mbox{for}\,\,\, |z|\leq 1 
+\end{equation}
+if and only if
+\begin{equation}
+\det\left(\mathbb{I}_{K} - A_1z -A_2z^2-\ldots-A_pz^p\right)\neq 0
+\quad\mbox{for}\,\,\, |z|\leq 1 
+\end{equation}
+\end{prop}
+\begin{proof}
+
+[...]
+
+\end{proof}
+
+\subsection{Granger Causality}
+Granger Causality (GC) is based on the hypothesis that if a variable $x$
+influences a variable $z$, then it should be useful in predicting $z$.
+\begin{defin}
+  Let $z_t(h|\Omega_t)$ be the minimum MSE $h$-step predictor for the
+  process $z_t$ at origin $t$, based on the information contained in
+  $\Omega_t$. Denote with $\Sigma_z(h|\Omega_t)$ the forecast. The
+  process $x_t$ is said to GC $z_t$ if
+  \begin{equation}
+    \label{eq:gcdef}
+    \Sigma_z(h|\Omega_t) < \Sigma_z(h|\Omega_t\setminus\{x_s|s\leq
+    t\})\quad\mbox{for at least one } h=1,2,\ldots
+  \end{equation}
+\end{defin}
+In other words, if $z_t$ can be predicted more efficiently if the
+information in the $x_t$ process is taken into account in
+addition to all other information in the universe, then $x_t$ is
+Granger Causal (GC) for $z_t$ and we will write $x_t
+\overset{GC}{\Longrightarrow} z_t$. We now extend the previous
+definition to the multi-dimensional case.
+\begin{defin}
+  Let $z_t$ and $x_t$ be $M$ and $N$ dimensional processes respectively. $x_t$ is said to GC $z_t$ if
+  \begin{equation}
+    \Sigma_z(h|\Omega_t) \neq \Sigma_z(h|\Omega_t\setminus\{x_s|s\leq
+    t\})
+  \end{equation}
+  and
+  \begin{equation}
+    \Sigma_z(h|\Omega_t) \leq \Sigma_z(h|\Omega_t\setminus\{x_s|s\leq
+    t\})
+  \end{equation}
+  that is, the difference must be positive semidefinite.
+\end{defin}
+\begin{defin}
+  We say that there is Instantaneous Granger Causality (IGC) between
+  $z_t$ and $x_t$ if
+  \begin{equation}
+    \label{eq:igcdefin}
+    \Sigma_z(1|\Omega_t\cup\{x_{t+1}\}) \leq \Sigma_z(1|\Omega_t)
+  \end{equation}
+\end{defin}
+
+\subsection{Cointegration}
+
+For an univariate AR$(1)$ process given by $y_t = \alpha y_{t-1} +
+u_t$ the stability condition is $1-\alpha z\neq 0$ for $|z|\leq 1$ or,
+equivalently, $|\alpha| < 1$. For $\alpha = 1$ the process is said to
+be integrated of order one (written as I$(1)$)
+\begin{equation}
+  \label{eq:intprocess}
+  y_t = y_{t-1} + u_t = y_0 + \sum_{i=1}^t u_i
+\end{equation}
+It is clear from the previous formula that an integrated process is the sum of all past
+innovations; easily one can compute $\mathbb{E}(y_t) = y_0$ and
+$\mbox{Var}(y_t)=t\mbox{Var}(u_t)=t\sigma_u^2$. \\
+A general AR$(p)$ model is of the form 
+\begin{equation}
+  \label{eq:arpmodel}
+  \Phi(L) y_t = \varepsilon_t
+\end{equation}
+with $\Phi(L) = 1 - \sum_{i=1}^p \alpha_iL^i$ ($L$ is the lag
+operator). If the polinomial $\Phi(z)$ has one root on the unit circle
+$|z|=1$, then the behaviour of the time series $y_t$ is similar to a
+random walk.
+\begin{defin}
+  An univariate process with $d$ unit roots is called integrated
+  process of order $d$ and is written I$(d)$.
+\end{defin}
+If there is only one unit root, i.e. the process is I$(1)$, by taking
+first differences
+\begin{equation}
+  \label{eq:diff}
+  \Delta y_t = y_t - y_{t-1} = (1-L)y_t 
+\end{equation}
+it is possible to obtain a stationary process. In the same way, if the
+process $y_t$ is I$(d)$ then considering $\Delta^d = (1-L)^dy_t$ we
+get a stationary process.
+
+%%% Local Variables:
+%%% TeX-master: "../sparsevar"
+%%% End:

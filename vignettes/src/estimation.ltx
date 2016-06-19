@@ -1,0 +1,52 @@
+\section{Estimation of the model}
+
+In general the estimation of a VAR model is not an easy task (as can be seen for example in \citep{tsay2013multivariate}). This fact is more true in the
+high dimensional setting, where $K>n$ (in our notation $K$ is the dimension of the time series and $n$ is the number of observations
+available). Thus, to proceed further, we make an additional hypothesis on the matrix $A$ of the VAR$(1)$ process:
+\begin{itemize}
+  \item[(\textbf{H})] the matrix $A$ is sparse.
+\end{itemize}
+
+This assumption allows us to use and adapt to our problem, the penalized methods in OLS estimation. \\
+Following \citep{basu2015}, based on the data $\{y^0,\ldots,y^T\}$, we construct the following regression problem
+\begin{equation}
+  \label{eq:regressionproblem}
+  \begin{pmatrix}
+    (y^T)^\prime\\
+    \vdots\\
+    (y^0)^\prime
+  \end{pmatrix} = 
+  \begin{pmatrix}
+    (y^{T-1})^\prime & \dots & (y^{T-d})^\prime\\
+    \vdots & \ddots & \vdots\\
+    (y^{d-1})^\prime & \dots & (y^0)^\prime
+  \end{pmatrix}
+  \begin{pmatrix}
+    A_1^\prime\\
+    \vdots\\
+    A_d^\prime
+  \end{pmatrix} + 
+  \begin{pmatrix}
+    (\varepsilon^T)^\prime\\
+    \vdots\\
+    (\varepsilon^d)^\prime
+  \end{pmatrix}
+\end{equation}
+which can be rewritten as
+\begin{align}
+  \label{eq:vecregressionproblem}
+  \mbox{vec}(\mathcal{Y}) &= \mbox{vec}(\mathcal{XB^*}) + \mbox{vec}(E)\\
+                          &= (\mathbb I \otimes \mathcal{X}) \mbox{vec}(\mathcal{B^*}) + \mbox{vec}(E)\\
+  Y &= X \beta^* + \mbox{vec}(E)
+\end{align}
+
+\subsection{Threshold}
+
+\begin{equation}
+  \label{eq:threshold}
+  \hat T = \frac{1}{\sqrt{pN\log(T)}}
+\end{equation}
+
+%%% Local Variables:
+%%% TeX-master: "../sparsevar"
+%%% End:

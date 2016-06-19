@@ -1,0 +1,72 @@
+\section[Using sparsevar]{Using \pkg{sparsevar}}
+
+The two main functions of the package are \code{estimateVAR} and \code{estimateVECM}, which, as the names suggest, allow the user to estimate VAR and a VECM models respectively. There are other function included in the package which are useful for creating a sparse VAR process, such as \code{simulateVAR} and \code{createSparseMatrix}. 
+
+\subsection[Using estimateVAR]{Using \code{estimateVAR}}
+
+The function is used to estimate a VAR model given the time series \code{data} and must be called in the following way
+\begin{CodeChunk}
+  \begin{CodeInput}
+    estimateVAR(data, p = 1, penalty = "ENET", options = list(...))
+  \end{CodeInput}
+\end{CodeChunk}
+The variable \code{data} must be a matrix containing \code{N} different time series in columns with \code{nobs} observations displaced on different rows; \code{p} is the order of the VAR model (by default it has value \code{p = 1}) and \code{penalty} is a string which can the take the values \code{"ENET"} (default), \code{"SCAD"} or \code{"MCP"}.\\
+The parameter \code{options} is a list containing global ([...]) and specific options (related to the penalty used in the estimation).\\
+Global options:
+\begin{itemize}
+\item \code{parallel}: logical; use parallel computing (default \code{TRUE});
+\item \code{ncores}: integer; number of cores to use if \code{parallel = TRUE};
+\item \code{threshold}: logical; default is \code{FALSE}. If \code{TRUE} [...] 
+\item \code{scale}: logical; scale the input \code{data} normalizing every column (default \code{TRUE}); 
+\item \code{nfolds}: integer; the number of folds used in the cross validation (default \code{nfolds = 10}).
+\end{itemize}
+
+Options for \code{"ENET"}:
+\begin{itemize}
+\item \code{alpha}: a value in $[0,1]$; default is \code{alpha = 1} which uses LASSO penalty, while setting \code{alpha = 0} uses Ridge regression; using a value in $(0,1)$ uses a weighted linear combination of the of the two;
+\item \code{type.measure}: \code{"mse"} or \code{"mae"}; the error used in the cross validation: \code{"mse"} mean square error (default) or \code{"mae"} mean absolute error; 
+\item \code{nlambda}: integer; the number of lambdas to use in the cross validation; 
+\item \code{repeatedCV}: logical; if \code{TRUE} the function performs repeated cross validation for model selection;
+\item \code{nRepeats}: integer; the number of repeats in the repeated cross validation (if \code{repeatedCV = TRUE});
+\item \code{foldIDs}: logical; if \code{TRUE} (default) the folds in the cross validation will be fixed; their ids will be assigned automatically in increasing order;
+\item \code{timeSlice}: logical; if \code{TRUE} [...]
+\item \code{leaveOutLast}: integer; the number of elements to leave out of sample when using the time slice option;
+\item \code{horizon}: integer; the number of elements to use to compute the out of sample MSE when using the time slice option; 
+\item \code{fixedWindow}: logical;
+\end{itemize}
+
+Options for \code{"SCAD"} and \code{"MCP"}:
+\begin{itemize}
+\item \code{eps}: positive real number;
+\end{itemize}
+
+\subsection[Using estimateVECM]{Using \code{estimateVECM}}
+
+Use to estimate a VECM model.
+
+\begin{CodeChunk}
+  \begin{CodeInput}
+    estimateVECM(data, p = 2, penalty = "ENET", logScale = TRUE, options = list(...))
+  \end{CodeInput}
+\end{CodeChunk}
+
+The options are the same as in \code{estimateVAR}, except for the global option:
+\begin{itemize}
+\item \code{logScale}: logical; take the logarithm of the input \code{data}.
+\end{itemize}
+
+\subsection[Using estimateVECM]{Using \code{simulateVAR}}
+
+[...]
+
+\begin{CodeChunk}
+  \begin{CodeInput}
+    simulateVAR(N = 100, p = 1, sparsity = 0.05, rho = 0.5, ...
+                covariance = "toeplitz")
+  \end{CodeInput}
+\end{CodeChunk}
+
+
+%%% Local Variables:
+%%% TeX-master: "../sparsevar"
+%%% End:

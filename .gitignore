@@ -6,6 +6,5 @@ results/
 todo.org
 .RData
 fig/
-*.pdf
 data/
 .Rproj.user

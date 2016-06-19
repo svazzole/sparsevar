@@ -9,5 +9,3 @@ fig/
 *.pdf
 data/
 .Rproj.user
-inst/doc
-vignettes/sparsevar_cache/

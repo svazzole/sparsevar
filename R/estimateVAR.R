@@ -203,6 +203,7 @@ varENET <- function(X,y, options = NULL) {
   } else {
     nr <- nrow(X)
     foldsIDs <- sort(rep(seq(nf), length = nr))
+    # foldsIDs <- rep(seq(nf), length = nr)
   }
   
   if(parall == TRUE) {

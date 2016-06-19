@@ -55,6 +55,17 @@ companionVAR <- function(v) {
   return(bigA)
 }
 
+#' @title Check Impulse Zero
+#' 
+#' @description A function to find which entries of the impulse response function 
+#' are zero.
+#' @param irf irf output from impulseResponse function
+#' 
+#' @return a matrix containing the indices of the impulse response function that
+#' are 0.
+#' 
+#' @usage checkImpulseZero(irf)
+#' 
 #' @export
 checkImpulseZero <- function(irf) {
   

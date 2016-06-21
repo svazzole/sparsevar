@@ -9,7 +9,11 @@
 #' @usage impulseResponse(dataVar, len = 20)
 #' 
 #' @export
-impulseResponse <- function(dataVar, len = 20, method = "non-orthogonal") {
+impulseResponse <- function(dataVar, len = 20, method = "orthogonal") {
+  
+  if (!checkIsVar(dataVar)) { 
+    stop("Input dataVar must be a VAR object")
+  }
   
   if (method == "orthogonal") {
     A <- dataVar$A
@@ -29,8 +33,8 @@ impulseResponse <- function(dataVar, len = 20, method = "non-orthogonal") {
     stop("Unknown method. Possible values are: orthogonal or non-orthogonal")
   }
   
-#  attr(irf, "class") <- "sparsevar"
-#  attr(irf, "type") <- "irf"
+  attr(irf, "class") <- "irf"
+  
   return(irf)
 }
 

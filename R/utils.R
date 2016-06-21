@@ -81,3 +81,12 @@ spectralRadius <- function(M) {
 spectralNorm <- function(M) {
   return(sqrt(spectralRadius(t(M) %*% M)))
 }
+
+checkIsVar <- function(v) {
+  
+  if (!is.null(attr(v,"class"))){
+    ifelse(attr(v,"class") == "var", return(TRUE), return(FALSE))
+  } else {
+    return(FALSE)
+  }
+}

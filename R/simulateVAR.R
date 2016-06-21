@@ -76,11 +76,14 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   data <- MTS::VARMAsim(nobs = nobs, arlags = ar, malags = 0, cnst = 0, phi = cA, theta = theta, skip = 200, sigma = T)
   
   # Output
+  
   out <- list()
-  out$data <- data
   out$A <- A
-  out$S <- T
-  attr(out, "class") <- "sparsevar"
+  out$series <- data$series
+  out$noises <- data$noises
+  out$sigma <- T
+  
+  attr(out, "class") <- "var"
   attr(out, "type") <- "simulation"
   return(out)
   

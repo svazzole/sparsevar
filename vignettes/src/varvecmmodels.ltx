@@ -46,26 +46,14 @@ u_t \\ 0 \\ \vdots \\ 0
 \end{pmatrix}\in\mathbb{R}^{Kp}
 \end{gather*}
 So $Y_t$ is a VAR$(1)$ process that is stable if the usual condition on VAR$(1)$ processes holds true: 
-\begin{equation*}
-\det\left(\mathbb{I}_{Kp} - \boldsymbol{A}z\right)\neq 0
-\quad\mbox{for}\,\,\, |z|\leq 1 
-\end{equation*}
-\begin{prop}
 \begin{equation}
+\label{eq:compVarStab}
 \det\left(\mathbb{I}_{Kp} - \boldsymbol{A}z\right)\neq 0
 \quad\mbox{for}\,\,\, |z|\leq 1 
 \end{equation}
-if and only if
-\begin{equation}
-\det\left(\mathbb{I}_{K} - A_1z -A_2z^2-\ldots-A_pz^p\right)\neq 0
-\quad\mbox{for}\,\,\, |z|\leq 1 
-\end{equation}
-\end{prop}
-\begin{proof}
-
-[...]
-
-\end{proof}
+The last condition is equivalent to 
+$\det\left(\mathbb{I}_{K} - A_1z -A_2z^2-\ldots-A_pz^p\right)\neq 0 \quad\mbox{for}\,\,\, |z|\leq 1 $
+as can be seen, for example, in \citep{lutkepohl2007new}.
 
 \subsection{Granger Causality}
 Granger Causality (GC) is based on the hypothesis that if a variable $x$

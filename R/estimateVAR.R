@@ -155,10 +155,11 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
   
   output$mse <- mse
   output$time <- elapsed
+  output$series <- data + cm
   output$residuals <- res
-  output$data <- data + cm
+  output$sigma <- cov(res)
 
-  attr(output, "class") <- "sparsevar"
+  attr(output, "class") <- "var"
   attr(output, "type") <- "estimate"
   return(output)
   

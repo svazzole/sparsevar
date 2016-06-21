@@ -10,6 +10,10 @@
 #' @export
 plotMatrix <- function(M) {
   
+  if (!is.matrix(M)) { 
+    stop("Input must be a matrix") 
+  }
+  
   nr <- nrow(M)
   nc <- ncol(M)
   M <- t(M)[, nc:1]
@@ -30,8 +34,8 @@ plotMatrix <- function(M) {
 #' @export
 plotVAR <- function(v) {
   
-  if (attr(v, "class") != "sparsevar") {
-    stop("Must be a sparsevar object of the type estimate or simulation")
+  if (!checkIsVar(v)) {
+    stop("Input must be a var object")
   } 
   
   A <- v$A
@@ -59,10 +63,22 @@ plotVAR <- function(v) {
 #' @export
 plotComparisonVAR <- function(var1, var2) {
   
-  p <- length(var2$A)
+  if (!(checkIsVar(var1) & checkIsVar(var2))) {
+    stop("Inputs must be VARs")
+  }
+  
+  p1 <- length(var1$A)
+  p2 <- length(var2$A)
+  
+  if (p1 != p2) {
+    warning("Different VAR orders: plotting up to the min one")
+    p <- min(p1,p2)
+  } else {
+    p <- p1
+  }
   
   pl <- list()
-  # par(mfrow = c(2,p))
+  
   for (i in 1:p) {
     pl[[i]] <- plotMatrix(var1$A[[i]])
   }

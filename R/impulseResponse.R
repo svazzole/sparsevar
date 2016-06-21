@@ -9,27 +9,28 @@
 #' @usage impulseResponse(dataVar, len = 20)
 #' 
 #' @export
-impulseResponse <- function(dataVar, len = 20) {
+impulseResponse <- function(dataVar, len = 20, method = "non-orthogonal") {
   
-  A <- dataVar$A
-  nr <- nrow(dataVar$A[[1]])
-  
-  bigA <- companionVAR(dataVar)
-  
-  irf <- array(data = rep(0,len*nr^2), dim = c(nr,nr,len)) #matrix(0, ncol = len, nrow = nr^2)
-  
-  Atmp <- diag(nrow = nrow(bigA), ncol = ncol(bigA))
-  #irf[,1] <- as.vector(t(Atmp))[1:nr^2]
-  irf[ , , 1] <- Atmp[1:nr, 1:nr]
-  
-  for (k in 1:(len-1)) {
+  if (method == "orthogonal") {
+    A <- dataVar$A
+    nr <- nrow(dataVar$A[[1]])
+    bigA <- companionVAR(dataVar)
+    irf <- array(data = rep(0,len*nr^2), dim = c(nr,nr,len)) #matrix(0, ncol = len, nrow = nr^2)
+    Atmp <- diag(nrow = nrow(bigA), ncol = ncol(bigA))
+    irf[ , , 1] <- Atmp[1:nr, 1:nr]
     
-    Atmp <- Atmp %*% bigA
-    #irf[,(k+1)] <- as.vector(t(Atmp))[1:nr^2]
-    irf[ , , (k+1)] <- Atmp[1:nr, 1:nr]
-    
+    for (k in 1:(len-1)) {
+      Atmp <- Atmp %*% bigA
+      irf[ , , (k+1)] <- Atmp[1:nr, 1:nr]
+    }
+  } else if (method == "non-orthogonal") {
+    stop("To be implemented")
+  } else {
+    stop("Unknown method. Possible values are: orthogonal or non-orthogonal")
   }
   
+#  attr(irf, "class") <- "sparsevar"
+#  attr(irf, "type") <- "irf"
   return(irf)
 }
 
@@ -84,4 +85,24 @@ checkImpulseZero <- function(irf) {
   logicalIrf <- logicalIrf == 0
   
   return(which(logicalIrf == TRUE, arr.ind = TRUE))
+}
+
+errorBandsIRF <- function(d, v, irf) {
+  
+  r <- v$residuals
+  s <- cov(r) # variance / covariance of the residuals
+  
+  nr <- nrow(d)
+  
+  Q_T <- 1/nr * t(t(d)%*%d)
+  P <- kronecker(s, solve(Q_T))
+  
+  nz <- dim(irf)[3]
+  
+  for (i in 1:nz){
+    
+    
+  }
+  
+  return(0)
 }

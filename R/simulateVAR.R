@@ -80,6 +80,8 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   out$data <- data
   out$A <- A
   out$S <- T
+  attr(out, "class") <- "sparsevar"
+  attr(out, "type") <- "simulation"
   return(out)
   
 }

@@ -22,14 +22,19 @@ plotMatrix <- function(M) {
 #' 
 #' @description Plot all the matrices of a VAR model
 #' 
-#' @param A the list containing the VAR matrices to be plotted
+#' @param v an object of the class sparsevar type estimate or simulation
 #' @return An \code{image} plot with a particular color palette (black zero entries, red 
 #' for the negative ones and green for the positive)
 #' @usage plotVAR(A)
 #' 
 #' @export
-plotVAR <- function(A) {
+plotVAR <- function(v) {
   
+  if (attr(v, "class") != "sparsevar") {
+    stop("Must be a sparsevar object of the type estimate or simulation")
+  } 
+  
+  A <- v$A
   p <- length(A)
   
   pl <- list()

@@ -49,6 +49,11 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
     data <- apply(FUN = scale, X = data, MARGIN = 2)
   }
   
+  # center the data
+  m <- colMeans(data)
+  cm <- matrix(rep(m, nrow(data)), nrow = nrow(data), byrow = TRUE) 
+  data <- data - cm
+  
   # create Xs and Ys (temp variables)
   tmpX <- data[1:(nr-1), ]
   tmpY <- data[2:(nr), ]
@@ -135,13 +140,26 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
   # Now that we have the matrices compute the residuals
   res <- computeResiduals(data, A)
   
-  # Output
+  # Create the output
   output = list()
+  
+  output$mu <- t(m)
   output$A <- A
-  output$fit <- fit
+  
+  # Do you want the fit?
+  if (!is.null(options$returnFit)) {
+    if (options$returnFit == TRUE) {
+      output$fit <- fit
+    }
+  }
+  
   output$mse <- mse
   output$time <- elapsed
   output$residuals <- res
+  output$data <- data + cm
+
+  attr(output, "class") <- "sparsevar"
+  attr(output, "type") <- "estimate"
   return(output)
   
 }

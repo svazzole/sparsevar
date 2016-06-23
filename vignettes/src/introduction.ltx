@@ -1,9 +1,8 @@
 \section[Introduction]{Introduction}
 
-\pkg{sparsevar} is an \proglang{R} \citep{rlang} package that estimates sparse VAR and VECM model using penalized least squares methods (PLS): it is possible to use ENET \citep{glmnet}, SCAD \citep{ncvreg} or MC+ penalties. The sparsity parameter can be estimated using cross-validation, repeated cross-validation or time slicing \citep{hynd2013}. When using ENET it is possible to estimate VAR(1) of dimension up to 200, while when using one of the other two is better not to go beyond 50. When estimating a VAR($p$) model then the limits are roughly $200/p$ and $50/p$, respectively.
+\pkg{sparsevar} is an \proglang{R} \citep{rlang} package that estimates sparse VAR and VECM model using penalized least squares methods (PLS): it is possible various penalties such as ENET \citep{glmnet}, SCAD \citep{ncvreg} or MC+ penalties. The sparsity parameter can be estimated using cross-validation, repeated cross-validation or time slicing \citep{hynd2013}. When using ENET it is possible to estimate VAR(1) of dimension up to 200, while when using one of the other two is better not to go beyond 50. When estimating a VAR($p$) model then the limits are roughly $200/p$ and $50/p$, respectively.
 
 The authors of \pkg{sparsevar} are Monica Billio, Lorenzo Frattarolo and Simone Vazzoler and the \proglang{R} package is mantained by Simone Vazzoler. This article describes the usage of \pkg{sparsevar} in \proglang{R}.
-\citep{lutkepohl2007new}, \citep{basu2015}.
 
 %%% Local Variables:
 %%% TeX-master: "../sparsevar"

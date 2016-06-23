@@ -1,20 +1,26 @@
-\section[VAR/VECM models]{VAR/VECM models}
+\section[VAR/VECM models]{VAR models}
 
-\begin{defin}
-A VAR$(p)$ process is a model of the following type:
+Vector autoregression (VAR) models are widely used in many scientific areas where it is important to study and understand temporal and cross-sectional dependence between the variables of the system. In macroeconomics and finance VAR models are used to [...] \citep{bernanke2005}, \citep{stock2005implications}. In control theory [...]. In genomics [...] \citep{shojaie2010discovering} and neuroscience \citep{seth2013granger}.
+
+[...]
+
+VAR estimation is a natural high-dimensional problem, since the dimensionality of the parameter space grows quadratically with the number of serie  $K$. For example, estimating a VAR(2) model with $K = 20$ time series requires estimating $pK^2 = 800$ parameters. However, a comparable number of stationary observations is rarely available in practice. In the low-dimensional setting, VAR estimation is carried out by reformulating it as a multivariate regression problem \citep{lutkepohl2007new}. Under high-dimensional scaling and sparsity assumptions on the transition matrices, a natural strategy is to resort to $\ell_1$-penalized least squares or log-likelihood based methods [Song and Bickel (2011), Davis, Zang and Zheng (2012)].
+
+[...]
+
+A VAR$(p)$ process is a time series model of the following form:
 \begin{equation}
   \label{eq:varp}
   y_t = \nu + A_1 y_{t-1} + A_2 y_{t-2} + \ldots + A_p y_{t-p} + \varepsilon_t
 \end{equation}
 for $t = 0, \pm 1, \pm 2, \ldots$, where $y_t = (y_{1t},\ldots,y_{Kt})^T\in\mathbb{R}^K$ is a $K\times 1$ random vector, the $A_i$ are fixed (i.e. not varying with time) $K\times K$ real matrices, $\nu = (\nu_1,\ldots,\nu_K)^T$ is a fixed vector for the mean $\mathbb E (y_t)$ and $\varepsilon_t = (\varepsilon_{1t}, \ldots, \varepsilon_{Kt})^T$ is a $K$-dimensional white noise (or innovation process) with $\mathbb E(\varepsilon_t)=0$, $\mathbb{E}(\varepsilon_t\varepsilon_t^T) = \Sigma_\varepsilon$ and $\mathbb{E}(\varepsilon_t\varepsilon_s^T) = 0$ for $s\neq t$.
-\end{defin}
 We recall that a VAR$(1)$ process is called \textbf{stable} if $\rho(A_1) < 1$ where
-  \begin{equation}
-    \label{eq:spectralRadiusDefin}
-    \rho(A) = \max\{|\lambda_1|,\ldots,|\lambda_K|\}
-  \end{equation}
+\begin{equation}
+  \label{eq:spectralRadiusDefin}
+  \rho(A) = \max\{|\lambda_1|,\ldots,|\lambda_K|\}
+\end{equation}
 with $\lambda_j\in\mbox{spec}(A)$. In other words a VAR$(1)$ process is called stable if the matrix $A_1$ has all the eigenvalues inside the unit circle.
-It is a well known fact that this is equivalent to saying that a VAR$(1)$ process is stable if and only if $\det(\mathbb{I}_K - A_1z)\neq 0$ for $|z|\leq 1$.
+It is a well known fact that this is equivalent to saying that a VAR$(1)$ process is stable if and only if $\det(I_K - A_1z)\neq 0$ for $|z|\leq 1$.
 We can generalize this condition to a VAR$(p)$ process: if $y_t\sim\mbox{VAR}(p)$ as in Equation (\ref{eq:varp}) then we can rewrite it as 
 \begin{equation}
   \label{eq:varpvar1}
@@ -35,10 +41,10 @@ where
 \boldsymbol{A} = 
 \begin{pmatrix}
 A_1 & A_2 & \ldots & A_{p-1} & A_p\\
-\mathbb{I}_K & \mathbb{O} & \ldots & \mathbb{O} & \mathbb{O}\\
-\mathbb{O} & \mathbb{I}_K & \ldots & \mathbb{O} & \mathbb{O}\\
+I_K & \mathbb{O} & \ldots & \mathbb{O} & \mathbb{O}\\
+\mathbb{O} & I_K & \ldots & \mathbb{O} & \mathbb{O}\\
 \vdots & \vdots & \ddots & \vdots & \vdots\\
-\mathbb{O} & \mathbb{O} & \ldots & \mathbb{I}_K & \mathbb{O}
+\mathbb{O} & \mathbb{O} & \ldots & I_K & \mathbb{O}
 \end{pmatrix}\in\mbox{M}_{Kp\times Kp}(\mathbb{R});
 \quad U_t = 
 \begin{pmatrix}
@@ -48,11 +54,11 @@ u_t \\ 0 \\ \vdots \\ 0
 So $Y_t$ is a VAR$(1)$ process that is stable if the usual condition on VAR$(1)$ processes holds true: 
 \begin{equation}
 \label{eq:compVarStab}
-\det\left(\mathbb{I}_{Kp} - \boldsymbol{A}z\right)\neq 0
+\det\left(I_{Kp} - \boldsymbol{A}z\right)\neq 0
 \quad\mbox{for}\,\,\, |z|\leq 1 
 \end{equation}
 The last condition is equivalent to 
-$\det\left(\mathbb{I}_{K} - A_1z -A_2z^2-\ldots-A_pz^p\right)\neq 0 \quad\mbox{for}\,\,\, |z|\leq 1 $
+$\det\left(I_{K} - A_1z -A_2z^2-\ldots-A_pz^p\right)\neq 0 \quad\mbox{for}\,\,\, |z|\leq 1 $
 as can be seen, for example, in \citep{lutkepohl2007new}.
 
 \subsection{Granger Causality}
@@ -96,6 +102,10 @@ definition to the multi-dimensional case.
     \Sigma_z(1|\Omega_t\cup\{x_{t+1}\}) \leq \Sigma_z(1|\Omega_t)
   \end{equation}
 \end{defin}
+
+\section{VECM models}
+
+Vector error correction models [...]
 
 \subsection{Cointegration}
 

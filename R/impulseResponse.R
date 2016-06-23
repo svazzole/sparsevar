@@ -4,38 +4,43 @@
 #' @param dataVar the data in the for of a VAR
 #' @param len length of the impulse response function
 #' 
-#' @return \code{irf} a matrix containing the impulse response function.
+#' @return \code{irf} a 3d array containing the impulse response function.
 #' 
 #' @usage impulseResponse(dataVar, len = 20)
 #' 
 #' @export
-impulseResponse <- function(dataVar, len = 20, method = "orthogonal") {
+impulseResponse <- function(dataVar, len = 20) {
   
   if (!checkIsVar(dataVar)) { 
     stop("Input dataVar must be a VAR object")
   }
   
-  if (method == "orthogonal") {
-    A <- dataVar$A
-    nr <- nrow(dataVar$A[[1]])
-    bigA <- companionVAR(dataVar)
-    irf <- array(data = rep(0,len*nr^2), dim = c(nr,nr,len)) #matrix(0, ncol = len, nrow = nr^2)
-    Atmp <- diag(nrow = nrow(bigA), ncol = ncol(bigA))
-    irf[ , , 1] <- Atmp[1:nr, 1:nr]
-    
-    for (k in 1:(len-1)) {
-      Atmp <- Atmp %*% bigA
-      irf[ , , (k+1)] <- Atmp[1:nr, 1:nr]
-    }
-  } else if (method == "non-orthogonal") {
-    stop("To be implemented")
-  } else {
-    stop("Unknown method. Possible values are: orthogonal or non-orthogonal")
+  A <- dataVar$A
+  P <- t(chol(dataVar$sigma))
+  nr <- nrow(dataVar$A[[1]])
+  bigA <- companionVAR(dataVar)
+  
+  irf <- array(data = rep(0,len*nr^2), dim = c(nr,nr,len+1))
+  oirf <- array(data = rep(0,len*nr^2), dim = c(nr,nr,len+1))
+  
+  Atmp <- diag(nrow = nrow(bigA), ncol = ncol(bigA))
+  
+  irf[ , , 1] <- Atmp[1:nr, 1:nr] 
+  oirf[ , , 1] <- Atmp[1:nr, 1:nr] %*% P
+  
+  for (k in 1:len) {
+    Atmp <- Atmp %*% bigA
+    irf[ , , (k+1)] <- as.matrix(Atmp[1:nr, 1:nr])
+    oirf[ , , (k+1)] <- as.matrix(Atmp[1:nr, 1:nr] %*% P)
   }
   
-  attr(irf, "class") <- "irf"
+  ## TODO: add cumulative response functions
+  out <- list()
+  out$irf <- irf
+  out$oirf <- oirf
+  attr(out, "class") <- "irf"
   
-  return(irf)
+  return(out)
 }
 
 companionVAR <- function(v) {
@@ -44,7 +49,7 @@ companionVAR <- function(v) {
   nc <- ncol(A[[1]])
   p <- length(A)
   if (p>1){
-    bigA <- matrix(0, p*nc, p*nc)
+    bigA <- Matrix::Matrix(0, nrow = p*nc, ncol = p*nc, sparse = TRUE)
     for (k in 1:p) {
       ix <- ((k-1) * nc) + (1:nc)
       bigA[1:nc, ix] <- A[[k]]
@@ -54,7 +59,7 @@ companionVAR <- function(v) {
     ixC <- 1:((p-1)*nc)
     bigA[ixR, ixC] <- diag(1, nrow = length(ixC), ncol = length(ixC))  
   } else {
-    bigA <- A[[1]]
+    bigA <- Matrix::Matrix(A[[1]], nrow = nc, ncol = nc, sparse = TRUE)
   }
   
   return(bigA)

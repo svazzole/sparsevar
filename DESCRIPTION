@@ -13,11 +13,11 @@ Imports:
     parallel,
     doParallel,
     glmnet,
-    MTS,
     ggplot2,
     reshape2,
     grid, 
-    caret
+    caret,
+    mvtnorm
 Suggests:
     R.rsp
 Depends:

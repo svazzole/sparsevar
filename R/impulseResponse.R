@@ -16,7 +16,15 @@ impulseResponse <- function(dataVar, len = 20) {
   }
   
   A <- dataVar$A
-  P <- t(chol(dataVar$sigma))
+  
+  # Numerical problems in the estimated variance covariance
+  e <- eigen(dataVar$sigma)$values
+  if (!is.null(e[e<0])) {
+    P <- t(chol(dataVar$sigma, pivot = TRUE))
+  } else {
+    P <- t(chol(dataVar$sigma))
+  }
+  
   nr <- nrow(dataVar$A[[1]])
   bigA <- companionVAR(dataVar)
   
@@ -59,7 +67,7 @@ companionVAR <- function(v) {
     ixC <- 1:((p-1)*nc)
     bigA[ixR, ixC] <- diag(1, nrow = length(ixC), ncol = length(ixC))  
   } else {
-    bigA <- Matrix::Matrix(A[[1]], nrow = nc, ncol = nc, sparse = TRUE)
+    bigA <- Matrix::Matrix(A[[1]], sparse = TRUE)
   }
   
   return(bigA)

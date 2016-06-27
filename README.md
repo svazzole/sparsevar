@@ -35,7 +35,7 @@ sim <- simulateVAR(N = 20, p = 2)
 This command will generate a model with two sparse matrices with 5% of non-zero entries and a Toeplitz variance-covariance matrix (with $\rho=0.5$).
 We can estimate the matrices of the process using
 ```{r}
-est <- estimateVAR(sim$data$series, p = 2, options = list(foldsIDs = TRUE))
+est <- estimateVAR(sim$series, p = 2, options = list(foldsIDs = TRUE))
 ```
 
 The results can be seen by plotting the matrices

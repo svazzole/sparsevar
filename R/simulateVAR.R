@@ -75,10 +75,10 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   
   # Matrix for MA part
   theta <- matrix(0, N, N)
-  ar <- 1:p
+  # ar <- 1:p
   
   # Generate the VAR process 
-  data <- VARsim(nobs = nobs, mu = 0, AR = A, sigma = T, skip = 200)
+  data <- generateVARseries(nobs = nobs, mu = 0, AR = A, sigma = T, skip = 200)
   
   # Output
   out <- list()
@@ -93,7 +93,7 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   
 }
 
-VARsim <- function(nobs, mu, AR, sigma, skip = 200) {
+generateVARseries <- function(nobs, mu, AR, sigma, skip = 200) {
 
   ## This function creates the simulated time series 
   

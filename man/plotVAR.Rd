@@ -4,10 +4,10 @@
 \alias{plotVAR}
 \title{VAR plot}
 \usage{
-plotVAR(A)
+plotVAR(v)
 }
 \arguments{
-\item{A}{the list containing the VAR matrices to be plotted}
+\item{v}{an object of the class sparsevar type estimate or simulation}
 }
 \value{
 An \code{image} plot with a particular color palette (black zero entries, red 

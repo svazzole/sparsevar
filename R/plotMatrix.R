@@ -29,7 +29,7 @@ plotMatrix <- function(M) {
 #' @param v an object of the class sparsevar type estimate or simulation
 #' @return An \code{image} plot with a particular color palette (black zero entries, red 
 #' for the negative ones and green for the positive)
-#' @usage plotVAR(A)
+#' @usage plotVAR(v)
 #' 
 #' @export
 plotVAR <- function(v) {

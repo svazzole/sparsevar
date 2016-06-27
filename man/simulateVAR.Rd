@@ -5,7 +5,7 @@
 \title{VAR simulation}
 \usage{
 simulateVAR(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
-  method = "normal", covariance = "toeplitz")
+  method = "normal", covariance = "Toeplitz")
 }
 \arguments{
 \item{N}{dimension of the time series.}

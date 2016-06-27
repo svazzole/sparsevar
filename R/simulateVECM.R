@@ -72,7 +72,7 @@ simulateVECM <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   ar <- 1:p
   
   # Generate VAR(1) process 
-  data <- MTS::VARMAsim(nobs = nobs, arlags = ar, malags = 0, cnst = 0, phi = cA, theta = theta, skip = 200, sigma = T)
+  data <- generateVARseries(nobs = nobs, mu = 0, AR = A, sigma = T, skip = 200)
   
   # Create the matrices of VECM
   I <- diag(x = 1, nrow = N, ncol = N)

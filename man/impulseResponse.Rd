@@ -12,7 +12,7 @@ impulseResponse(dataVar, len = 20)
 \item{len}{length of the impulse response function}
 }
 \value{
-\code{irf} a matrix containing the impulse response function.
+\code{irf} a 3d array containing the impulse response function.
 }
 \description{
 A function to estimate the Impulse Response Function of a given VAR.

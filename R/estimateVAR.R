@@ -153,6 +153,11 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
     }
   }
   
+  # If ENET is used, return the lambda 
+  if (penalty == "ENET") {
+    output$lambda <- fit$lambda.min
+  }
+  
   output$mse <- mse
   output$time <- elapsed
   output$series <- data + cm

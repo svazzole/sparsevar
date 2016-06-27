@@ -104,22 +104,69 @@ checkImpulseZero <- function(irf) {
   return(which(logicalIrf == TRUE, arr.ind = TRUE))
 }
 
-errorBandsIRF <- function(d, v, irf) {
+errorBandsIRF <- function(v, irf) {
   
-  r <- v$residuals
-  s <- cov(r) # variance / covariance of the residuals
+  M <- 100       # number of repeats
+  lambda <- v$lambda 
+  p <- length(v$A)
+
   
-  nr <- nrow(d)
-  
-  Q_T <- 1/nr * t(t(d)%*%d)
-  P <- kronecker(s, solve(Q_T))
-  
-  nz <- dim(irf)[3]
-  
-  for (i in 1:nz){
+  for (k in 1:M) {
+    # create Xs and Ys (temp variables)
+    o <- genVARfromRes(v)
+    nr <- nrow(o)
+    nc <- ncol(o)
+    tmpX <- o[1:(nr-1), ]
+    tmpY <- o[2:(nr), ]
     
+    # create the data matrix
+    tmpX <- sparsevar::duplicateMatrix(tmpX, p)
+    tmpY <- tmpY[p:nrow(tmpY), ]
     
+    y <- as.vector(tmpY)
+    
+    # Hadamard product for data
+    I <- Matrix::Diagonal(nc)
+    X <- kronecker(I, tmpX)
+    
+    fit <- glmnet::glmnet(X, y, lambda = lambda)
+    
+    Avector <- stats::coef(fit, s = lambda)
+    A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
+    M <- cbind(diag(x = 1, nrow = (nc*(p-1)), ncol = (nc*(p-1))))
+    bigA <- rbind(A,M)  
   }
   
-  return(0)
+  
+  
+  
+  return(o)
+}
+
+genVARfromRes <- function(v) {
+  
+  ## This function creates the simulated time series 
+  r <- v$residuals
+  s <- v$series
+  A <- v$A
+  N <- ncol(A[[1]])
+  p <- length(A)
+  t <- nrow(r)
+  
+  zt <- matrix(0, nrow = t, ncol = N)
+  
+  for (t0 in (p+1):t) {
+    ix <- sample(1:t, 1)
+    u <- r[ix, ]
+    vv <- rep(0, N) + u    
+    for (i in 1:p){
+      ph <- A[[i]]
+      vv <- vv + ph %*% s[(t0-i), ]
+    }
+    zt[t0, ] <- vv
+  }
+  zt <- zt[(p+1):t, ]
+  
+  return(zt)
+  
 }

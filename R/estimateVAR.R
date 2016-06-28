@@ -160,10 +160,12 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
   
   output$mse <- mse
   output$time <- elapsed
-  output$series <- data + cm
+  output$series <- data
   output$residuals <- res
   output$sigma <- cov(res)
-
+  # if (options$threshold == TRUE) {
+  #   output$sigma[Mod(output$sigma) < tr] <- 0
+  # } 
   attr(output, "class") <- "var"
   attr(output, "type") <- "estimate"
   return(output)

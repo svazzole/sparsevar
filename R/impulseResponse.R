@@ -105,9 +105,9 @@ checkImpulseZero <- function(irf) {
   return(which(logicalIrf == TRUE, arr.ind = TRUE))
 }
 
-errorBandsIRF <- function(v, irf, alpha = 0.05) {
+errorBandsIRF <- function(v, irf, alpha = 0.05, M = 100) {
   
-  M <- 100       # number of repeats
+  #M <- 100       # number of repeats
   lambda <- v$lambda 
   p <- length(v$A)
   nc <- ncol(v$A[[1]]) 
@@ -115,6 +115,9 @@ errorBandsIRF <- function(v, irf, alpha = 0.05) {
   
   irfs <- array(data = rep(0,len*nc^2*M), dim = c(nc,nc,len+1, M))
   oirfs <- array(data = rep(0,len*nc^2*M), dim = c(nc,nc,len+1, M))
+  
+  cat("Step 1/2...\n")
+  pb <- utils::txtProgressBar(min = 0, max = M, style = 3)
   
   for (k in 1:M) {
     # create Xs and Ys (temp variables)
@@ -144,9 +147,13 @@ errorBandsIRF <- function(v, irf, alpha = 0.05) {
     tmpRes <- getIRF(v, bigA, len, irf$cholP)
     irfs[,,,k] <- tmpRes$irf
     oirfs[,,,k] <- tmpRes$oirf
+    utils::setTxtProgressBar(pb, k)
   
   }
   
+  close(pb)
+  
+  cat("Step 2/2...")
   irfUB <- array(data = rep(0,len*nr^2), dim = c(nr,nr,len))
   oirfUB <- array(data = rep(0,len*nr^2), dim = c(nr,nr,len))
   
@@ -163,12 +170,12 @@ errorBandsIRF <- function(v, irf, alpha = 0.05) {
       for (k in 1:len) {
         iUB <- sd(irfs[i,j,k,])
         oiUB <- sd(oirfs[i,j,k,])
-        iUB <- quantile(irfs[i,j,k,], probs = (1-a))
-        oiUB <- quantile(oirfs[i,j,k,], probs = (1-a))
+        iUB <- quantile(irfs[i,j,k,], probs = (1-a), na.rm = TRUE)
+        oiUB <- quantile(oirfs[i,j,k,], probs = (1-a), na.rm = TRUE)
         irfUB[i,j,k] <- iUB
         oirfUB[i,j,k] <- oiUB
-        iLB <- quantile(irfs[i,j,k,], probs = a)
-        oiLB <- quantile(oirfs[i,j,k,], probs = a)
+        iLB <- quantile(irfs[i,j,k,], probs = a, na.rm = TRUE)
+        oiLB <- quantile(oirfs[i,j,k,], probs = a, na.rm = TRUE)
         irfLB[i,j,k] <- iLB
         oirfLB[i,j,k] <- oiLB
         iSD <- sd(irfs[i,j,k,])

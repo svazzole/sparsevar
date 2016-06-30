@@ -48,12 +48,11 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
   if (scale == TRUE) {
     data <- apply(FUN = scale, X = data, MARGIN = 2)
   } else {
-    # center the data
+    # only center the data
     m <- colMeans(data)
     cm <- matrix(rep(m, nrow(data)), nrow = nrow(data), byrow = TRUE) 
     data <- data - cm  
   }
-  
   
   # create Xs and Ys (temp variables)
   tmpX <- data[1:(nr-1), ]
@@ -81,14 +80,19 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
     elapsed <- Sys.time() - t
     
     if ((options$repeatedCV == FALSE) && (options$timeSlice == FALSE)){
+  
       # extract what is needed
       lambda <- ifelse(is.null(options$lambda), "lambda.min", options$lambda)
+      
       # extract the coefficients and reshape the matrix
       Avector <- stats::coef(fit, s = lambda)
       A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
+    
     } else {
+      
       Avector <- fit$Avector
       A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
+    
     }
     
     mse <- min(fit$cvm)
@@ -97,10 +101,12 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
     
     # convert from sparse matrix to std matrix (SCAD does not work with sparse matrices)
     X <- as.matrix(X)
+    
     # fit the SCAD model
     t <- Sys.time()
     fit <- varSCAD(X, y, options)
     elapsed <- Sys.time() - t
+    
     # extract the coefficients and reshape the matrix
     Avector <- stats::coef(fit, s = "lambda.min")
     A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
@@ -110,10 +116,12 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
     
     # convert from sparse matrix to std matrix (MCP does not work with sparse matrices)
     X <- as.matrix(X)
+    
     # fit the MCP model
     t <- Sys.time()
     fit <- varMCP(X, y, options)
     elapsed <- Sys.time() - t
+    
     # extract the coefficients and reshape the matrix
     Avector <- stats::coef(fit, s = "lambda.min")
     A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
@@ -143,7 +151,6 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
   
   # Create the output
   output = list()
-  
   output$mu <- t(m)
   output$A <- A
   
@@ -164,9 +171,6 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
   output$series <- data
   output$residuals <- res
   output$sigma <- cov(res)
-  # if (options$threshold == TRUE) {
-  #   output$sigma[Mod(output$sigma) < tr] <- 0
-  # } 
   attr(output, "class") <- "var"
   attr(output, "type") <- "estimate"
   return(output)
@@ -303,7 +307,6 @@ varMCP <- function(X, y, options = NULL) {
   return(cvfit)
   
 }
-
 
 splitMatrix <- function(M, p) {
   

@@ -95,7 +95,7 @@ errorBandsIRF <- function(v, irf, alpha = 0.05, M = 100, quantBands = FALSE) {
   irfs <- array(data = rep(0,len*nc^2*M), dim = c(nc,nc,len+1, M))
   oirfs <- array(data = rep(0,len*nc^2*M), dim = c(nc,nc,len+1, M))
   
-  cat("Step 1 of 2...\n")
+  cat("Step 1 of 2: bootstrapping series and re-estimating VAR...\n")
   pb <- utils::txtProgressBar(min = 0, max = M, style = 3)
   
   for (k in 1:M) {
@@ -132,7 +132,7 @@ errorBandsIRF <- function(v, irf, alpha = 0.05, M = 100, quantBands = FALSE) {
   
   close(pb)
   
-  cat("Step 2 of 2...\n")
+  cat("Step 2 of 2: computing quantiles...\n")
 
   irfUB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
   irfLB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
@@ -185,10 +185,10 @@ errorBandsIRF <- function(v, irf, alpha = 0.05, M = 100, quantBands = FALSE) {
   output$oirfLB <- oirfLB
   
   if (quantBands == TRUE) {
-    output$irfQUB <- irfUB
-    output$oirfQUB <- oirfUB
-    output$irfQLB <- irfLB
-    output$oirfQLB <- oirfLB
+    output$irfQUB <- irfQUB
+    output$oirfQUB <- oirfQUB
+    output$irfQLB <- irfQLB
+    output$oirfQLB <- oirfQLB
   }
   
   attr(output, "class") <- "irfBands"
@@ -206,18 +206,20 @@ bootstrappedVAR <- function(v) {
   t <- nrow(r)
   
   zt <- matrix(0, nrow = t, ncol = N)
+  zt[1:p,] <- s[1:p,]
   
   for (t0 in (p+1):t) {
     ix <- sample(1:t, 1)
     u <- r[ix, ]
-    vv <- rep(0, N) + u    
+    vv <- rep(0, N)   
     for (i in 1:p){
       ph <- A[[i]]
-      vv <- vv + ph %*% s[(t0-i), ]
+      vv <- vv + ph %*% zt[(t0-i), ]
     }
+    vv <- vv + u
     zt[t0, ] <- vv
   }
-  zt <- zt[(p+1):t, ]
+  #zt <- zt[(p+1):t, ]
   
   return(zt)
   

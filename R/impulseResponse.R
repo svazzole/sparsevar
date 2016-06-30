@@ -86,6 +86,7 @@ checkImpulseZero <- function(irf) {
   return(which(logicalIrf == TRUE, arr.ind = TRUE))
 }
 
+#' @export
 errorBandsIRF <- function(v, irf, alpha = 0.05, M = 100, quantBands = FALSE) {
   
   lambda <- v$lambda 

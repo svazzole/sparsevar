@@ -134,13 +134,13 @@ errorBandsIRF <- function(v, irf, alpha = 0.05, M = 100, quantBands = FALSE) {
   
   cat("Step 2 of 2...\n")
 
-  irfUB <- array(data = rep(0,len*nr^2), dim = c(nr,nr,len))
-  irfLB <- array(data = rep(0,len*nr^2), dim = c(nr,nr,len))
-  oirfUB <- array(data = rep(0,len*nr^2), dim = c(nr,nr,len))
-  oirfLB <- array(data = rep(0,len*nr^2), dim = c(nr,nr,len))
+  irfUB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
+  irfLB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
+  oirfUB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
+  oirfLB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
 
   if (quantBands == TRUE) {
-    irfQUB <- array(data = rep(0,len*nr^2), dim = c(nr,nr,len))
+    irfQUB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
     irfQLB <- irfQUB
     oirfQUB <- irfQUB
     oirfQLB <- irfQUB

@@ -8,7 +8,7 @@
 #' @usage plotIRF(M)
 #' 
 #' @export
-plotIRF <- function(irf, bb, i, j, type = "irf", bands = "sd") {
+plotIRF <- function(irf, bb, i, j, type = "irf", bands = "quantiles") {
   
   if (attr(irf, "class") != "irf" | attr(bb, "class") != "irfBands") { 
     stop("Inputs must be an irf object and an irfBands object") 

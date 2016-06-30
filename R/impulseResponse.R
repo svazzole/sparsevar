@@ -85,7 +85,7 @@ checkImpulseZero <- function(irf) {
 }
 
 #' @export
-errorBandsIRF <- function(v, irf, alpha = 0.05, M = 100, quantBands = FALSE) {
+errorBandsIRF <- function(v, irf, alpha = 0.05, M = 100, quantBands = TRUE) {
   
   lambda <- v$lambda 
   p <- length(v$A)

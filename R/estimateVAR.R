@@ -47,12 +47,13 @@ estimateVAR <- function(data, p = 1, penalty = "ENET", options = NULL) {
   scale <- ifelse(is.null(options$scale), FALSE, options$scale)  
   if (scale == TRUE) {
     data <- apply(FUN = scale, X = data, MARGIN = 2)
+  } else {
+    # center the data
+    m <- colMeans(data)
+    cm <- matrix(rep(m, nrow(data)), nrow = nrow(data), byrow = TRUE) 
+    data <- data - cm  
   }
   
-  # center the data
-  m <- colMeans(data)
-  cm <- matrix(rep(m, nrow(data)), nrow = nrow(data), byrow = TRUE) 
-  data <- data - cm
   
   # create Xs and Ys (temp variables)
   tmpX <- data[1:(nr-1), ]

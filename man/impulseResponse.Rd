@@ -4,10 +4,10 @@
 \alias{impulseResponse}
 \title{Impulse Response Function}
 \usage{
-impulseResponse(dataVar, len = 20)
+impulseResponse(v, len = 20)
 }
 \arguments{
-\item{dataVar}{the data in the for of a VAR}
+\item{v}{the data in the for of a VAR}
 
 \item{len}{length of the impulse response function}
 }

@@ -42,6 +42,7 @@ plotIRF <- function(irf, bb, i, j, type = "irf") {
   
 }
 
+#' @export
 plotIRFGrid <- function(irf, bb, indexes, type = "irf") {
   
   n <- length(indexes)

@@ -15,8 +15,6 @@ impulseResponse <- function(v, len = 20) {
     stop("Input v must be a VAR object")
   }
   
-  #A <- v$A
-  
   # Numerical problems in the estimated variance covariance
   e <- eigen(v$sigma)$values
   if (!is.null(e[e<=0])) {

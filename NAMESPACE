@@ -2,6 +2,7 @@
 
 export(checkImpulseZero)
 export(createSparseMatrix)
+export(duplicateMatrix)
 export(errorBandsIRF)
 export(estimateVAR)
 export(estimateVECM)

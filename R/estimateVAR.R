@@ -319,6 +319,7 @@ splitMatrix <- function(M, p) {
   return(A)
 }
 
+#' @export
 duplicateMatrix <- function(data, p) {
   
   nr <- nrow(data)

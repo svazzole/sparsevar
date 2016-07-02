@@ -48,14 +48,14 @@ transformData <- function(data, p, opt) {
 }
 
 #' @export
-varENET2 <- function(data, p, lambdas, ...) {
+varENET2 <- function(data, p, lambdas, opt) {
   
   ## Fit a VAR for a sequence of lambdas 
   ## TODO: change the name to varENET after removing estimateVAR.R
   nc <- ncol(data)
   nr <- nrow(data)
   
-  opt <- list(...)
+  # opt <- list(...)
   # transform the dataset
   trDt <- transformData(data, p, opt)
   

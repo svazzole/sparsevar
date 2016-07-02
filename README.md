@@ -1,6 +1,6 @@
 ## Sparse VAR (sparsevar) 
 [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html) 
-[![Version](https://img.shields.io/badge/version-0.0.6-oran.svg)](https://github.com/svazzole/sparsevar)
+[![Version](https://img.shields.io/badge/version-0.0.7-oran.svg)](https://github.com/svazzole/sparsevar)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/sparsevar)](https://cran.r-project.org/package=sparsevar)
 [![Downloads](http://cranlogs.r-pkg.org/badges/sparsevar)](https://cran.r-project.org/package=sparsevar)
 
@@ -33,9 +33,9 @@ set.seed(1)
 sim <- simulateVAR(N = 20, p = 2)
 ```
 This command will generate a model with two sparse matrices with 5% of non-zero entries and a Toeplitz variance-covariance matrix (with $\rho=0.5$).
-We can estimate the matrices of the process using
+We can estimate the matrices of the process using for example
 ```{r}
-est <- estimateVAR(sim$series, p = 2, options = list(foldsIDs = TRUE))
+est <- fitVAR(sim$series, p = 2, foldsIDs = TRUE, threshold = TRUE)
 ```
 
 The results can be seen by plotting the matrices
@@ -58,14 +58,18 @@ plotMatrix(sim$S)
 ### Usage
 
 The functions included are:
-- `estimateVAR`: to estimate a sparse VAR multivariate time series with ENET, SCAD or MC+;
+
+- `fitVAR`: to estimate a sparse VAR multivariate time series with ENET, SCAD or MC+;
 - `estimateVECM`: to estimate a sparse VECM (Vector Error Correction Model) using LS with penalty (again: ENET, SCAD or MC+);
 - `simulateVAR`: to generate a sparse VAR multivariate time series;
-- `mcSimulations`: to generate Monte Carlo simulations of sparse VAR and the relative errors estimation;
 - `createSparseMatrix`: used to create sparse matrices with a given density;
+- `impulseResponse`: compute the impulse response function;
+- `errorBands`: estimate the error bands for the IRF (using bootstrap);
 - `plotMatrix`: useful to plot sparse matrices;
 - `plotVAR`: plot all the matrices of the model;
 - `plotComparisonVAR`: plot the comparison between the matrices of the simulated model and the matrices of the estimate.
+- `plotIRF`: plot IRF function;
+- `plotGridIRF`: multiple plots of IRF.
 
 ### References
 [[1](http://projecteuclid.org/euclid.aos/1434546214)] Basu, Sumanta; Michailidis, George. Regularized estimation in sparse high-dimensional time series models. Ann. Statist. 43 (2015), no. 4, 1535--1567. doi:10.1214/15-AOS1315. 

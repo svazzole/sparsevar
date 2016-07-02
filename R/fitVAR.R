@@ -133,16 +133,16 @@ cvVAR_ENET <- function(X, y, opt) {
   nf <- ifelse(is.null(opt$nfolds), 10, opt$nfolds)
   parall <- ifelse(is.null(opt$parallel), FALSE, opt$parallel)
   ncores <- ifelse(is.null(opt$ncores), 1, opt$ncores)
-  
+
   # Assign ids to the CV-folds (useful for replication of results)  
   if (is.null(opt$foldsIDs)) {
     foldsIDs <- numeric(0)
   } else {
     nr <- nrow(X)
-    foldsIDs <- sort(rep(seq(nf), length = nr))
-    # foldsIDs <- rep(seq(nf), length = nr)
+    #foldsIDs <- sort(rep(seq(nf), length = nr))
+    foldsIDs <- rep(seq(nf), length = nr)
   }
-  
+
   if(parall == TRUE) {
     if(ncores < 1) {
       stop("The number of cores must be > 1")

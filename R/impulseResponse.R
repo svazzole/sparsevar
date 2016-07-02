@@ -31,28 +31,6 @@ impulseResponse <- function(v, len = 20) {
   return(out)
 }
 
-companionVAR <- function(v) {
-  
-  A <- v$A
-  nc <- ncol(A[[1]])
-  p <- length(A)
-  if (p>1){
-    bigA <- Matrix::Matrix(0, nrow = p*nc, ncol = p*nc, sparse = TRUE)
-    for (k in 1:p) {
-      ix <- ((k-1) * nc) + (1:nc)
-      bigA[1:nc, ix] <- A[[k]]
-    }
-    
-    ixR <- (nc+1):nrow(bigA)
-    ixC <- 1:((p-1)*nc)
-    bigA[ixR, ixC] <- diag(1, nrow = length(ixC), ncol = length(ixC))  
-  } else {
-    bigA <- Matrix::Matrix(A[[1]], sparse = TRUE)
-  }
-  
-  return(bigA)
-}
-
 #' @title Check Impulse Zero
 #' 
 #' @description A function to find which entries of the impulse response function 
@@ -70,22 +48,18 @@ checkImpulseZero <- function(irf) {
   nx <- dim(irf)[1]
   ny <- dim(irf)[2]
   nz <- dim(irf)[3]
-  
   logicalIrf <- matrix(0, nx, ny)
   
   for (z in 1:nz) {
-    
     logicalIrf <- logicalIrf + abs(irf[ , , z])
-    
   }
   
   logicalIrf <- logicalIrf == 0
-  
   return(which(logicalIrf == TRUE, arr.ind = TRUE))
 }
 
 #' @export
-errorBandsIRF <- function(v, irf, alpha = 0.05, M = 100, quantBands = TRUE) {
+errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, quantBands = TRUE) {
   
   lambda <- v$lambda 
   p <- length(v$A)
@@ -101,22 +75,9 @@ errorBandsIRF <- function(v, irf, alpha = 0.05, M = 100, quantBands = TRUE) {
   for (k in 1:M) {
     # create Xs and Ys (temp variables)
     o <- bootstrappedVAR(v)
-    nr <- nrow(o)
-    nc <- ncol(o)
-    tmpX <- o[1:(nr-1), ]
-    tmpY <- o[2:(nr), ]
     
-    # create the data matrix
-    tmpX <- sparsevar::duplicateMatrix(tmpX, p)
-    tmpY <- tmpY[p:nrow(tmpY), ]
-    
-    y <- as.vector(tmpY)
-    
-    # Hadamard product for data
-    I <- Matrix::Diagonal(nc)
-    X <- kronecker(I, tmpX)
-    
-    fit <- glmnet::glmnet(X, y, lambda = lambda)
+    # fit ENET to a specific value of lambda
+    fit <- varENET2(o, p, lambda)
     
     Avector <- stats::coef(fit, s = lambda)
     A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
@@ -193,36 +154,6 @@ errorBandsIRF <- function(v, irf, alpha = 0.05, M = 100, quantBands = TRUE) {
   
   attr(output, "class") <- "irfBands"
   return(output)
-}
-
-bootstrappedVAR <- function(v) {
-  
-  ## This function creates the bootstrapped time series 
-  r <- v$residuals
-  s <- v$series
-  A <- v$A
-  N <- ncol(A[[1]])
-  p <- length(A)
-  t <- nrow(r)
-  
-  zt <- matrix(0, nrow = t, ncol = N)
-  zt[1:p,] <- s[1:p,]
-  
-  for (t0 in (p+1):t) {
-    ix <- sample(1:t, 1)
-    u <- r[ix, ]
-    vv <- rep(0, N)   
-    for (i in 1:p){
-      ph <- A[[i]]
-      vv <- vv + ph %*% zt[(t0-i), ]
-    }
-    vv <- vv + u
-    zt[t0, ] <- vv
-  }
-  #zt <- zt[(p+1):t, ]
-  
-  return(zt)
-  
 }
 
 getIRF <- function (v, bigA, len = 20, P) {

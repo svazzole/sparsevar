@@ -8,30 +8,30 @@
 #' @usage plotIRF(M)
 #' 
 #' @export
-plotIRF <- function(irf, bb, i, j, type = "irf", bands = "quantiles") {
+plotIRF <- function(irf, eb, i, j, type = "irf", bands = "quantiles") {
   
-  if (attr(irf, "class") != "irf" | attr(bb, "class") != "irfBands") { 
+  if (attr(irf, "class") != "irf" | attr(eb, "class") != "irfBands") { 
     stop("Inputs must be an irf object and an irfBands object") 
   }
   
   nz <- dim(irf$irf)[3]
   t <- 0:(nz-1)
   
-  bbs <- list()
+  ebs <- list()
   
   if (bands == "quantiles") {
     
-    bbs$irfUB <- bb$irfQUB[i,j,] - irf$irf[i,j,]
-    bbs$irfLB <- bb$irfQLB[i,j,] - irf$irf[i,j,]
-    bbs$oirfUB <- bb$oirfQUB[i,j,] - irf$oirf[i,j,]
-    bbs$oirfLB <- bb$oirfQLB[i,j,] - irf$oirf[i,j,]
+    ebs$irfUB <- eb$irfQUB[i,j,] - irf$irf[i,j,]
+    ebs$irfLB <- eb$irfQLB[i,j,] - irf$irf[i,j,]
+    ebs$oirfUB <- eb$oirfQUB[i,j,] - irf$oirf[i,j,]
+    ebs$oirfLB <- eb$oirfQLB[i,j,] - irf$oirf[i,j,]
   
   } else if (bands == "sd") {
     
-    bbs$irfUB <- bb$irfUB[i,j,]
-    bbs$irfLB <- bb$irfLB[i,j,]
-    bbs$oirfUB <- bb$oirfUB[i,j,]
-    bbs$oirfLB <- bb$oirfLB[i,j,]
+    ebs$irfUB <- eb$irfUB[i,j,]
+    ebs$irfLB <- eb$irfLB[i,j,]
+    ebs$oirfUB <- eb$oirfUB[i,j,]
+    ebs$oirfLB <- eb$oirfLB[i,j,]
     
   } else {
     stop("Possible values for bands are sd or quantiles")
@@ -40,15 +40,15 @@ plotIRF <- function(irf, bb, i, j, type = "irf", bands = "quantiles") {
   if (type == "irf") {
     
     irfString <- paste0("IRF ", j, " -> ", i)
-    ub <- irf$irf[i,j,] + bbs$irfUB
-    lb <- irf$irf[i,j,] + bbs$irfLB
+    ub <- irf$irf[i,j,] + ebs$irfUB
+    lb <- irf$irf[i,j,] + ebs$irfLB
     d <- as.data.frame(cbind(t, irf$irf[i,j,], lb, ub, 0))
     
   } else if (type == "oirf") {
     
     irfString <- paste0("OIRF ", j, " -> ", i)
-    ub <- irf$oirf[i,j,] + bbs$oirfUB
-    lb <- irf$oirf[i,j,] + bbs$oirfLB
+    ub <- irf$oirf[i,j,] + ebs$oirfUB
+    lb <- irf$oirf[i,j,] + ebs$oirfLB
     d <- as.data.frame(cbind(t, irf$oirf[i,j,], lb, ub, 0))
     
   } else {
@@ -63,7 +63,7 @@ plotIRF <- function(irf, bb, i, j, type = "irf", bands = "quantiles") {
 }
 
 #' @export
-plotIRFGrid <- function(irf, bb, indexes, type = "irf") {
+plotIRFGrid <- function(irf, eb, indexes, type = "irf") {
   
   n <- length(indexes)
   g <- expand.grid(indexes, indexes)
@@ -72,7 +72,7 @@ plotIRFGrid <- function(irf, bb, indexes, type = "irf") {
   pl <- list()
   
   for (i in 1:nrgrid) {
-    pl[[i]] <- plotIRF(irf, bb, g[i,1], g[i,2], type = type)
+    pl[[i]] <- plotIRF(irf, eb, g[i,1], g[i,2], type = type)
   }
   
   #title("Simulation")

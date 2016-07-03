@@ -55,7 +55,6 @@ varENET2 <- function(data, p, lambdas, opt) {
   nc <- ncol(data)
   nr <- nrow(data)
   
-  # opt <- list(...)
   # transform the dataset
   trDt <- transformData(data, p, opt)
   
@@ -65,11 +64,37 @@ varENET2 <- function(data, p, lambdas, opt) {
   
 }
 
-varSCAD2 <- function(X, y, opt) {
+varSCAD2 <- function(data, p, lambdas, opt) {
+  
+  ## Fit a VAR for a sequence of lambdas 
+  ## TODO: change the name to varSCAD after removing estimateVAR.R
+  nc <- ncol(data)
+  nr <- nrow(data)
+  
+  # transform the dataset
+  trDt <- transformData(data, p, opt)
+  
+  fit <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y, family = "gaussian", penalty = "SCAD",
+                        alpha = 1, lambda = lambdas)
+  
+  return(fit)
   
 }
 
-varMCP2 <- function(X, y, opt) {
+varMCP2 <- function(data, p, lambdas, opt) {
+  
+  ## Fit a VAR for a sequence of lambdas 
+  ## TODO: change the name to varSCAD after removing estimateVAR.R
+  nc <- ncol(data)
+  nr <- nrow(data)
+  
+  # transform the dataset
+  trDt <- transformData(data, p, opt)
+  
+  fit <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y, family = "gaussian", penalty = "MCP",
+                        alpha = 1, lambda = lambdas)
+  
+  return(fit)
   
 }
 

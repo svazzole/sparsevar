@@ -82,6 +82,21 @@ spectralNorm <- function(M) {
   return(sqrt(spectralRadius(t(M) %*% M)))
 }
 
+#' @export
+accuracy <- function(referenceM, A) {
+  N <- ncol(A)
+  L <- A
+  L[L!=0] <- 1
+  L[L==0] <- 0
+  
+  genL <- referenceM
+  genL[genL!=0] <- 1
+  genL[genL==0] <- 0
+
+  acc <- 1 -sum(abs(L-genL))/N^2   # accuracy    -(1 - sum(genL)/N^2)
+  return(acc)
+}
+
 checkIsVar <- function(v) {
   
   if (!is.null(attr(v,"class"))){
@@ -90,3 +105,4 @@ checkIsVar <- function(v) {
     return(FALSE)
   }
 }
+

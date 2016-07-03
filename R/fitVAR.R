@@ -120,6 +120,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   output$series <- trDt$series
   output$residuals <- res
   output$sigma <- cov(res)
+  output$penalty <- penalty
   attr(output, "class") <- "var"
   attr(output, "type") <- "estimate"
   return(output)

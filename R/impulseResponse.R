@@ -76,13 +76,20 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, quantBands = TRUE) {
     # create Xs and Ys (temp variables)
     o <- bootstrappedVAR(v)
     
-    # fit ENET to a specific value of lambda
-    fit <- varENET2(o, p, lambda)
-    
-    Avector <- stats::coef(fit, s = lambda)
-    A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
-    M <- cbind(diag(x = 1, nrow = (nc*(p-1)), ncol = (nc*(p-1))), matrix(0, nrow = (nc*(p-1)), ncol = nc))
-    bigA <- rbind(A,M)  
+    if (v$penalty == "ENET"){
+      # fit ENET to a specific value of lambda
+      fit <- varENET2(o, p, lambda, opt = NULL)
+      
+      Avector <- stats::coef(fit, s = lambda)
+      A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
+      M <- cbind(diag(x = 1, nrow = (nc*(p-1)), ncol = (nc*(p-1))), matrix(0, nrow = (nc*(p-1)), ncol = nc))
+      bigA <- rbind(A,M)  
+      
+    } else if (v$penalty == "SCAD") {
+      stop("to be implemented")
+    } else {
+      stop("to be implemented")
+    }
 
     tmpRes <- getIRF(v, bigA, len, irf$cholP)
     irfs[,,,k] <- tmpRes$irf

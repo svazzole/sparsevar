@@ -97,6 +97,7 @@ accuracy <- function(referenceM, A) {
   return(acc)
 }
 
+#' @export
 checkIsVar <- function(v) {
   
   if (!is.null(attr(v,"class"))){

@@ -4,7 +4,7 @@ timeSliceVAR <- function(data, p = 1, penalty = "ENET", opt) {
   if (penalty == "ENET") {
     
     out <- timeSliceVAR_ENET(data, p, opt)
-    
+
   } else if (penalty == "SCAD" | penalty == "MCP") {
     
     out <- timeSliceVAR_SCAD(data, p, opt, penalty)
@@ -15,6 +15,7 @@ timeSliceVAR <- function(data, p = 1, penalty = "ENET", opt) {
   
   }
   
+  out$penalty <- penalty  
   return(out)
 }
 
@@ -24,12 +25,11 @@ timeSliceVAR_ENET <- function(data, p, opt) {
   nr <- nrow(data)
   nc <- ncol(data)
   
-  leaveOut <- ifelse(is.null(opt$leaveOut), 10, opt$leaveOut)
-  winLength <- nr - leaveOut
+  l <- ifelse(is.null(opt$leaveOut), 10, opt$leaveOut)
+  winLength <- nr - l
   a  <- ifelse(is.null(opt$alpha), 1, opt$alpha)
   
   horizon <- 1
-  l <- 10
   
   trDt <- transformData(data[1:winLength, ], p, opt)
   lam <- glmnet::glmnet(trDt$X, trDt$y, alpha = a)$lambda
@@ -106,13 +106,11 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
   nr <- nrow(data)
   nc <- ncol(data)
   
-  leaveOut <- ifelse(is.null(opt$leaveOut), 10, opt$leaveOut)
-  winLength <- nr - leaveOut
+  l <- ifelse(is.null(opt$leaveOut), 10, opt$leaveOut)
+  winLength <- nr - l
   a  <- ifelse(is.null(opt$alpha), 1, opt$alpha)
   
   horizon <- 1
-  l <- 10
-  
   trDt <- transformData(data[1:winLength, ], p, opt)
   
   if (penalty == "SCAD") {

@@ -64,6 +64,7 @@ varENET2 <- function(data, p, lambdas, opt) {
   
 }
 
+#' @export
 varSCAD2 <- function(data, p, lambdas, opt) {
   
   ## Fit a VAR for a sequence of lambdas 
@@ -81,6 +82,7 @@ varSCAD2 <- function(data, p, lambdas, opt) {
   
 }
 
+#' @export
 varMCP2 <- function(data, p, lambdas, opt) {
   
   ## Fit a VAR for a sequence of lambdas 
@@ -214,4 +216,19 @@ bootstrappedVAR <- function(v) {
 
 return(zt)
 
+}
+
+#' @export
+testGranger <- function(v, eb) {
+ 
+  p <- length(v$A)
+  A <- list()
+  for (i in 1:p) {
+    L <- (eb$irfQUB[,,i+1] >= 0 & eb$irfQLB[,,i+1]<=0)
+    A[[i]] <- v$A[[i]] * (1-L)
+  }
+ 
+  
+  return(A)
+  
 }

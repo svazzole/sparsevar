@@ -1,4 +1,3 @@
-#' @export
 timeSliceVAR <- function(data, p = 1, penalty = "ENET", opt) {
   
   if (penalty == "ENET") {
@@ -40,7 +39,7 @@ timeSliceVAR_ENET <- function(data, p, opt) {
   for (i in 1:l) {
     
       d <- data[i:(winLength + i), ]
-      fit <- varENET2(d[1:(nrow(d)-1), ], p, lam, opt)
+      fit <- varENET(d[1:(nrow(d)-1), ], p, lam, opt)
       resTS[, i+1] <- computeErrors(d, p, fit)
     
   }
@@ -52,7 +51,7 @@ timeSliceVAR_ENET <- function(data, p, opt) {
   # TODO: check: one can have multiple mins. Choose the first one. Is this the 
   # better choice?
   ix <- which(finalRes[,2] == min(finalRes[,2]))[1]
-  fit <- varENET2(data, p, finalRes[ix, 1], opt)
+  fit <- varENET(data, p, finalRes[ix, 1], opt)
   
   Avector <- stats::coef(fit, s = finalRes[ix, 1])
   A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
@@ -132,10 +131,10 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
     
     d <- data[i:(winLength + i), ]
     if (penalty == "SCAD") {
-      fit <- varSCAD2(d[1:(nrow(d)-1), ], p, lam, opt)
+      fit <- varSCAD(d[1:(nrow(d)-1), ], p, lam, opt)
       resTS[, i+1] <- computeErrors(d, p, fit, penalty = "SCAD")
     } else {
-      fit <- varMCP2(d[1:(nrow(d)-1), ], p, lam, opt)
+      fit <- varMCP(d[1:(nrow(d)-1), ], p, lam, opt)
       resTS[, i+1] <- computeErrors(d, p, fit, penalty = "MCP")
     }
 
@@ -150,9 +149,9 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
   ix <- which(finalRes[,2] == min(finalRes[,2]))[1]
   
   if (penalty == "SCAD") {
-    fit <- varSCAD2(data, p, finalRes[ix,1], opt)    
+    fit <- varSCAD(data, p, finalRes[ix,1], opt)    
   } else {
-    fit <- varMCP2(data, p, finalRes[ix,1], opt)
+    fit <- varMCP(data, p, finalRes[ix,1], opt)
   }
 
   Avector <- fit$beta[2:nrow(fit$beta), 1]

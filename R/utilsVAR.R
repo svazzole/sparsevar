@@ -1,3 +1,13 @@
+#' @title Transorm data  
+#' 
+#' @description Transform the input data
+#' 
+#' @usage transformData(data, p, opt)
+#'
+#' @param data the data
+#' @param p the order of the VAR
+#' @param opt a list containing the options
+#' 
 #' @export
 transformData <- function(data, p, opt) {
   
@@ -47,11 +57,21 @@ transformData <- function(data, p, opt) {
   
 }
 
+#' @title VAR ENET  
+#' 
+#' @description Estimate VAR using ENET penalty
+#' 
+#' @usage varENET(data, p, lambdas, opt)
+#'
+#' @param data the data
+#' @param p the order of the VAR
+#' @param lambdas a vector containing the lambdas to be used in the fit
+#' @param opt a list containing the options
+#' 
 #' @export
-varENET2 <- function(data, p, lambdas, opt) {
+varENET <- function(data, p, lambdas, opt) {
   
   ## Fit a VAR for a sequence of lambdas 
-  ## TODO: change the name to varENET after removing estimateVAR.R
   nc <- ncol(data)
   nr <- nrow(data)
   
@@ -64,11 +84,21 @@ varENET2 <- function(data, p, lambdas, opt) {
   
 }
 
+#' @title VAR SCAD  
+#' 
+#' @description Estimate VAR using SCAD penalty
+#' 
+#' @usage varSCAD(data, p, lambdas, opt)
+#'
+#' @param data the data
+#' @param p the order of the VAR
+#' @param lambdas a vector containing the lambdas to be used in the fit
+#' @param opt a list containing the options
+#' 
 #' @export
-varSCAD2 <- function(data, p, lambdas, opt) {
+varSCAD <- function(data, p, lambdas, opt) {
   
   ## Fit a VAR for a sequence of lambdas 
-  ## TODO: change the name to varSCAD after removing estimateVAR.R
   nc <- ncol(data)
   nr <- nrow(data)
   
@@ -82,11 +112,21 @@ varSCAD2 <- function(data, p, lambdas, opt) {
   
 }
 
+#' @title VAR MCP  
+#' 
+#' @description Estimate VAR using MCP penalty
+#' 
+#' @usage varMCP(data, p, lambdas, opt)
+#'
+#' @param data the data
+#' @param p the order of the VAR
+#' @param lambdas a vector containing the lambdas to be used in the fit
+#' @param opt a list containing the options
+#' 
 #' @export
-varMCP2 <- function(data, p, lambdas, opt) {
+varMCP <- function(data, p, lambdas, opt) {
   
   ## Fit a VAR for a sequence of lambdas 
-  ## TODO: change the name to varSCAD after removing estimateVAR.R
   nc <- ncol(data)
   nr <- nrow(data)
   
@@ -100,7 +140,6 @@ varMCP2 <- function(data, p, lambdas, opt) {
   
 }
 
-#' @export
 splitMatrix <- function(M, p) {
   
   nr <- nrow(M)
@@ -116,7 +155,6 @@ splitMatrix <- function(M, p) {
   return(A)
 }
 
-#' @export
 duplicateMatrix <- function(data, p) {
   
   nr <- nrow(data)
@@ -139,7 +177,6 @@ duplicateMatrix <- function(data, p) {
   
 }
 
-#' @export
 computeResiduals <- function(data, A) {
   
   nr <- nrow(data)
@@ -162,6 +199,14 @@ computeResiduals <- function(data, A) {
   
 }
 
+#' @title Companion VAR  
+#' 
+#' @description Build the VAR(1) representation of a VAR(p) process
+#' 
+#' @usage companionVAR(v)
+#' 
+#' @param v the VAR object as from fitVAR or simulateVAR
+#'
 #' @export
 companionVAR <- function(v) {
   
@@ -187,6 +232,14 @@ companionVAR <- function(v) {
   
 }
 
+#' @title Bootstrap VAR  
+#' 
+#' @description Build the bootstrapped series from the original var
+#' 
+#' @usage bootstrappedVAR(v)
+#' 
+#' @param v the VAR object as from fitVAR or simulateVAR
+#'
 #' @export
 bootstrappedVAR <- function(v) {
 
@@ -218,6 +271,16 @@ return(zt)
 
 }
 
+#' @title Test for Ganger Causality
+#' 
+#' @description This function should retain only the coefficients of the 
+#' matrices of the VAR that are statistically significative (from the bootstrap) 
+#' 
+#' @usage testGranger(v, eb)
+#' 
+#' @param v the VAR object as from fitVAR or simulateVAR
+#' @param eb the error bands as obtained from errorBands
+#'
 #' @export
 testGranger <- function(v, eb) {
  

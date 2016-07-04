@@ -10,15 +10,15 @@
 #' @param penalty penalty function to use for LS estimation. Possible values are \code{"ENET"}, 
 #' \code{"SCAD"} or \code{"MCP"}.
 #' @param covariance type of covariance matrix to be used in the generation of the sparse VAR model.
-#' @param options (TODO: complete)
 #' @param method which type of distribution to use in the generation of the entries of the matrices.
+#' @param ... (TODO: complete)
 #' 
 #' @return a \code{nMc}x5 matrix with the results of the Monte Carlo estimation
  
 #' @export
 mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, 
                           penalty = "ENET", covariance = "toeplitz", 
-                          options = NULL, method = "normal") {
+                          method = "normal", ...) {
 
   results <- list()
   
@@ -33,7 +33,7 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
       genA <- s$A[[1]]
       spRad <- max(Mod(eigen(genA)$values))
       
-      res <- estimateVAR(data = rets, penalty = penalty, options = options)
+      res <- fitVAR(data = rets, penalty = penalty, ...)
       
       A <- res$A[[1]]
       estSpRad <- max(Mod(eigen(A)$values))

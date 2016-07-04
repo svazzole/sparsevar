@@ -1,3 +1,36 @@
+#' @title Multivariate VAR estimation
+#' 
+#' @description A function to estimate a (possibly high-dimensional) multivariate VAR time series
+#' using penalized least squares methods, such as ENET, SCAD or MC+.
+#' 
+#' @usage fitVAR(data, p = 1, penalty = "ENET", method = "cv", ...)
+#' 
+#' @param data the data from the time series: variables in columns and observations in 
+#' rows
+#' @param p order of the VAR model
+#' @param penalty the penalty function to use. Possible values are \code{"ENET"}, 
+#' \code{"SCAD"} or \code{"MCP"}
+#' @param method possible values are \code{"cv"} or \code{"timeSlice"}
+#' @param ... the options for the estimation. Global options are:
+#' \code{threshold}: if \code{TRUE} all the entries smaller than the oracle threshold are set to zero; 
+#' \code{scale}: scale the data (default = FALSE)?
+#' \code{nfolds}: the number of folds used for cross validation (default = 10);
+#' \code{parallel}: if \code{TRUE} use multicore backend (default = FALSE);
+#' \code{ncores}: if \code{parallel} is \code{TRUE}, specify the number of cores to use
+#' for parallel evaluation. Options for ENET estimation: 
+#' \code{alpha}: the value of alpha to use in elastic net (0 is Ridge regression, 1 is LASSO (default));
+#' \code{type.measure}: the measure to use for error evaluation (\code{"mse"} or \code{"mae"});
+#' \code{nlambda}: the number of lambdas to use in the cross validation (default = 100);
+#' \code{leaveOut}: in the time slice validation leave out the last \code{leaveOutLast} observations
+#' (default = 15);
+#' \code{horizon}: the horizon to use for estimating mse/mae (default = 1);
+#' 
+#' @return \code{A} the list (of length \code{p}) of the estimated matrices of the process
+#' @return \code{fit} the results of the penalized LS estimation
+#' @return \code{mse} the mean square error of the cross validation
+#' @return \code{time} elapsed time for the estimation
+#' @return \code{residuals} the time series of the residuals 
+#' 
 #' @export
 fitVAR <- function(data, p = 1, penalty = "ENET", method = "cv", ...) {
   

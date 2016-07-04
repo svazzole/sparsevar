@@ -2,6 +2,9 @@
 #' 
 #' @description A function to estimate a (possibly big) multivariate VECM time series
 #' using penalized least squares methods, such as ENET, SCAD or MC+.
+#'  
+#' @usage fitVECM(data, p, penalty, logScale, ...)
+#' 
 #' @param data the data from the time series: variables in columns and observations in 
 #' rows
 #' @param p order of the VECM model 
@@ -16,8 +19,6 @@
 #' @return fit the results of the penalized LS estimation
 #' @return mse the mean square error of the cross validation
 #' @return time elapsed time for the estimation
-#' 
-#' @usage estimateVECM(data, p=2, penalty="ENET", logScale=TRUE, options=NULL)
 #' 
 #' @export
 fitVECM <- function(data, p = 2, penalty = "ENET", logScale = TRUE, ...) {

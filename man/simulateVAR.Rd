@@ -4,8 +4,7 @@
 \alias{simulateVAR}
 \title{VAR simulation}
 \usage{
-simulateVAR(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
-  method = "normal", covariance = "Toeplitz")
+simulateVAR(N, p, nobs, rho, sparsity, method, covariance)
 }
 \arguments{
 \item{N}{dimension of the time series.}

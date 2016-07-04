@@ -2,10 +2,14 @@
 #' 
 #' @description Plot a IRF object
 #' 
-#' @param irf the matrix to plot
-#' @return An \code{image} plot with a particular color palette (black zero entries, red 
-#' for the negative ones and green for the positive)
-#' @usage plotIRF(M)
+#' @param irf the irf object to plot
+#' @param eb the errorbands to plot
+#' @param i the first index
+#' @param j the second index
+#' @param type \code{type = "irf"} or \code{type = "oirf"}
+#' @param bands \code{"quantiles"} or \code{"sd"}
+#' @return An \code{image} plot relative to the impulse response function.
+#' @usage plotIRF(irf, eb, i, j, type, bands)
 #' 
 #' @export
 plotIRF <- function(irf, eb, i, j, type = "irf", bands = "quantiles") {
@@ -62,6 +66,18 @@ plotIRF <- function(irf, eb, i, j, type = "irf", bands = "quantiles") {
   
 }
 
+#' @title IRF grid plot
+#' 
+#' @description Plot a IRF grid object
+#' 
+#' @param irf the irf object computed using impulseResponse
+#' @param eb the error bands estimated using errorBands
+#' @param indexes a vector containing the indeces that you want to plot
+#' @param type plot the irf (\code{type = "irf"} by default) or the orthogonal irf 
+#' (\code{type = "oirf"})
+#' @return An \code{image} plot relative to the impulse response function.
+#' @usage plotIRFGrid(irf, eb, indexes, type)
+#' 
 #' @export
 plotIRFGrid <- function(irf, eb, indexes, type = "irf") {
   
@@ -75,7 +91,6 @@ plotIRFGrid <- function(irf, eb, indexes, type = "irf") {
     pl[[i]] <- plotIRF(irf, eb, g[i,1], g[i,2], type = type)
   }
   
-  #title("Simulation")
   multiplot(plotlist = pl, cols = n, layout = matrix(1:nrgrid, nrow = n, byrow = TRUE))
   
 }

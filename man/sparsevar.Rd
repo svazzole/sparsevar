@@ -12,7 +12,7 @@ least squares methods such as LASSO, SCAD and MCP.
 }
 \section{sparsevar functions}{
 
-\code{estimateVAR}, \code{estimateVECM}, \code{simulateVAR}, \code{createSparseMatrix},
+\code{fitVAR}, \code{fitVECM}, \code{simulateVAR}, \code{createSparseMatrix},
 \code{plotMatrix}, \code{plotVAR}, \code{plotComparisonVAR},
 \code{l2norm}, \code{l1norm}, \code{lInftyNorm}, \code{maxNorm}, \code{frobNorm},
 \code{spectralRadius}, \code{spectralNorm}, \code{impulseResponse}

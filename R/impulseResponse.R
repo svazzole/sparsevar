@@ -1,12 +1,13 @@
 #' @title Impulse Response Function
 #' 
 #' @description A function to estimate the Impulse Response Function of a given VAR.
+#' 
+#' @usage impulseResponse(v, len = 20)
+#' 
 #' @param v the data in the for of a VAR
 #' @param len length of the impulse response function
 #' 
 #' @return \code{irf} a 3d array containing the impulse response function.
-#' 
-#' @usage impulseResponse(v, len = 20)
 #' 
 #' @export
 impulseResponse <- function(v, len = 20) {
@@ -35,12 +36,13 @@ impulseResponse <- function(v, len = 20) {
 #' 
 #' @description A function to find which entries of the impulse response function 
 #' are zero.
+#' 
+#' @usage checkImpulseZero(irf)
+#' 
 #' @param irf irf output from impulseResponse function
 #' 
 #' @return a matrix containing the indices of the impulse response function that
 #' are 0.
-#' 
-#' @usage checkImpulseZero(irf)
 #' 
 #' @export
 checkImpulseZero <- function(irf) {
@@ -58,8 +60,22 @@ checkImpulseZero <- function(irf) {
   return(which(logicalIrf == TRUE, arr.ind = TRUE))
 }
 
+#' @title Error bands for IRF
+#' 
+#' @description A function to estimate the confidence intervals for irf and oirf.
+#' 
+#' @usage errorBandsIRF(v, irf, alpha, M)
+#'
+#' @param v a var object as from fitVAR or simulateVAR
+#' @param irf irf output from impulseResponse function
+#' @param alpha level of confidence (default \code{alpha = 0.01})
+#' @param M number of bootstrapped series (default \code{M = 100})
+#' 
+#' @return a matrix containing the indices of the impulse response function that
+#' are 0.
+#' 
 #' @export
-errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, quantBands = TRUE) {
+errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100) {
   
   lambda <- v$lambda 
   p <- length(v$A)
@@ -78,17 +94,17 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, quantBands = TRUE) {
     
     if (v$penalty == "ENET"){
       # fit ENET to a specific value of lambda
-      fit <- varENET2(o, p, lambda, opt = NULL)
+      fit <- varENET(o, p, lambda, opt = NULL)
       
       Avector <- stats::coef(fit, s = lambda)
       A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
       
     } else if (v$penalty == "SCAD") {
-      fit <- varSCAD2(o, p, lambda, opt = NULL)    
+      fit <- varSCAD(o, p, lambda, opt = NULL)    
       Avector <- fit$beta[2:nrow(fit$beta), 1]
       A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
     } else {
-      fit <- varMCP2(o, p, lambda, opt = NULL)    
+      fit <- varMCP(o, p, lambda, opt = NULL)    
       Avector <- fit$beta[2:nrow(fit$beta), 1]
       A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
     }
@@ -111,13 +127,11 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, quantBands = TRUE) {
   irfLB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
   oirfUB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
   oirfLB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
+  irfQUB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
+  irfQLB <- irfQUB
+  oirfQUB <- irfQUB
+  oirfQLB <- irfQUB
 
-  if (quantBands == TRUE) {
-    irfQUB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
-    irfQLB <- irfQUB
-    oirfQUB <- irfQUB
-    oirfQLB <- irfQUB
-  }
 
   
   a <- alpha/2
@@ -129,13 +143,11 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, quantBands = TRUE) {
   for (i in 1:nc) {
     for (j in 1:nc) {
       for (k in 1:len) {
-        
-        if (quantBands == TRUE) {
-          irfQUB[i,j,k]  <- quantile(irfs[i,j,k,], probs = (1-a), na.rm = TRUE)
-          oirfQUB[i,j,k]<- quantile(oirfs[i,j,k,], probs = (1-a), na.rm = TRUE)
-          irfQLB[i,j,k] <- quantile(irfs[i,j,k,], probs = a, na.rm = TRUE)
-          oirfQLB[i,j,k] <- quantile(oirfs[i,j,k,], probs = a, na.rm = TRUE)
-        }
+
+        irfQUB[i,j,k]  <- quantile(irfs[i,j,k,], probs = (1-a), na.rm = TRUE)
+        oirfQUB[i,j,k]<- quantile(oirfs[i,j,k,], probs = (1-a), na.rm = TRUE)
+        irfQLB[i,j,k] <- quantile(irfs[i,j,k,], probs = a, na.rm = TRUE)
+        oirfQLB[i,j,k] <- quantile(oirfs[i,j,k,], probs = a, na.rm = TRUE)
         
         irfUB[i,j,k] <- qUB*sd(irfs[i,j,k,])
         oirfUB[i,j,k] <- qUB*sd(oirfs[i,j,k,])
@@ -156,13 +168,11 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, quantBands = TRUE) {
   output$oirfUB <- oirfUB
   output$irfLB <- irfLB
   output$oirfLB <- oirfLB
-  
-  if (quantBands == TRUE) {
-    output$irfQUB <- irfQUB
-    output$oirfQUB <- oirfQUB
-    output$irfQLB <- irfQLB
-    output$oirfQLB <- oirfQLB
-  }
+
+  output$irfQUB <- irfQUB
+  output$oirfQUB <- oirfQUB
+  output$irfQLB <- irfQLB
+  output$oirfQLB <- oirfQLB
   
   attr(output, "class") <- "irfBands"
   return(output)

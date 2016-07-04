@@ -4,14 +4,23 @@
 \alias{plotIRF}
 \title{IRF plot}
 \usage{
-plotIRF(M)
+plotIRF(irf, eb, i, j, type, bands)
 }
 \arguments{
-\item{irf}{the matrix to plot}
+\item{irf}{the irf object to plot}
+
+\item{eb}{the errorbands to plot}
+
+\item{i}{the first index}
+
+\item{j}{the second index}
+
+\item{type}{\code{type = "irf"} or \code{type = "oirf"}}
+
+\item{bands}{\code{"quantiles"} or \code{"sd"}}
 }
 \value{
-An \code{image} plot with a particular color palette (black zero entries, red 
-for the negative ones and green for the positive)
+An \code{image} plot relative to the impulse response function.
 }
 \description{
 Plot a IRF object

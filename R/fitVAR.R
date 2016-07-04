@@ -113,6 +113,8 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   # If ENET is used, return the lambda 
   if (penalty == "ENET") {
     output$lambda <- fit$lambda.min
+  } else {
+    output$lambda <- fit$lambda.min
   }
   
   output$mse <- mse
@@ -121,8 +123,9 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   output$residuals <- res
   output$sigma <- cov(res)
   output$penalty <- penalty
+  output$method <- "cv"
   attr(output, "class") <- "var"
-  attr(output, "type") <- "estimate"
+  attr(output, "type") <- "fit"
   return(output)
 }
 

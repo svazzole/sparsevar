@@ -82,15 +82,20 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, quantBands = TRUE) {
       
       Avector <- stats::coef(fit, s = lambda)
       A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
-      M <- cbind(diag(x = 1, nrow = (nc*(p-1)), ncol = (nc*(p-1))), matrix(0, nrow = (nc*(p-1)), ncol = nc))
-      bigA <- rbind(A,M)  
       
     } else if (v$penalty == "SCAD") {
-      stop("to be implemented")
+      fit <- varSCAD2(o, p, lambda, opt = NULL)    
+      Avector <- fit$beta[2:nrow(fit$beta), 1]
+      A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
     } else {
-      stop("to be implemented")
+      fit <- varMCP2(o, p, lambda, opt = NULL)    
+      Avector <- fit$beta[2:nrow(fit$beta), 1]
+      A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
     }
 
+    M <- cbind(diag(x = 1, nrow = (nc*(p-1)), ncol = (nc*(p-1))), matrix(0, nrow = (nc*(p-1)), ncol = nc))
+    bigA <- rbind(A,M)  
+    
     tmpRes <- getIRF(v, bigA, len, irf$cholP)
     irfs[,,,k] <- tmpRes$irf
     oirfs[,,,k] <- tmpRes$oirf

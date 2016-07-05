@@ -4,7 +4,7 @@
 \alias{fitVECM}
 \title{Multivariate VECM estimation}
 \usage{
-fitVECM(data, p, penalty, logScale, ...)
+fitVECM(data, p, penalty, method, logScale, ...)
 }
 \arguments{
 \item{data}{the data from the time series: variables in columns and observations in 
@@ -14,6 +14,8 @@ rows}
 
 \item{penalty}{the penalty function to use. Possible values are \code{"ENET"}, 
 \code{"SCAD"} or \code{"MCP"}}
+
+\item{method}{\code{"cv"} or \code{"timeSlice"}}
 
 \item{logScale}{should the function consider the \code{log} of the inputs? By default
 this is set to \code{TRUE}}

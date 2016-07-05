@@ -3,7 +3,7 @@
 #' @description A function to estimate a (possibly big) multivariate VECM time series
 #' using penalized least squares methods, such as ENET, SCAD or MC+.
 #'  
-#' @usage fitVECM(data, p, penalty, logScale, ...)
+#' @usage fitVECM(data, p, penalty, method, logScale, ...)
 #' 
 #' @param data the data from the time series: variables in columns and observations in 
 #' rows
@@ -12,6 +12,7 @@
 #' \code{"SCAD"} or \code{"MCP"}
 #' @param logScale should the function consider the \code{log} of the inputs? By default
 #' this is set to \code{TRUE} 
+#' @param method \code{"cv"} or \code{"timeSlice"}
 #' @param ... options for the function (TODO: specify)
 #' 
 #' @return Pi the matrix \code{Pi} for the VECM model 
@@ -21,7 +22,7 @@
 #' @return time elapsed time for the estimation
 #' 
 #' @export
-fitVECM <- function(data, p = 2, penalty = "ENET", logScale = TRUE, ...) {
+fitVECM <- function(data, p = 2, penalty = "ENET", method = "cv", logScale = TRUE, ...) {
   
   nr <- nrow(data)
   nc <- ncol(data)
@@ -33,7 +34,7 @@ fitVECM <- function(data, p = 2, penalty = "ENET", logScale = TRUE, ...) {
     # data[is.infinite(data)] <- 0
   }
   
-  resultsVAR <- fitVAR(data, p = p, penalty = penalty, ...)
+  resultsVAR <- fitVAR(data, p = p, penalty = penalty, method = method, ...)
   M <- resultsVAR$A
   I <- diag(x = 1, nrow = nc, ncol = nc)
   

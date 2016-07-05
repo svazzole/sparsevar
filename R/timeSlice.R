@@ -91,7 +91,7 @@ timeSliceVAR_ENET <- function(data, p, opt) {
   output$time <- elapsed
   output$series <- trDt$series
   output$residuals <- res
-  output$sigma <- cov(res)
+  output$sigma <- stats::cov(res)
   output$penalty <- "ENET"
   output$method <- "timeSlice"
   attr(output, "class") <- "var"
@@ -192,7 +192,7 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
   output$time <- elapsed
   output$series <- trDt$series
   output$residuals <- res
-  output$sigma <- cov(res)
+  output$sigma <- stats::cov(res)
   output$penalty <- penalty
   output$method <- "timeSlice"
   attr(output, "class") <- "var"

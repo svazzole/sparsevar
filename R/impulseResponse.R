@@ -135,8 +135,8 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100) {
 
   
   a <- alpha/2
-  qLB <- qnorm(a)
-  qUB <- qnorm((1-a))
+  qLB <- stats::qnorm(a)
+  qUB <- stats::qnorm((1-a))
   
   pb <- utils::txtProgressBar(min = 0, max = (nc*nc), style = 3)
   
@@ -144,15 +144,15 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100) {
     for (j in 1:nc) {
       for (k in 1:len) {
 
-        irfQUB[i,j,k]  <- quantile(irfs[i,j,k,], probs = (1-a), na.rm = TRUE)
-        oirfQUB[i,j,k]<- quantile(oirfs[i,j,k,], probs = (1-a), na.rm = TRUE)
-        irfQLB[i,j,k] <- quantile(irfs[i,j,k,], probs = a, na.rm = TRUE)
-        oirfQLB[i,j,k] <- quantile(oirfs[i,j,k,], probs = a, na.rm = TRUE)
+        irfQUB[i,j,k]  <- stats::quantile(irfs[i,j,k,], probs = (1-a), na.rm = TRUE)
+        oirfQUB[i,j,k]<- stats::quantile(oirfs[i,j,k,], probs = (1-a), na.rm = TRUE)
+        irfQLB[i,j,k] <- stats::quantile(irfs[i,j,k,], probs = a, na.rm = TRUE)
+        oirfQLB[i,j,k] <- stats::quantile(oirfs[i,j,k,], probs = a, na.rm = TRUE)
         
-        irfUB[i,j,k] <- qUB*sd(irfs[i,j,k,])
-        oirfUB[i,j,k] <- qUB*sd(oirfs[i,j,k,])
-        irfLB[i,j,k] <- qLB*sd(irfs[i,j,k,])
-        oirfLB[i,j,k] <- qLB*sd(oirfs[i,j,k,])
+        irfUB[i,j,k] <- qUB*stats::sd(irfs[i,j,k,])
+        oirfUB[i,j,k] <- qUB*stats::sd(oirfs[i,j,k,])
+        irfLB[i,j,k] <- qLB*stats::sd(irfs[i,j,k,])
+        oirfLB[i,j,k] <- qLB*stats::sd(oirfs[i,j,k,])
         
         
       }

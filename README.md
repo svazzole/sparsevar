@@ -57,14 +57,20 @@ plotMatrix(sim$S)
 
 ### Usage
 
-The functions included are:
+The functions included for model estimation are:
 
 - `fitVAR`: to estimate a sparse VAR multivariate time series with ENET, SCAD or MC+;
-- `estimateVECM`: to estimate a sparse VECM (Vector Error Correction Model) using LS with penalty (again: ENET, SCAD or MC+);
-- `simulateVAR`: to generate a sparse VAR multivariate time series;
-- `createSparseMatrix`: used to create sparse matrices with a given density;
+- `fitVECM`: to estimate a sparse VECM (Vector Error Correction Model) using LS with penalty (again: ENET, SCAD or MC+);
 - `impulseResponse`: compute the impulse response function;
 - `errorBands`: estimate the error bands for the IRF (using bootstrap);
+
+For simulations:
+
+- `simulateVAR`: to generate a sparse VAR multivariate time series;
+- `createSparseMatrix`: used to create sparse matrices with a given density;
+
+For plotting:
+
 - `plotMatrix`: useful to plot sparse matrices;
 - `plotVAR`: plot all the matrices of the model;
 - `plotComparisonVAR`: plot the comparison between the matrices of the simulated model and the matrices of the estimate.

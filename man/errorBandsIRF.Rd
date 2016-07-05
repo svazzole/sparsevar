@@ -4,7 +4,7 @@
 \alias{errorBandsIRF}
 \title{Error bands for IRF}
 \usage{
-errorBandsIRF(v, irf, alpha, M)
+errorBandsIRF(v, irf, alpha, M, verbose)
 }
 \arguments{
 \item{v}{a var object as from fitVAR or simulateVAR}
@@ -14,6 +14,8 @@ errorBandsIRF(v, irf, alpha, M)
 \item{alpha}{level of confidence (default \code{alpha = 0.01})}
 
 \item{M}{number of bootstrapped series (default \code{M = 100})}
+
+\item{verbose}{logical; if \code{TRUE} print progrss bars}
 }
 \value{
 a matrix containing the indices of the impulse response function that

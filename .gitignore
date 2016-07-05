@@ -10,3 +10,6 @@ data/
 .Rproj.user
 R/old/
 R/todo/
+vignettes/using_cache/
+vignettes/using_cache/latex/
+

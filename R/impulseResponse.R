@@ -64,18 +64,19 @@ checkImpulseZero <- function(irf) {
 #' 
 #' @description A function to estimate the confidence intervals for irf and oirf.
 #' 
-#' @usage errorBandsIRF(v, irf, alpha, M)
+#' @usage errorBandsIRF(v, irf, alpha, M, verbose)
 #'
 #' @param v a var object as from fitVAR or simulateVAR
 #' @param irf irf output from impulseResponse function
 #' @param alpha level of confidence (default \code{alpha = 0.01})
 #' @param M number of bootstrapped series (default \code{M = 100})
+#' @param verbose logical; if \code{TRUE} print progrss bars
 #' 
 #' @return a matrix containing the indices of the impulse response function that
 #' are 0.
 #' 
 #' @export
-errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100) {
+errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, verbose = TRUE) {
   
   lambda <- v$lambda 
   p <- length(v$A)
@@ -85,8 +86,10 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100) {
   irfs <- array(data = rep(0,len*nc^2*M), dim = c(nc,nc,len+1, M))
   oirfs <- array(data = rep(0,len*nc^2*M), dim = c(nc,nc,len+1, M))
   
-  cat("Step 1 of 2: bootstrapping series and re-estimating VAR...\n")
-  pb <- utils::txtProgressBar(min = 0, max = M, style = 3)
+  if (verbose == TRUE){
+    cat("Step 1 of 2: bootstrapping series and re-estimating VAR...\n")
+    pb <- utils::txtProgressBar(min = 0, max = M, style = 3)
+  }
   
   for (k in 1:M) {
     # create Xs and Ys (temp variables)
@@ -115,14 +118,18 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100) {
     tmpRes <- getIRF(v, bigA, len, irf$cholP)
     irfs[,,,k] <- tmpRes$irf
     oirfs[,,,k] <- tmpRes$oirf
-    utils::setTxtProgressBar(pb, k)
-  
+    
+    if (verbose == TRUE){
+      utils::setTxtProgressBar(pb, k)
+    }
   }
   
-  close(pb)
+  if (verbose == TRUE){
+    close(pb)
+    cat("Step 2 of 2: computing quantiles...\n")
+    pb <- utils::txtProgressBar(min = 0, max = (nc*nc), style = 3)
+  }
   
-  cat("Step 2 of 2: computing quantiles...\n")
-
   irfUB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
   irfLB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
   oirfUB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
@@ -131,14 +138,10 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100) {
   irfQLB <- irfQUB
   oirfQUB <- irfQUB
   oirfQLB <- irfQUB
-
-
   
   a <- alpha/2
   qLB <- stats::qnorm(a)
   qUB <- stats::qnorm((1-a))
-  
-  pb <- utils::txtProgressBar(min = 0, max = (nc*nc), style = 3)
   
   for (i in 1:nc) {
     for (j in 1:nc) {
@@ -156,11 +159,15 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100) {
         
         
       }
-      utils::setTxtProgressBar(pb, (i-1)*nc + j)
+      if (verbose == TRUE){
+        utils::setTxtProgressBar(pb, (i-1)*nc + j)
+      }
     }
   }
   
-  close(pb)
+  if (verbose == TRUE){
+    close(pb)
+  }
   
   output <- list()
   

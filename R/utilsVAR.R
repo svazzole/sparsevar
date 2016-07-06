@@ -24,6 +24,7 @@ transformData <- function(data, p, opt) {
   center <- ifelse(is.null(opt$center), TRUE, opt$center)
   
   if (scale == TRUE) {
+    #m <- colMeans(data)
     data <- apply(FUN = scale, X = data, MARGIN = 2)
   } 
   

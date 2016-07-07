@@ -16,7 +16,8 @@ Imports:
     ggplot2,
     reshape2,
     grid, 
-    mvtnorm
+    mvtnorm,
+    flare
 Suggests:
     knitr
 Depends:

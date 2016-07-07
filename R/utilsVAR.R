@@ -296,3 +296,48 @@ testGranger <- function(v, eb) {
   return(A)
   
 }
+
+#' @export
+informCrit <- function(v) {
+  
+  if (is.list(v)) {
+    k <- length(v)
+    r <- matrix(0, nrow = k, ncol = 3)
+    for (i in 1:k) {
+      p <- length(v[[i]]$A)
+      sigma <- v[[i]]$sigma
+      nr <- nrow(v[[i]]$residuals)
+      nc <- ncol(v[[i]]$residuals)
+      S <- (nr / (nr - nc * p - 1)) * sigma
+      d <- det(S)
+      r[i,1] <- log(d) + (2*p*nc^2)/nr                 # AIC
+      r[i,2] <- log(d) + (p*nc^2)/nr * log(nr)         # Schwarz
+      r[i,3] <- log(d) + (2*p*nc^2)/nr * log(log(nr))  # Hannan-Quinn
+    }
+    results <- data.frame(r)
+    colnames(results) <- c("AIC", "Schwarz", "HannanQuinn")
+  } else {
+    stop("Input must be a list of var models.")
+  }
+  
+  return(results)
+}
+
+estimateCovariance <- function(res, methodCovariance = "tiger", ...) {
+  
+  opt <- list(...)
+  
+  nc <- ncol(res)
+  nr <- nrow(res)
+
+  if (nr < nc){
+    tmpFit <- flare::sugm(res, method = methodCovariance, verbose = FALSE)
+    l <- length(tmpFit$icov)
+    sigma <- solve(tmpFit$icov[[l]])
+  } else {
+    sigma <- stats::cov(res)
+  }
+
+  return(sigma)
+  
+}

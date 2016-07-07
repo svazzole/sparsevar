@@ -165,7 +165,13 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   output$time <- elapsed
   output$series <- trDt$series
   output$residuals <- res
-  output$sigma <- stats::cov(res)
+  
+  if (is.null(opt$methodCov)) {
+    output$sigma <- estimateCovariance(res)
+  } else {
+    output$sigma <- estimateCovariance(res, methodCovariance = opt$methodCov)
+  }
+
   output$penalty <- penalty
   output$method <- "cv"
   attr(output, "class") <- "var"

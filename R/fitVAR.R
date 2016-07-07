@@ -131,6 +131,16 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   # Now that we have the matrices compute the residuals
   res <- computeResiduals(data, A)
   
+  # To extract the sd of mse
+  if (penalty == "ENET"){
+    ix <- which(fit$cvm == min(fit$cvm))
+    mseSD <- fit$cvsd[ix]
+  } else {
+    ix <- which(fit$cve == min(fit$cve))
+    mseSD <- fit$cvse[ix]
+  }
+
+  
   # Create the output
   output = list()
   output$mu <- trDt$mu
@@ -151,6 +161,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   }
   
   output$mse <- mse
+  output$mseSD <- mseSD
   output$time <- elapsed
   output$series <- trDt$series
   output$residuals <- res

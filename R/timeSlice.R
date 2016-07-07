@@ -44,10 +44,13 @@ timeSliceVAR_ENET <- function(data, p, opt) {
     
   }
   
-  finalRes <- matrix(0, ncol = 2, nrow = length(lam))
+  finalRes <- matrix(0, ncol = 3, nrow = length(lam))
   finalRes[,1] <- lam 
   finalRes[,2] <- rowMeans(resTS[,2:(l+1)])
-  
+  for (k in 1:length(lam)) {
+    finalRes[k,3] <- sd(resTS[k,2:(l+1)])    
+  }
+
   # TODO: check: one can have multiple mins. Choose the first one. Is this the 
   # better choice?
   ix <- which(finalRes[,2] == min(finalRes[,2]))[1]
@@ -88,6 +91,7 @@ timeSliceVAR_ENET <- function(data, p, opt) {
 
   output$lambda <- finalRes[ix, 1]
   output$mse <- finalRes[ix, 2]
+  output$mseSD <- finalRes[ix, 3]
   output$time <- elapsed
   output$series <- trDt$series
   output$residuals <- res
@@ -143,7 +147,9 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
   finalRes <- matrix(0, ncol = 2, nrow = length(lam))
   finalRes[,1] <- lam 
   finalRes[,2] <- rowMeans(resTS[,2:(l+1)])
-  
+  for (k in 1:length(lam)) {
+    finalRes[k,3] <- sd(resTS[k,2:(l+1)])    
+  }
   # TODO: check: one can have multiple mins. Choose the first one. Is this the 
   # better choice?
   ix <- which(finalRes[,2] == min(finalRes[,2]))[1]
@@ -189,6 +195,7 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
   
   output$lambda <- finalRes[ix, 1]
   output$mse <- finalRes[ix, 2]
+  output$mseSD <- finalRes[ix, 3]
   output$time <- elapsed
   output$series <- trDt$series
   output$residuals <- res

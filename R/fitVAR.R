@@ -66,7 +66,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
     
     # fit the ENET model
     t <- Sys.time()
-    fit <- cvVAR_ENET(trDt$X, trDt$y, opt)
+    fit <- cvVAR_ENET(trDt$X, trDt$y, nvar = nc, opt)
     elapsed <- Sys.time() - t
     
     # extract what is needed
@@ -179,7 +179,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   return(output)
 }
 
-cvVAR_ENET <- function(X, y, opt) {
+cvVAR_ENET <- function(X, y, nvar, opt) {
   
   a  <- ifelse(is.null(opt$alpha), 1, opt$alpha)
   nl <- ifelse(is.null(opt$nlambda), 100, opt$nlambda)
@@ -193,8 +193,10 @@ cvVAR_ENET <- function(X, y, opt) {
     foldsIDs <- numeric(0)
   } else {
     nr <- nrow(X)
+    #nv <<- nvar
     #foldsIDs <- sort(rep(seq(nf), length = nr))
-    foldsIDs <- rep(seq(nf), length = nr)
+    #foldsIDs <- rep(seq(nf), length = nr)
+    foldsIDs <- rep(sort(rep(seq(nf), length.out = nr/nvar)), nvar)
   }
 
   if(parall == TRUE) {

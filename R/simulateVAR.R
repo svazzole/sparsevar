@@ -42,7 +42,8 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
     I <- diag(1 - rho, nrow = N)
     r <- matrix(0, nrow = N, ncol = N)
     r[1:l, 1:l] <- rho
-    T <- I + r
+    r[(l+1):N, (l+1):N] <- diag(rho, nrow = (N-l))
+    C <- I + r
       
   } else if (covariance == "block2") {
   
@@ -51,23 +52,23 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
     r <- matrix(0, nrow = N, ncol = N)
     r[1:l, 1:l] <- rho
     r[(l+1):N, (l+1):N] <- rho
-    T <- I + r
+    C <- I + r
       
   } else if (covariance == "Toeplitz"){
     
     r <- rho^(1:N)
-    T <- Matrix::toeplitz(r) 
+    C <- Matrix::toeplitz(r) 
   
   } else if (covariance == "Wishart"){
 
     r <- rho^(1:N)
     S <- Matrix::toeplitz(r)
-    T <- stats::rWishart(1, 2*N, S)
-    T <- as.matrix(T[, , 1])
+    C <- stats::rWishart(1, 2*N, S)
+    C <- as.matrix(C[, , 1])
 
   } else if (covariance == "diagonal"){
     
-    T <- diag(x = rho, nrow = N, ncol = N)
+    C <- diag(x = rho, nrow = N, ncol = N)
     
   } else {
     
@@ -80,14 +81,14 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   # ar <- 1:p
   
   # Generate the VAR process 
-  data <- generateVARseries(nobs = nobs, mu = 0, AR = A, sigma = T, skip = 200)
+  data <- generateVARseries(nobs = nobs, mu = 0, AR = A, sigma = C, skip = 200)
   
   # Output
   out <- list()
   out$A <- A
   out$series <- data$series
   out$noises <- data$noises
-  out$sigma <- T
+  out$sigma <- C
   
   attr(out, "class") <- "var"
   attr(out, "type") <- "simulation"

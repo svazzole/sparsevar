@@ -304,7 +304,13 @@ informCrit <- function(v) {
     k <- length(v)
     r <- matrix(0, nrow = k, ncol = 3)
     for (i in 1:k) {
-      p <- length(v[[i]]$A)
+      if (attr(v[[1]], "class") == "var") {
+        p <- length(v[[i]]$A)
+      } else if (attr(v[[1]], "class") == "vecm") {
+        p <- length(v[[1]]$G) + 1 
+      } else {
+        stop("List elements must be var or vecm objects.")
+      }
       sigma <- v[[i]]$sigma
       nr <- nrow(v[[i]]$residuals)
       nc <- ncol(v[[i]]$residuals)

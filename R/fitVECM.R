@@ -29,6 +29,8 @@ fitVECM <- function(data, p = 1, penalty = "ENET", method = "cv", logScale = TRU
   
   p <- p + 1
   
+  opt <- list(...)
+  
   # by default log-scale the data
   if (logScale == TRUE) {
     data <- log(data)
@@ -57,6 +59,15 @@ fitVECM <- function(data, p = 1, penalty = "ENET", method = "cv", logScale = TRU
   output$mse <- resultsVAR$mse
   output$time <- resultsVAR$time
   output$residuals <- resultsVAR$residuals
+  
+  if (is.null(opt$methodCov)) {
+    output$sigma <- estimateCovariance(res)
+  } else {
+    output$sigma <- estimateCovariance(res, methodCovariance = opt$methodCov)
+  }
+  
+  attr(output, "class") <- "vecm"
+  attr(output, "type") <- "fit"
   
   return(output)
   

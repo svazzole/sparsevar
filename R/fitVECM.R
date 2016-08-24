@@ -61,9 +61,9 @@ fitVECM <- function(data, p = 1, penalty = "ENET", method = "cv", logScale = TRU
   output$residuals <- resultsVAR$residuals
   
   if (is.null(opt$methodCov)) {
-    output$sigma <- estimateCovariance(res)
+    output$sigma <- estimateCovariance(output$residuals)
   } else {
-    output$sigma <- estimateCovariance(res, methodCovariance = opt$methodCov)
+    output$sigma <- estimateCovariance(output$residuals, methodCovariance = opt$methodCov)
   }
   
   attr(output, "class") <- "vecm"

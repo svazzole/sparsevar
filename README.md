@@ -32,7 +32,7 @@ Using the function included in the package, we simply generate a 20x20 VAR(2) pr
 set.seed(1)
 sim <- simulateVAR(N = 20, p = 2)
 ```
-This command will generate a model with two sparse matrices with 5% of non-zero entries and a Toeplitz variance-covariance matrix (with ![equation](http://www.sciweavers.org/tex2img.php?eq=%5Crho%20%3D%200.5&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=0) ).
+This command will generate a model with two sparse matrices with 5% of non-zero entries and a Toeplitz variance-covariance matrix with ![equation](http://www.sciweavers.org/tex2img.php?eq=%5Crho%20%3D%200.5&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=0).
 We can estimate the matrices of the process using for example
 ```{r}
 est <- fitVAR(sim$series, p = 2, threshold = TRUE)

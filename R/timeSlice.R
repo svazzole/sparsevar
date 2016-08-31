@@ -1,15 +1,15 @@
 timeSliceVAR <- function(data, p = 1, penalty = "ENET", opt) {
   
   if (penalty == "ENET") {
-    
+    # call timeslice with ENET
     out <- timeSliceVAR_ENET(data, p, opt)
 
   } else if (penalty == "SCAD" | penalty == "MCP") {
-    
+    # call timeslice with SCAD or MCP
     out <- timeSliceVAR_SCAD(data, p, opt, penalty)
   
   } else {
-    
+    # error
     stop("Unknown penalty. Possible values are \"ENET\", \"SCAD\" or \"MCP\".")
   
   }

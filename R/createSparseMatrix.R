@@ -14,52 +14,35 @@
 #' M <- createSparseMatrix(N = 30, sparsity = 0.05, method = "normal", stationary = TRUE)
 #'
 #' @export
-createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALSE, p = 1) {
+createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALSE, p = 1, ...) {
+  
+  opt <- list(...)
+  mu <- ifelse(!is.null(opt$mu), opt$mu, 0)
+  sd <- ifelse(!is.null(opt$sd), opt$sd, 1)
+  n <- floor(sparsity * N^2)
   
   if (method == "normal") {
     # normal distributed nonzero entries
-    n <- floor(sparsity * N^2)
-    nonZeroEntries <- stats::rnorm(n, mean = 0, sd = 1)
+    nonZeroEntries <- stats::rnorm(n, mean = mu, sd = sd)
     entries <- sample(x = 1:N^2, size = n, replace = FALSE)
-    
     Atmp <- numeric(length = N^2)
     Atmp[entries] <- nonZeroEntries
-    
-    A <- matrix(Atmp, nrow = N, ncol = N)
-    
-  } else if (method == "unimodal") {
-    
-    # normal distributed nonzero entries
-    n <- floor(sparsity * N^2)
-    nonZeroEntries <- stats::rnorm(n, mean = 0, sd = 1)
-    entries <- sample(x = 1:N^2, size = n, replace = FALSE)
-    
-    Atmp <- numeric(length = N^2)
-    Atmp[entries] <- nonZeroEntries
-    
     A <- matrix(Atmp, nrow = N, ncol = N)
     
   } else if (method == "bimodal") {
-    # bimodal distributed nonzero entries
-    n <- floor(sparsity * N^2)
-    
-    nonZeroEntriesLeft <- stats::rnorm(n, mean = -1, sd = sqrt(0.5))
-    nonZeroEntriesRight <- stats::rnorm(n, mean = 1, sd = sqrt(0.5))
-    
+    # bimodal (bi-normal) distributed nonzero entries
+    nonZeroEntriesLeft <- stats::rnorm(n, mean = -mu, sd = sd)
+    nonZeroEntriesRight <- stats::rnorm(n, mean = mu, sd = sd)
     nonZeroEntries <- sample(x = c(nonZeroEntriesLeft, nonZeroEntriesRight), size = n, replace = FALSE)
-    
     entries <- sample(x = 1:N^2, size = n, replace = FALSE)
-    
     Atmp <- numeric(length = N^2)
     Atmp[entries] <- nonZeroEntries
-    
     A <- matrix(Atmp, nrow = N, ncol = N)
 
   } else if (method == "full") {
-    
+    # full matrix
     e <- (0.9)^(1:N)#stats::runif(N, min=-1, max=1)
     D <- diag(e)
-    
     P <- matrix(0,N,N)
     while (det(P)==0) {
       P <- createSparseMatrix(N = N, sparsity = 1, method = "bimodal")
@@ -75,12 +58,11 @@ createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALS
 
   if (stationary == TRUE) {
     # if spectral radius < 1 is needed, return the re-normalized matrix  
-    K <- 1
+    K <- mu
     return(1/(K * sqrt(p * sparsity * N)) * A)
     #return(1/(max(Mod(eigen(A)$values)) + 0.01) * A)
     
   } else {
-    
     return(A)
     
   }

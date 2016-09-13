@@ -17,7 +17,8 @@ Imports:
     reshape2,
     grid, 
     mvtnorm,
-    flare
+    flare,
+    picasso
 Suggests:
     knitr
 Depends:

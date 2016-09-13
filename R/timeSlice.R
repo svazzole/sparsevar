@@ -110,6 +110,8 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
   nr <- nrow(data)
   nc <- ncol(data)
 
+  picasso <- ifelse(!is.null(opt$picasso), opt$picasso, FALSE)
+
   l <- ifelse(is.null(opt$leaveOut), 10, opt$leaveOut)
   winLength <- nr - l
   a  <- ifelse(is.null(opt$alpha), 1, opt$alpha)
@@ -117,14 +119,18 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
   horizon <- 1
   trDt <- transformData(data[1:winLength, ], p, opt)
 
-  if (penalty == "SCAD") {
-    lam <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y, family = "gaussian", penalty = "SCAD",
-                          alpha = 1)$lambda
-  } else {
-    lam <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y, family = "gaussian", penalty = "MCP",
-                          alpha = 1)$lambda
-  }
 
+  if (!picasso) {
+    if (penalty == "SCAD") {
+      lam <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y, family = "gaussian", penalty = "SCAD",
+                            alpha = 1)$lambda
+    } else {
+      lam <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y, family = "gaussian", penalty = "MCP",
+                            alpha = 1)$lambda
+    }
+  } else {
+    lam <- picasso::picasso(trDt$X, trDt$y, method = "scad", nlambda = 100)$lambda
+  }
 
   resTS <- matrix(0, ncol = l+1, nrow = length(lam))
   resTS[ , 1] <- lam
@@ -132,17 +138,22 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
   for (i in 1:l) {
 
     d <- data[i:(winLength + i), ]
-    if (penalty == "SCAD") {
-      fit <- varSCAD(d[1:(nrow(d)-1), ], p, lam, opt)
-      resTS[, i+1] <- computeErrors(d, p, fit, penalty = "SCAD")
+    if (!picasso) {
+      if (penalty == "SCAD") {
+        fit <- varSCAD(d[1:(nrow(d)-1), ], p, lam, opt)
+        resTS[, i+1] <- computeErrors(d, p, fit, penalty = "SCAD")
+      } else {
+        fit <- varMCP(d[1:(nrow(d)-1), ], p, lam, opt)
+        resTS[, i+1] <- computeErrors(d, p, fit, penalty = "MCP")
+      }
     } else {
-      fit <- varMCP(d[1:(nrow(d)-1), ], p, lam, opt)
-      resTS[, i+1] <- computeErrors(d, p, fit, penalty = "MCP")
+      trDt <- transformData(d, p, opt)
+      fit <- picasso::picasso(trDt$X, trDt$y, method = "scad", lambda = lam)
+      resTS[, i+1] <- computeErrorsPicasso(d, p, fit)
     }
-
   }
 
-  finalRes <- matrix(0, ncol = 2, nrow = length(lam))
+  finalRes <- matrix(0, ncol = 3, nrow = length(lam))
   finalRes[,1] <- lam
   finalRes[,2] <- rowMeans(resTS[,2:(l+1)])
   for (k in 1:length(lam)) {
@@ -152,14 +163,20 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
   # better choice?
   ix <- which(finalRes[,2] == min(finalRes[,2]))[1]
 
-  if (penalty == "SCAD") {
-    fit <- varSCAD(data, p, finalRes[ix,1], opt)
+  if (!picasso) {
+    if (penalty == "SCAD") {
+      fit <- varSCAD(data, p, finalRes[ix,1], opt)
+    } else {
+      fit <- varMCP(data, p, finalRes[ix,1], opt)
+    }
+    Avector <- fit$beta[2:nrow(fit$beta), 1]
+    A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
   } else {
-    fit <- varMCP(data, p, finalRes[ix,1], opt)
+    trDt <- transformData(data, p, opt)
+    fit <- picasso::picasso(trDt$X, trDt$y, method = "scad", lambda = finalRes[ix,1])
+    Avector <- fit$beta[, 1]
+    A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
   }
-
-  Avector <- fit$beta[2:nrow(fit$beta), 1]
-  A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
 
   elapsed <- Sys.time() - t
 
@@ -224,6 +241,38 @@ computeErrors <- function(data, p, fit, penalty = "ENET") {
       Avector <- fit$beta[2:nrow(fit$beta), i]
       A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
     }
+
+    A <- splitMatrix(A, p)
+
+    n <- data[nr, ]
+
+    f <- rep(0, nrow = nc, ncol = 1)
+    tmpData <- data[((nr-1)- p + 1):(nr - 1), ]
+    for (k in 1:p) {
+
+      f <- f + A[[k]] %*% data[((nr-1) - (k-1)), ]
+
+    }
+
+    err[i] <- mean((f - n)^2)
+
+  }
+
+  return(err)
+}
+
+computeErrorsPicasso <- function(data, p, fit) {
+
+  nr <- nrow(data)
+  nc <- ncol(data)
+  l <- length(fit$lambda)
+
+  err <- rep(0, ncol = 1, nrow = nr)
+
+  for (i in 1:l) {
+
+    Avector <- fit$beta[, i]
+    A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
 
     A <- splitMatrix(A, p)
 

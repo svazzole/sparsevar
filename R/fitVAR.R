@@ -228,17 +228,24 @@ cvVAR_SCAD <- function(X, y, opt) {
   nf <- ifelse(is.null(opt$nfolds), 10, opt$nfolds)
   parall <- ifelse(is.null(opt$parallel), FALSE, opt$parallel)
   ncores <- ifelse(is.null(opt$ncores), 1, opt$ncores)
+  picasso <- ifelse(is.null(opt$picasso), FALSE, TRUE)
 
-  if(parall == TRUE) {
-    if(ncores < 1) {
-      stop("The number of cores must be > 1")
+  if (!picasso){
+    if(parall == TRUE) {
+      if(ncores < 1) {
+        stop("The number of cores must be > 1")
+      } else {
+        cl <- parallel::makeCluster(ncores)
+        cvfit <- ncvreg::cv.ncvreg(X, y, nfolds = nf, penalty = "SCAD", eps = e, cluster = cl)
+        parallel::stopCluster(cl)
+      }
     } else {
-      cl <- parallel::makeCluster(ncores)
-      cvfit <- ncvreg::cv.ncvreg(X, y, nfolds = nf, penalty = "SCAD", eps = e, cluster = cl)
-      parallel::stopCluster(cl)
+      cvfit <- ncvreg::cv.ncvreg(X, y, nfolds = nf, penalty = "SCAD", eps = e)
     }
   } else {
-    cvfit <- ncvreg::cv.ncvreg(X, y, nfolds = nf, penalty = "SCAD", eps = e)
+
+    cvfit <- picasso::picasso(X,y, method = "scad")
+
   }
 
   return(cvfit)

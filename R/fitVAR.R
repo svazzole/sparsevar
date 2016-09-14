@@ -1,3 +1,6 @@
+#' @useDynLib sparsevar
+#' @importFrom Rcpp sourceCpp
+#' 
 #' @title Multivariate VAR estimation
 #'
 #' @description A function to estimate a (possibly high-dimensional) multivariate VAR time series

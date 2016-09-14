@@ -18,7 +18,8 @@ Imports:
     grid,
     mvtnorm,
     picasso,
-    corpcor
+    corpcor,
+    Rcpp
 Suggests:
     knitr,
     testthat
@@ -32,3 +33,5 @@ BugReports: http://github.com/svazzole/sparsevar
 VignetteBuilder:
     knitr
 RoxygenNote: 5.0.1
+LinkingTo: Rcpp,
+           RcppArmadillo

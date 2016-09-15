@@ -30,3 +30,13 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// cdfit_gaussian
+Rcpp::NumericMatrix cdfit_gaussian();
+RcppExport SEXP sparsevar_cdfit_gaussian() {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    __result = Rcpp::wrap(cdfit_gaussian());
+    return __result;
+END_RCPP
+}

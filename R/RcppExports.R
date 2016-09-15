@@ -9,3 +9,7 @@ tp <- function(X, Y) {
     .Call('sparsevar_tp', PACKAGE = 'sparsevar', X, Y)
 }
 
+cdfit_gaussian <- function() {
+    .Call('sparsevar_cdfit_gaussian', PACKAGE = 'sparsevar')
+}
+

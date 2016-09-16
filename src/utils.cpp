@@ -69,15 +69,7 @@ double MCP(double z, double l1, double l2, double gamma, double v) {
   else return(z/(v*(1+l2)));
 }
 
-double SCAD(double z, double l1, double l2, double gamma, double v) {
-  double s=0;
-  if (z > 0) s = 1;
-  else if (z < 0) s = -1;
-  if (fabs(z) <= l1) return(0);
-  else if (fabs(z) <= (l1*(1+l2)+l1)) return(s*(fabs(z)-l1)/(v*(1+l2)));
-  else if (fabs(z) <= gamma*l1*(1+l2)) return(s*(fabs(z)-gamma*l1/(gamma-1))/(v*(1-1/(gamma-1)+l2)));
-  else return(z/(v*(1+l2)));
-}
+
 
 double LASSO(double z, double l1, double l2, double v) {
   double s=0;

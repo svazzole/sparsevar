@@ -5,7 +5,8 @@ using namespace Rcpp;
 
 // Gaussian loss
 // [[Rcpp::export]]
-double gLoss(NumericVector r, int n) {
+double gLoss(arma::colvec r) {
+  int n = r.n_rows;
   double l = 0;
   for (int i=0;i<n;i++) {
     l = l + pow(r(i),2); 
@@ -14,64 +15,138 @@ double gLoss(NumericVector r, int n) {
 }
 
 // Cross product of y with jth column of X
-double crossprod(arma::sp_mat X, NumericVector y, int n, int j) {
+// [[Rcpp::export]]
+arma::colvec crossprod(arma::sp_mat X, arma::colvec y) {
   //int nn = n*j;
-  double val=0;
-  for (int i=0;i<n;i++) {
-    val += X(i,j)*y(i); 
-  }
-  return(val);
+  int n = y.n_rows;
+  // double val=0;
+  // for (int i=0;i<n;i++) {
+  //   val += X(i,j)*y(i); 
+  // }
+  // return(val);
+  arma::colvec ret = (arma::trans(X) * y)/n;
+  return ret;
 }
 
-// [[Rcpp::export]]
-arma::sp_mat tp(const arma::sp_mat X, const arma::sp_mat Y) {
-  //int n = X.n_rows, k = X.n_cols;
-  arma::sp_mat out = X * Y;
-  return(out);
+double SCAD(double z, double l1, double l2, double gamma, double v) {
+  double s=0;
+  if (z > 0) s = 1;
+  else if (z < 0) s = -1;
+  if (fabs(z) <= l1) return(0);
+  else if (fabs(z) <= (l1*(1+l2)+l1)) return(s*(fabs(z)-l1)/(v*(1+l2)));
+  else if (fabs(z) <= gamma*l1*(1+l2)) return(s*(fabs(z)-gamma*l1/(gamma-1))/(v*(1-1/(gamma-1)+l2)));
+  else return(z/(v*(1+l2)));
 }
 
 
 // [[Rcpp::export]]
-Rcpp::NumericMatrix cdfit_gaussian(arma::sp_mat X, Rcpp::NumericVector Y, NumericVector lambda, double eps, int max_iter, double gamma, Rcpp::NumericVector multiplier, double alpha, int dfmax, SEXP user) {
+arma::sp_mat cdfit_gaussian(arma::sp_mat X, arma::colvec Y, arma::colvec lambda, double eps, int max_iter, double gamma, arma::colvec multiplier, double alpha, int dfmax, int user) {
 //Rcpp::NumericMatrix cdfit_gaussian() {
   
-  int n = Y.length();
+  int n = Y.n_rows;
   int p = X.n_cols;
-  int L = lambda.length();
+  int L = lambda.n_rows;
   
-  Rcpp::NumericMatrix beta(L,p);
-  Rcpp::NumericVector loss(L);
-  Rcpp::NumericVector iter(L);
-  Rcpp::NumericVector a(p);
-  Rcpp::NumericVector r = Y;
-  Rcpp::NumericVector z(p);
-  Rcpp::NumericVector e1(p);
-  Rcpp::NumericVector e2(p);
+  arma::sp_mat beta(L,p);
+  arma::colvec loss(L, arma::fill::zeros);
+  arma::colvec iter(L, arma::fill::zeros);
+  arma::colvec a(p, arma::fill::zeros);
+  arma::colvec r = Y;
+  arma::colvec z(p, arma::fill::zeros);
+  arma::colvec e1(p, arma::fill::zeros);
+  arma::colvec e2(p, arma::fill::zeros);
   double cutoff, l1, l2;
   int converged, lstart;
   
-  for (int j=0; j<p; j++){
-    z(j) = crossprod(X, r, n, j)/n; 
-  }
-  
+  z = crossprod(arma::trans(X),r);
+  // for (int j=0; j<p; j++){
+  //   z(j) = crossprod(X, r, n, j)/n; 
+  // }
+  // 
   // If lam[0]=lam_max, skip lam[0] -- closed form sol'n available
   if (user) {
     lstart = 0;
   } else {
-    loss(0) = gLoss(r,n);
+    loss(0) = gLoss(r);
     lstart = 1;
   }
   
+  // Path
+  for (int l=lstart;l<L;l++) {
+    R_CheckUserInterrupt();
+    if (l != 0) {
+      // Assign a
+      for (int j=0;j<p;j++) {
+        a(j) = beta(l,j); 
+      }
+      // Check dfmax
+      int nv = 0;
+      for (int j=0; j<p; j++) {
+        if (a(j) != 0) nv++;
+      }
+      if (nv > dfmax) {
+        for (int ll=l; ll<L; ll++) {
+          iter(ll) = 0; 
+        }
+        return beta;
+        // res = cleanupG(a, r, e1, e2, z, beta, loss, iter);
+        // return(res);
+      }
+      // Determine eligible set
+      // if (strcmp(penalty, "lasso")==0) cutoff = 2*lam[l] - lam[l-1];
+      // if (strcmp(penalty, "MCP")==0) cutoff = lam[l] + gamma/(gamma-1)*(lam[l] - lam[l-1]);
+      if (1 == 1) {
+        cutoff = lambda(l) + gamma/(gamma-2)*(lambda(l) - lambda(l-1));
+      } 
+      for (int j=0; j<p; j++) {
+        if (fabs(z(j)) > (cutoff * alpha * multiplier(j))) {
+          e2(j) = 1;
+        }
+      }
+    } else {
+        // Determine eligible set
+        double lmax = 0;
+        for (int j=0; j<p; j++) {
+          if (fabs(z[j]) > lmax) {
+            lmax = fabs(z[j]);
+          }
+        }
+        cutoff = lambda(l) + gamma/(gamma-2)*(lambda(l) - lmax);
+        for (int j=0; j<p; j++) {
+          if (fabs(z(j)) > (cutoff * alpha * multiplier(j))) { 
+            e2(j) = 1;
+          }
+        }
+    }
+    
+    while (iter(l) < max_iter) {
+      while (iter(l) < max_iter) {
+        while (iter(l) < max_iter) {
+          // Solve over the active set
+          iter(l)++;
+          z = crossprod(X,r) + a;
+          
+          for (int j=0; j<p; j++) {
+            if (e1(j)) {
+              //z(j) = crossprod(X,r) + a(j);
+              
+              // Update beta_j
+              l1 = lambda(l) * multiplier(j) * alpha;
+              l2 = lambda(l) * multiplier(j) * (1-alpha);
+              beta(l,j) = SCAD(z(j), l1, l2, gamma, 1);
+              
+              // Update r
+              double shift = beta(l,j) - a(j);
+              if (shift !=0) for (int i=0;i<n;i++) r(i) -= shift*X[j*n+i];
+            }
+          }
+        }
+      }
+    }
+  }
   return(beta);
 }
 
-//   // Path
-//   for (int l=lstart;l<L;l++) {
-//     R_CheckUserInterrupt();
-//     if (l != 0) {
-//       // Assign a
-//       for (int j=0;j<p;j++) a[j] = b[(l-1)*p+j];
-//       
 //       // Check dfmax
 //       int nv = 0;
 //       for (int j=0; j<p; j++) {

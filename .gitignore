@@ -14,4 +14,6 @@ vignettes/using_cache/
 vignettes/using_cache/latex/
 *.o
 *.so
+src/*.o
+src/*.so
 

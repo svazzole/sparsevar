@@ -16,7 +16,7 @@ install.package("sparsevar")
 To install the developing version:
 ```{r}
 install.packages("devtools")
-devtools::install_github("svazzole/sparsevar")
+devtools::install_github("svazzole/sparsevar", "master")
 ```
 Check [here](https://www.rstudio.com/products/rpackages/devtools/) to understand which are the dependencies of `devtools` for your OS.
 
@@ -35,24 +35,23 @@ sim <- simulateVAR(N = 20, p = 2)
 This command will generate a model with two sparse matrices with 5% of non-zero entries and a Toeplitz variance-covariance matrix with rho = 0.5.
 We can estimate the matrices of the process using for example
 ```{r}
-est <- fitVAR(sim$series, p = 2, threshold = TRUE)
+fit <- fitVAR(sim$series, p = 2, threshold = TRUE)
 ```
 
 The results can be seen by plotting the matrices
 ```{r}
-plotComparisonVAR(sim, est)
+plotComparisonVAR(sim, fit)
 ```
 the first row of the plot is made by the matrices of the simulated process and the second row is formed by their estimates.
 
-One can also estimate the variance/covariance matrix of the residuals with 
+The fit contains also the estimate of the variance/covariance matrix of the residuals 
 ```{r}
-M <- cov(est$residuals)
-plotMatrix(M)
+plotMatrix(fit$sigma)
 ```
 
-and compare with the covariance matrix of the errors of the generating process
+which can be compared with the covariance matrix of the errors of the generating process
 ```{r}
-plotMatrix(sim$S)
+plotMatrix(sim$sigma)
 ```
 
 ### Usage
@@ -71,7 +70,7 @@ For simulations:
 
 For plotting:
 
-- `plotMatrix`: useful to plot sparse matrices;
+- `plotMatrix`: useful to plot matrices and sparse matrices;
 - `plotVAR`: plot all the matrices of the model;
 - `plotComparisonVAR`: plot the comparison between the matrices of the simulated model and the matrices of the estimate.
 - `plotIRF`: plot IRF function;

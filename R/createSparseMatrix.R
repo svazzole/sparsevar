@@ -40,7 +40,7 @@ createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALS
     A <- matrix(Atmp, nrow = N, ncol = N)
 
   } else if (method == "full") {
-    # full matrix
+    # full matrix: used only for tests
     e <- (0.9)^(1:N)#stats::runif(N, min=-1, max=1)
     D <- diag(e)
     P <- matrix(0,N,N)
@@ -58,15 +58,9 @@ createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALS
 
   if (stationary == TRUE) {
     # if spectral radius < 1 is needed, return the re-normalized matrix  
-    # if (mu != 0) {
-    #   K <- mu
-    # } else {
-    #   K <- 1
-    # }
-    K <- 1 + mu
-    return(1/(K * sqrt(p * sparsity * N)) * A)
-    #return(1/(max(Mod(eigen(A)$values)) + 0.01) * A)
-    
+    K <- 1 + base::abs(mu)
+    return(1/(K * base::sqrt(p * sparsity * N)) * A)
+    # return(1/(max(Mod(eigen(A)$values)) + 0.01) * A)
   } else {
     return(A)
     

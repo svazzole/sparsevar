@@ -37,17 +37,14 @@ fitVAR <- function(data, p = 1, penalty = "ENET", method = "cv", ...) {
   opt <- list(...)
   
   if (method == "cv") {
-    
+    # use CV to find lambda
     out <- cvVAR(data, p, penalty, opt)
-    
   } else if (method == "timeSlice") {
-    
+    # use timeslice to find lambda    
     out <- timeSliceVAR(data, p, penalty, opt)
-  
   } else {
-    
+    # error: unknown method
     stop("Unknown method. Possible values are \"cv\" or \"timeSlice\"")
-  
   }
   
   return(out)

@@ -1,9 +1,6 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 
-// using namespace Rcpp;
-// using namespace arma;
-
 // [[Rcpp::export]]
 Rcpp::List standardize2(arma::mat X) {
 

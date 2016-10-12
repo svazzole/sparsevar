@@ -2,41 +2,18 @@
 #include <RcppArmadillo.h>
 #include <string>
 
-// using namespace Rcpp;
-// using namespace arma;
-
-// Gaussian loss
 // [[Rcpp::export]]
 double gLoss(arma::colvec r) {
-  //int n = r.n_rows;
+  // Gaussian loss
   double l = arma::sum(r % r);
-  // for (int i=0;i<n;i++) {
-  //   l += pow(r(i),2);
-  // }
   return l;
 }
 
-// Cross product of y with jth column of X
 // [[Rcpp::export]]
 arma::colvec crossprod(arma::sp_mat X, arma::colvec y) {
-  
+  // Cross product of y with jth column of X
   int n = y.n_rows;
-  // int c = X.n_cols;
-  //
-  // arma::colvec col(n);
-  // arma::colvec::iterator ix;
-  // arma::rowvec ret(n, arma::fill::zeros);
-  //
-  // for (int k = 0; k<n; k++) {
-  //   col = X.col(k);
-  //   for (ix = col.begin(); ix != col.end(); ix++) {
-  //     ret(k) += col(*ix)*y(*ix);
-  //   }
-  // }
-
   arma::mat ret = (arma::conv_to<arma::rowvec>::from(y)* X)/n;
-  //arma::colvec ret = (Xt * y)/n;
-  //Rcpp::Rcout << ret;
   return arma::conv_to< arma::colvec >::from(ret);
 }
 
@@ -68,15 +45,13 @@ double SCAD(double z, double l1, double l2, double gamma, double v) {
 }
 
 int checkConvergence(arma::rowvec b, arma::rowvec beta_old, double eps, int p) {
-  int converged = 1;
 
   for (int j=0; j<p; j++) {
     if (fabs((b(j)-beta_old(j))/beta_old(j)) > eps) {
-      converged = 0;
-      break;
+      return 0;
     }
   }
-  return converged;
+  return 1;
 }
 
 //[[Rcpp::export]]
@@ -87,7 +62,7 @@ Rcpp::List cdfit_gaussianTEST(arma::sp_mat X, arma::colvec Y, arma::colvec lambd
   int L = lambda.n_elem;
 
   //arma::sp_mat Xt = arma::trans(X);
-  arma::mat beta(L,p, arma::fill::zeros);
+  arma::mat beta(L, p, arma::fill::zeros);
   arma::colvec loss(L, arma::fill::zeros);
   arma::uvec iter(L, arma::fill::zeros);
   arma::rowvec a(p, arma::fill::zeros);
@@ -130,7 +105,7 @@ Rcpp::List cdfit_gaussianTEST(arma::sp_mat X, arma::colvec Y, arma::colvec lambd
       // Determine eligible set
       // if (strcmp(penalty, "lasso")==0) cutoff = 2*lam[l] - lam[l-1];
       // if (strcmp(penalty, "MCP")==0) cutoff = lam[l] + gamma/(gamma-1)*(lam[l] - lam[l-1]);
-      //if (1 == 1) {
+      // if (1 == 1) {
 
       cutoff = lambda(l) + gamma/(gamma-2)*(lambda(l) - lambda(l-1));
       //}
@@ -181,7 +156,6 @@ Rcpp::List cdfit_gaussianTEST(arma::sp_mat X, arma::colvec Y, arma::colvec lambd
         z = crossprod(X,r);
         arma::uvec t = (e1 == 0) && (e2 == 1);
         arma::uvec ix = arma::find(t);
-
 
         for (int j=0; j<ix.n_elem; j++) {
           // Update beta_j

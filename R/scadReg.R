@@ -10,7 +10,7 @@ scadReg <- function(X, y, family="gaussian", penalty="SCAD",
   # }
 
   # Error checking
-  standardize <- FALSE
+  standardize <- TRUE
   if (gamma <= 1 & penalty=="MCP") stop("gamma must be greater than 1 for the MC penalty")
   if (gamma <= 2 & penalty=="SCAD") stop("gamma must be greater than 2 for the SCAD penalty")
   if (nlambda < 2) stop("nlambda must be at least 2")
@@ -26,15 +26,15 @@ scadReg <- function(X, y, family="gaussian", penalty="SCAD",
   
   ## Set up XX, yy, lambda
   if (standardize) {
-    std <- standardize2(X)
-    XX <- std[[1]]
+    std <- standardize2(as.matrix(X))
+    XX <- as(Matrix::Matrix(std[[1]], sparse = TRUE), "dgCMatrix")
     center <- as.numeric(std[[2]])
     scale <- as.numeric(std[[3]])
     nz <- which(scale > 1e-6)
     if (length(nz) != ncol(XX)) XX <- XX[ ,nz, drop=FALSE]
     penalty.factor <- penalty.factor[nz]
   } else {
-    XX <- X
+    XX <- as(Matrix::Matrix(X, sparse = TRUE), "dgCMatrix")
   }
 
   p <- ncol(XX)
@@ -55,7 +55,7 @@ scadReg <- function(X, y, family="gaussian", penalty="SCAD",
   }
   
   ## Fit
-  if (family=="gaussian" & standardize == FALSE) {
+  if (family=="gaussian" & standardize == TRUE) {
 
     #res <- cdfit_gaussianTEST(XX, yy, penalty, lambda, eps, as.integer(max.iter), as.double(gamma), penalty.factor, alpha, as.integer(dfmax), as.integer(user.lambda | any(penalty.factor==0)))
     res <- cdfit_gaussianTEST(XX, yy, lambda, eps, as.integer(max.iter), as.double(gamma), penalty.factor, alpha, as.integer(dfmax), as.integer(user.lambda | any(penalty.factor==0)))
@@ -105,7 +105,8 @@ scadReg <- function(X, y, family="gaussian", penalty="SCAD",
     val <- structure(list(beta = beta,
                           lambda = lambda,
                           center = center,
-                          scale = scale))
+                          scale = scale,
+                          iter = iter))
     return(val)
     # beta <- matrix(0, nrow=(ncol(X)+1), ncol=length(lambda))
     # bb <- b/scale[nz]

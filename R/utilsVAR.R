@@ -362,10 +362,11 @@ computeForecasts <- function(v, data, numStep = 1) {
     nr <- nrow(data)
     nc <- ncol(v[[1]])
     p <- length(v)
-
+    
     f <- matrix(0, nrow = nc, ncol = numStep)
     
-    tmpData <- t(as.matrix(data[(nr-p+1):nr, ]))
+    tmpData <<- matrix(data = t(data[(nr-p+1):nr, ]), nrow = nc, ncol = numStep)
+    #tmpData <- t(as.matrix(data[(nr-p+1):nr, ]))
     nr <- ncol(tmpData)
     
     for (n in 1:numStep) {

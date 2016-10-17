@@ -365,7 +365,7 @@ computeForecasts <- function(v, data, numStep = 1) {
     
     f <- matrix(0, nrow = nc, ncol = numStep)
     
-    tmpData <<- matrix(data = t(data[(nr-p+1):nr, ]), nrow = nc, ncol = numStep)
+    tmpData <- matrix(data = t(data[(nr-p+1):nr, ]), nrow = nc, ncol = numStep)
     #tmpData <- t(as.matrix(data[(nr-p+1):nr, ]))
     nr <- ncol(tmpData)
     

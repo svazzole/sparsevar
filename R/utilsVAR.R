@@ -347,3 +347,42 @@ estimateCovariance <- function(res, methodCovariance = "tiger", ...) {
   return(sigma)
   
 }
+
+#' @export
+computeForecasts <- function(v, data, numStep = 1) {
+  
+  if (attr(v, "class") == "var"){
+    v <- v$A  
+  }
+  
+  if (!is.list(v)) {
+    stop("v must be a var object or a list of matrices.")
+  } else {
+    
+    nr <- nrow(data)
+    nc <- ncol(v[[1]])
+    p <- length(v)
+
+    f <- matrix(0, nrow = nc, ncol = numStep)
+    
+    tmpData <- t(as.matrix(data[(nr-p+1):nr, ]))
+    nr <- ncol(tmpData)
+    
+    for (n in 1:numStep) {
+      for (k in 1:p) {
+        if (n == 1) {
+          f[, 1] <- f[, 1] + v[[k]] %*% tmpData[, nr - k + 1]           
+        } else {
+          if (nr > 1) {
+            tmpData <- cbind(tmpData[, 2:nr], f[, n-1])            
+          } else {
+            tmpData <- as.matrix(f[, n-1])
+          }
+          f[, n] <- f[, n] + v[[k]] %*% tmpData[, nr - k + 1]
+        }
+      }    
+    }
+  }
+  
+  return(f)
+}

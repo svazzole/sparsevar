@@ -46,7 +46,7 @@ timeSliceVAR_ENET <- function(data, p, opt) {
   finalRes[,1] <- lam
   finalRes[,2] <- rowMeans(resTS[,2:(l+1)])
   for (k in 1:length(lam)) {
-    finalRes[k,3] <- sd(resTS[k,2:(l+1)])
+    finalRes[k,3] <- stats::sd(resTS[k,2:(l+1)])
   }
 
   # TODO: check: one can have multiple mins. Choose the first one. Is this the
@@ -157,7 +157,7 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
   finalRes[,1] <- lam
   finalRes[,2] <- rowMeans(resTS[,2:(l+1)])
   for (k in 1:length(lam)) {
-    finalRes[k,3] <- sd(resTS[k,2:(l+1)])
+    finalRes[k,3] <- stats::sd(resTS[k,2:(l+1)])
   }
   # TODO: check: one can have multiple mins. Choose the first one. Is this the
   # better choice?

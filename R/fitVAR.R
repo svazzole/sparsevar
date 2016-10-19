@@ -24,6 +24,8 @@
 #' \code{leaveOut}: in the time slice validation leave out the last \code{leaveOutLast} observations
 #' (default = 15);
 #' \code{horizon}: the horizon to use for estimating mse/mae (default = 1);
+#' \code{picasso}: use picasso package for estimation (only available for \code{penalty = "SCAD"} 
+#' and \code{method = "timeSlice"}).
 #'
 #' @return \code{A} the list (of length \code{p}) of the estimated matrices of the process
 #' @return \code{fit} the results of the penalized LS estimation
@@ -57,7 +59,12 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
   nc <- ncol(data)
   nr <- nrow(data)
-
+  
+  picasso <- ifelse(!is.null(opt$picasso), opt$picasso, FALSE)
+  
+  if(picasso) {
+    stop("picasso available only with timeSlice method.")
+  }
   # transform the dataset
   trDt <- transformData(data, p, opt)
 
@@ -91,6 +98,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
     Avector <- stats::coef(fit, s = "lambda.min")
     A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
     mse <- min(fit$cve)
+
 
   } else if (penalty == "MCP") {
 

@@ -1,3 +1,10 @@
+# sparsevar 0.0.9
+
+- Fast SCAD estimation (using picasso package; works only with SCAD and timeSlice)
+- Added function to compute VAR forecasts
+- Added information criteria (AIC, SChwartz and Hannan-Quinn)
+- Fixed mean estimation for timeSlice
+
 # sparsevar 0.0.7
 
 - Major code rewriting

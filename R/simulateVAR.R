@@ -2,13 +2,14 @@
 #'
 #' @description This function generates a simulated multivariate VAR time series.
 #'
-#' @usage simulateVAR(N, p, nobs, rho, sparsity, method, covariance)
+#' @usage simulateVAR(N, p, nobs, rho, sparsity, mu, method, covariance)
 #'
 #' @param N dimension of the time series.
 #' @param p number of lags of the VAR model.
 #' @param nobs number of observations to be generated.
 #' @param rho base value for the covariance matrix.
 #' @param sparsity density (in percentage) of the number of nonzero elements of the VAR matrices.
+#' @param mu a vector containing the mean of the simulated process.
 #' @param method which method to use to generate the VAR matrix. Possible values
 #' are \code{"normal"} or \code{"bimodal"}.
 #' @param covariance type of covariance matrix to use in the simulation. Possible

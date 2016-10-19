@@ -5,20 +5,23 @@
 \title{Create Sparse Matrix}
 \usage{
 createSparseMatrix(N, sparsity, method = "normal", stationary = FALSE,
-  p = 1)
+  p = 1, ...)
 }
 \arguments{
 \item{N}{the dimension of the square matrix}
 
 \item{sparsity}{the density of non zero elements}
 
-\item{method}{the method used to generate the entries of the matrix. Possible values are 
+\item{method}{the method used to generate the entries of the matrix. Possible values are
 \code{"normal"} (default) or \code{"bimodal"}.}
 
-\item{stationary}{should the spectral radius of the matrix be smaller than 1? 
+\item{stationary}{should the spectral radius of the matrix be smaller than 1?
 Possible values are \code{TRUE} or \code{FALSE}. Default is \code{FALSE}.}
 
 \item{p}{normalization constant (used for VAR of order greater than 1, default = 1)}
+
+\item{...}{other options for the matrix (you can specify the mean \code{mu} and the 
+standard deviation \code{sd}).}
 }
 \value{
 An NxN sparse matrix.

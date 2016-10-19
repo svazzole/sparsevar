@@ -303,6 +303,15 @@ testGranger <- function(v, eb) {
 
 }
 
+#' @title Computes information criteria for VARs
+#'
+#' @description This function computes information criterias (AIC, Schwartz and
+#' Hannan-Quinn) for VARs.
+#'
+#' @usage informCrit(v)
+#'
+#' @param v a list of VAR objects as from fitVAR.
+#'
 #' @export
 informCrit <- function(v) {
 
@@ -354,11 +363,21 @@ estimateCovariance <- function(res, methodCovariance = "tiger", ...) {
 
 }
 
+#' @title Computes forecasts for VARs
+#'
+#' @description This function computes forecasts for a given VAR.
+#'
+#' @usage computeForecasts(v, numSteps)
+#'
+#' @param v a VAR object as from fitVAR.
+#' @param numSteps the number of forecasts to produce.
+#'
 #' @export
-computeForecasts <- function(v, data, numStep = 1) {
+computeForecasts <- function(v, numSteps = 1) {
 
   if (attr(v, "class") == "var"){
     mu <- v$mu
+    data <- v$series
     v <- v$A
   }
 
@@ -370,13 +389,12 @@ computeForecasts <- function(v, data, numStep = 1) {
     nc <- ncol(v[[1]])
     p <- length(v)
 
-    f <- matrix(0, nrow = nc, ncol = numStep)
+    f <- matrix(0, nrow = nc, ncol = numSteps)
 
-    tmpData <- matrix(data = t(data[(nr-p+1):nr, ]), nrow = nc, ncol = numStep)
-    #tmpData <- t(as.matrix(data[(nr-p+1):nr, ]))
+    tmpData <- matrix(data = t(data[(nr-p+1):nr, ]), nrow = nc, ncol = numSteps)
     nr <- ncol(tmpData)
 
-    for (n in 1:numStep) {
+    for (n in 1:numSteps) {
       for (k in 1:p) {
         if (n == 1) {
           f[, n] <- f[, n] + v[[k]] %*% tmpData[, nr - k + 1]
@@ -391,6 +409,6 @@ computeForecasts <- function(v, data, numStep = 1) {
       }
     }
   }
-  f <- f + matrix(rep(mu, length(mu)), length(mu), numStep)
+  f <- f + matrix(rep(mu, length(mu)), length(mu), numSteps)
   return(f)
 }

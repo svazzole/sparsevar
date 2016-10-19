@@ -30,12 +30,10 @@ plotComparisonVAR(sim, fit)
 #                    ncores = 5, alpha = 0.95, type.measure = "mae",
 #                    lambda = "lambda.1se")
 
-## ---- cache=TRUE---------------------------------------------------------
-irf <- impulseResponse(fit)
-eb <- errorBandsIRF(fit, irf, verbose = FALSE)
-
-## ------------------------------------------------------------------------
-plotIRFGrid(irf, eb, indexes = c(11,20))
+## ---- eval = FALSE-------------------------------------------------------
+#  irf <- impulseResponse(fit)
+#  eb <- errorBandsIRF(fit, irf, verbose = FALSE)
+#  plotIRFGrid(irf, eb, indexes = c(11,20))
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  sim <- simulateVAR(N = 100, nobs = 250, rho = 0.75, sparsity = 0.05, method = "normal")

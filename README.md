@@ -1,6 +1,6 @@
-## Sparse VAR (sparsevar) 
-[![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html) 
-[![Version](https://img.shields.io/badge/version-0.0.8-oran.svg)](https://github.com/svazzole/sparsevar)
+## Sparse VAR (sparsevar)
+[![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
+[![Version](https://img.shields.io/badge/version-0.0.9-oran.svg)](https://github.com/svazzole/sparsevar)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/sparsevar)](https://cran.r-project.org/package=sparsevar)
 [![Downloads](http://cranlogs.r-pkg.org/badges/sparsevar)](https://cran.r-project.org/package=sparsevar)
 
@@ -44,7 +44,7 @@ plotComparisonVAR(sim, fit)
 ```
 the first row of the plot is made by the matrices of the simulated process and the second row is formed by their estimates.
 
-The fit contains also the estimate of the variance/covariance matrix of the residuals 
+The fit contains also the estimate of the variance/covariance matrix of the residuals
 ```{r}
 plotMatrix(fit$sigma)
 ```
@@ -77,4 +77,4 @@ For plotting:
 - `plotGridIRF`: multiple plots of IRF.
 
 ### References
-[[1](http://projecteuclid.org/euclid.aos/1434546214)] Basu, Sumanta; Michailidis, George. Regularized estimation in sparse high-dimensional time series models. Ann. Statist. 43 (2015), no. 4, 1535--1567. doi:10.1214/15-AOS1315. 
+[[1](http://projecteuclid.org/euclid.aos/1434546214)] Basu, Sumanta; Michailidis, George. Regularized estimation in sparse high-dimensional time series models. Ann. Statist. 43 (2015), no. 4, 1535--1567. doi:10.1214/15-AOS1315.

@@ -4,7 +4,7 @@
 \alias{simulateVAR}
 \title{VAR simulation}
 \usage{
-simulateVAR(N, p, nobs, rho, sparsity, method, covariance)
+simulateVAR(N, p, nobs, rho, sparsity, mu, method, covariance)
 }
 \arguments{
 \item{N}{dimension of the time series.}
@@ -17,10 +17,12 @@ simulateVAR(N, p, nobs, rho, sparsity, method, covariance)
 
 \item{sparsity}{density (in percentage) of the number of nonzero elements of the VAR matrices.}
 
+\item{mu}{a vector containing the mean of the simulated process.}
+
 \item{method}{which method to use to generate the VAR matrix. Possible values
 are \code{"normal"} or \code{"bimodal"}.}
 
-\item{covariance}{type of covariance matrix to use in the simulation. Possible 
+\item{covariance}{type of covariance matrix to use in the simulation. Possible
 values: \code{"toeplitz"}, \code{"block1"}, \code{"block2"} or simply \code{"diagonal"}.}
 }
 \value{

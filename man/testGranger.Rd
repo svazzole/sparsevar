@@ -12,7 +12,7 @@ testGranger(v, eb)
 \item{eb}{the error bands as obtained from errorBands}
 }
 \description{
-This function should retain only the coefficients of the 
+This function should retain only the coefficients of the
 matrices of the VAR that are statistically significative (from the bootstrap)
 }
 

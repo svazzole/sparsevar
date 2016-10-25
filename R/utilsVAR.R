@@ -383,12 +383,14 @@ estimateCovariance <- function(res, methodCovariance = "tiger", ...) {
 #' @export
 computeForecasts <- function(v, numSteps = 1) {
 
-  if (attr(v, "class") == "var"){
+  if(!checkIsVar(v)) {
+    stop("You must pass a var object.")
+  } else {
     mu <- v$mu
     data <- v$series
     v <- v$A
   }
-
+  
   if (!is.list(v)) {
     stop("v must be a var object or a list of matrices.")
   } else {

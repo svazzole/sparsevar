@@ -217,7 +217,9 @@ computeResiduals <- function(data, A) {
 #' @export
 companionVAR <- function(v) {
 
-  ## TODO: check that v is a var object
+  if (!checkIsVar(v)) {
+    stop("v must be a var object")
+  }
   A <- v$A
   nc <- ncol(A[[1]])
   p <- length(A)
@@ -251,7 +253,9 @@ companionVAR <- function(v) {
 bootstrappedVAR <- function(v) {
 
   ## This function creates the bootstrapped time series
-  ## TODO: check that v is a var object
+  if (!checkIsVar(v)) {
+    stop("v must be a var object")
+  }
   r <- v$residuals
   s <- v$series
   A <- v$A

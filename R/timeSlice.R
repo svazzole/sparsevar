@@ -25,6 +25,7 @@ timeSliceVAR_ENET <- function(data, p, opt) {
   nc <- ncol(data)
 
   l <- ifelse(is.null(opt$leaveOut), 10, opt$leaveOut)
+  ## TODO: Add the look ahead period > 1
   winLength <- nr - l
   a  <- ifelse(is.null(opt$alpha), 1, opt$alpha)
 
@@ -49,8 +50,6 @@ timeSliceVAR_ENET <- function(data, p, opt) {
     finalRes[k,3] <- stats::sd(resTS[k,2:(l+1)])
   }
 
-  # TODO: check: one can have multiple mins. Choose the first one. Is this the
-  # better choice?
   ix <- which(finalRes[,2] == min(finalRes[,2]))[1]
   fit <- varENET(data, p, finalRes[ix, 1], opt)
 
@@ -159,8 +158,7 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
   for (k in 1:length(lam)) {
     finalRes[k,3] <- stats::sd(resTS[k,2:(l+1)])
   }
-  # TODO: check: one can have multiple mins. Choose the first one. Is this the
-  # better choice?
+
   ix <- which(finalRes[,2] == min(finalRes[,2]))[1]
 
   if (!picasso) {

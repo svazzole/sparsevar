@@ -12,6 +12,7 @@
 #' @export
 impulseResponse <- function(v, len = 20) {
   
+  ## TODO: v can be also a simulation!
   if (!checkIsVar(v)) { 
     stop("Input v must be a VAR object")
   }
@@ -97,17 +98,17 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, verbose = TRUE) {
     
     if (v$penalty == "ENET"){
       # fit ENET to a specific value of lambda
-      fit <- varENET(o, p, lambda, opt = NULL)
+      fit <- varENET(o, p, lambda, opt = list(method = v$method, penalty = v$penalty))
       
       Avector <- stats::coef(fit, s = lambda)
       A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
       
     } else if (v$penalty == "SCAD") {
-      fit <- varSCAD(o, p, lambda, opt = NULL)    
+      fit <- varSCAD(o, p, lambda, opt = list(method = v$method, penalty = v$penalty))    
       Avector <- fit$beta[2:nrow(fit$beta), 1]
       A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
     } else {
-      fit <- varMCP(o, p, lambda, opt = NULL)    
+      fit <- varMCP(o, p, lambda, opt = list(method = v$method, penalty = v$penalty))    
       Avector <- fit$beta[2:nrow(fit$beta), 1]
       A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
     }

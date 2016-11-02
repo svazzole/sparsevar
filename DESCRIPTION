@@ -20,7 +20,8 @@ Imports:
     flare,
     picasso
 Suggests:
-    knitr
+    knitr,
+    testthat
 Depends:
     R (>= 1.8.0)
 Description: A wrapper for sparse VAR/VECM time series models estimation 
@@ -28,6 +29,6 @@ Description: A wrapper for sparse VAR/VECM time series models estimation
 License: GPL-2
 URL: http://github.com/svazzole/sparsevar
 BugReports: http://github.com/svazzole/sparsevar
-VignetteBuilder: 
+VignetteBuilder:
     knitr
 RoxygenNote: 5.0.1

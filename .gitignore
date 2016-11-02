@@ -16,4 +16,3 @@ vignettes/using_cache/latex/
 *.so
 src/*.o
 src/*.so
-tests/*

@@ -161,6 +161,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   }
 
   # If ENET is used, return the lambda
+  ## TODO: check. Why fit$lambda.min in both cases?
   if (penalty == "ENET") {
     output$lambda <- fit$lambda.min
   } else {

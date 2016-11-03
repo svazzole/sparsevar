@@ -57,8 +57,11 @@ fitVECM <- function(data, p = 1, penalty = "ENET", method = "cv", logScale = TRU
   output$G <- G
   output$fit <- resultsVAR$fit
   output$mse <- resultsVAR$mse
+  output$mseSD <- resultsVAR$mseSD
   output$time <- resultsVAR$time
   output$residuals <- resultsVAR$residuals
+  output$lambda <- resultsVAR$lambda
+  output$series <- resultsVAR$series
   
   if (is.null(opt$methodCov)) {
     output$sigma <- estimateCovariance(output$residuals)
@@ -66,6 +69,8 @@ fitVECM <- function(data, p = 1, penalty = "ENET", method = "cv", logScale = TRU
     output$sigma <- estimateCovariance(output$residuals, methodCovariance = opt$methodCov)
   }
   
+  output$penalty <- resultsVAR$penalty
+  output$method <- resultsVAR$method
   attr(output, "class") <- "vecm"
   attr(output, "type") <- "fit"
   

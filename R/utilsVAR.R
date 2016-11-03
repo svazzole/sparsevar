@@ -23,7 +23,6 @@ transformData <- function(data, p, opt) {
   # center the matrix columns (default)
   center <- ifelse(is.null(opt$center), TRUE, opt$center)
 
-
   if (center == TRUE) {
     if (opt$method == "timeSlice") {
       leaveOut <- ifelse(is.null(opt$leaveOut), 10, opt$leaveOut)
@@ -33,6 +32,8 @@ transformData <- function(data, p, opt) {
     }
     cm <- matrix(rep(m, nrow(data)), nrow = nrow(data), byrow = TRUE)
     data <- data - cm
+  } else {
+    m <- rep(0, nc)
   }
 
   if (scale == TRUE) {

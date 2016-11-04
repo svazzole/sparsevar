@@ -14,7 +14,10 @@
 #' are \code{"normal"} or \code{"bimodal"}.
 #' @param covariance type of covariance matrix to use in the simulation. Possible
 #' values: \code{"toeplitz"}, \code{"block1"}, \code{"block2"} or simply \code{"diagonal"}.
-#'
+#' @param ... the options for the simulation. These are:
+#' \code{muMat}: the mean of the entries of the VAR matrices;
+#' \code{sdMat}: the sd of the entries of the matrices;
+#' 
 #' @return A a list of NxN matrices ordered by lag
 #' @return data a list with two elements: \code{series} the multivariate time series and
 #' \code{noises} the time series of errors
@@ -22,20 +25,26 @@
 #'
 #' @export
 simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
-                        mu = 0, method = "normal", covariance = "Toeplitz") {
+                        mu = 0, method = "normal", covariance = "Toeplitz", ...) {
 
-  # Create the list of the VAR matrices
-  A <- list()
-  for (i in 1:p) {
-    A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE, p = p)
-    l <- max(Mod(eigen(A[[i]])$values))
-    while ((l > 1) | (l == 0)) {
-      A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE, p = p)
+  opt <- list(...)
+  if (!is.null(opt$fixedMat)) {
+    # The user passed a list of matrices
+    ## TODO: check that the matrices are compatible
+    A <- opt$fixedMat
+  } else { 
+    # Create the list of the VAR matrices
+    A <- list()
+    for (i in 1:p) {
+      A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE, p = p, ...)
       l <- max(Mod(eigen(A[[i]])$values))
+      while ((l > 1) | (l == 0)) {
+        A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE, p = p, ...)
+        l <- max(Mod(eigen(A[[i]])$values))
+      }
+      A[[i]] <- 1/sqrt(p) * A[[i]]
     }
-    A[[i]] <- 1/sqrt(p) * A[[i]]
   }
-
   # Covariance Matrix: Toeplitz, Block1 or Block2
   if (covariance == "block1"){
 

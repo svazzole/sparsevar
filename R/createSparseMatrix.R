@@ -19,8 +19,8 @@
 createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALSE, p = 1, ...) {
 
   opt <- list(...)
-  mu <- ifelse(!is.null(opt$mu), opt$mu, 0)
-  sd <- ifelse(!is.null(opt$sd), opt$sd, 1)
+  mu <- ifelse(!is.null(opt$muMat), opt$muMat, 0)
+  sd <- ifelse(!is.null(opt$sdMat), opt$sdMat, 1)
   n <- floor(sparsity * N^2)
 
   if (method == "normal") {

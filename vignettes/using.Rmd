@@ -51,7 +51,7 @@ fit <- fitVAR(sim$series, p = 2)
 
 The results can be seen by plotting the matrices
 ```{r}
-plotComparisonVAR(sim, fit)
+plotVAR(sim, fit)
 ```
 
 # Description of the package's functions

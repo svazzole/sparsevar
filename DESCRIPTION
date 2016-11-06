@@ -1,6 +1,6 @@
 Package: sparsevar
-Version: 0.0.9
-Date: 2016-10-19
+Version: 0.0.10
+Date: 2016-11-07
 Title: A Package for Sparse VAR/VECM Estimation
 Authors@R: c(person("Simone", "Vazzoler", role = c("aut", "cre"),
                      email = "svazzole@gmail.com"),
@@ -15,7 +15,7 @@ Imports:
     glmnet,
     ggplot2,
     reshape2,
-    grid, 
+    grid,
     mvtnorm,
     flare,
     picasso
@@ -24,8 +24,8 @@ Suggests:
     testthat
 Depends:
     R (>= 1.8.0)
-Description: A wrapper for sparse VAR/VECM time series models estimation 
-             using penalties like ENET, SCAD and MCP. 
+Description: A wrapper for sparse VAR/VECM time series models estimation
+             using penalties like ENET, SCAD and MCP.
 License: GPL-2
 URL: http://github.com/svazzole/sparsevar
 BugReports: http://github.com/svazzole/sparsevar

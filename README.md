@@ -1,6 +1,6 @@
 ## Sparse VAR (sparsevar)
 [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/version-0.0.9-oran.svg)](https://github.com/svazzole/sparsevar)
+[![Version](https://img.shields.io/badge/version-0.0.10-oran.svg)](https://github.com/svazzole/sparsevar)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/sparsevar)](https://cran.r-project.org/package=sparsevar)
 [![Downloads](http://cranlogs.r-pkg.org/badges/sparsevar)](https://cran.r-project.org/package=sparsevar)
 
@@ -38,9 +38,9 @@ We can estimate the matrices of the process using for example
 fit <- fitVAR(sim$series, p = 2, threshold = TRUE)
 ```
 
-The results can be seen by plotting the matrices
+The results can be seen by plotting the two `var` objects
 ```{r}
-plotComparisonVAR(sim, fit)
+plotVAR(sim, fit)
 ```
 the first row of the plot is made by the matrices of the simulated process and the second row is formed by their estimates.
 
@@ -71,8 +71,7 @@ For simulations:
 For plotting:
 
 - `plotMatrix`: useful to plot matrices and sparse matrices;
-- `plotVAR`: plot all the matrices of the model;
-- `plotComparisonVAR`: plot the comparison between the matrices of the simulated model and the matrices of the estimate.
+- `plotVAR`: plot all the matrices of the model or models in input;
 - `plotIRF`: plot IRF function;
 - `plotGridIRF`: multiple plots of IRF.
 

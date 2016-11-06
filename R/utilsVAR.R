@@ -259,7 +259,7 @@ bootstrappedVAR <- function(v) {
   if (!checkIsVar(v)) {
     stop("v must be a var object")
   }
-  
+
   r <- v$residuals
   s <- v$series
   A <- v$A
@@ -267,10 +267,10 @@ bootstrappedVAR <- function(v) {
   p <- length(A)
   t <- nrow(r)
   r <- r - matrix(colMeans(r), ncol = N, nrow = t)
-  
+
   zt <- matrix(0, nrow = t, ncol = N)
   zt[1:p,] <- s[1:p,]
-  
+
   for (t0 in (p+1):t) {
     ix <- sample((p+1):t, 1)
     u <- r[ix, ]
@@ -343,10 +343,11 @@ informCrit <- function(v) {
       nr <- nrow(v[[i]]$residuals)
       nc <- ncol(v[[i]]$residuals)
       d <- det(sigma)
+
       r[i,1] <- log(d) + (2*p*sp*nc^2)/nr                 # AIC
       r[i,2] <- log(d) + (log(nr)/nr) * (p*sp*nc^2)       # BIC
       r[i,3] <- log(d) + (2*p*sp*nc^2)/nr * log(log(nr))  # Hannan-Quinn
-      
+
     }
     results <- data.frame(r)
     colnames(results) <- c("AIC", "BIC", "HannanQuinn")
@@ -393,7 +394,7 @@ computeForecasts <- function(v, numSteps = 1) {
     data <- v$series
     v <- v$A
   }
-  
+
   if (!is.list(v)) {
     stop("v must be a var object or a list of matrices.")
   } else {
@@ -427,17 +428,17 @@ computeForecasts <- function(v, numSteps = 1) {
 }
 
 applyThreshold <- function(A, nr, nc, p, type = "soft") {
-  
+
   if (type == "soft") {
-    tr <- 1 / sqrt(p*nc*log(nr))    
+    tr <- 1 / sqrt(p*nc*log(nr))
   } else if (type == "hard") {
-    tr <- (nc)^(-0.49)    
+    tr <- (nc)^(-0.49)
   } else {
     stop("Unknown threshold type. Possible values are: \"soft\" or \"hard\"")
   }
-  
+
   L <- abs(A) >= tr
   A <- A * L
   return(A)
-  
+
 }

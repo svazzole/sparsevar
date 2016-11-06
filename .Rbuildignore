@@ -3,3 +3,6 @@
 cran-comments.md
 R/old/
 R/todo/
+tests/testIRF*
+tests/testPicasso.R
+tests/testInformCrit.R

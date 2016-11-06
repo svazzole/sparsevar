@@ -213,7 +213,7 @@ computeResiduals <- function(data, A) {
 #'
 #' @usage companionVAR(v)
 #'
-#' @param v the VAR object as from fitVAR or simulateVAR
+#' @param v the VAR object as from \code{fitVAR} or \code{simulateVAR}
 #'
 #' @export
 companionVAR <- function(v) {
@@ -334,15 +334,11 @@ informCrit <- function(v) {
       sigma <- v[[i]]$sigma
       nr <- nrow(v[[i]]$residuals)
       nc <- ncol(v[[i]]$residuals)
-      # S <- (nr / (nr - nc * p - 1)) * sigma
-      # d <- det(S)
       d <- det(sigma)
       r[i,1] <- log(d) + (2*p*nc^2)/nr                 # AIC
       r[i,2] <- log(d) + (p*nc^2)/nr * log(nr)         # Schwarz
       r[i,3] <- log(d) + (2*p*nc^2)/nr * log(log(nr))  # Hannan-Quinn
-      # r[i,1] <- nr*nc*log(2*pi) + nr*log(det(sigma)) + (2*p*nc^2) + nc*(nc+1) # AIC
-      # r[i,2] <- log(d) + (p*nc^2)/nr * log(nr)         # Schwarz
-      # r[i,3] <- log(d) + (2*p*nc^2)/nr * log(log(nr))  # Hannan-Quinn
+      
     }
     results <- data.frame(r)
     colnames(results) <- c("AIC", "Schwarz", "HannanQuinn")

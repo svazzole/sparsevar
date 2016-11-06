@@ -22,72 +22,79 @@ plotMatrix <- function(M) {
   
 }
 
-#' @title VAR plot
+#' @title Plot VARs
 #' 
 #' @description Plot all the matrices of a VAR model
 #' 
-#' @param v an object of the class sparsevar type estimate or simulation
-#' @return An \code{image} plot with a particular color palette (black zero entries, red 
+#' @param ... a sequence of VAR objects (one or more
+#' than one, as from \code{simulateVAR} or \code{fitVAR})
+#' @return An \code{image} plot with a specific color palette (black zero entries, red 
 #' for the negative ones and green for the positive)
-#' @usage plotVAR(v)
+#' @usage plotVAR(var1, var2)
 #' 
 #' @export
-plotVAR <- function(v) {
+plotVAR <- function(...) {
   
-  if (!checkIsVar(v)) {
-    stop("Input must be a var object")
-  } 
+  vars <- list(...)
+  l <- length(vars)
   
-  A <- v$A
-  p <- length(A)
-  
-  pl <- list()
-  # par(mfrow = c(1,p))
-  for (i in 1:p) {
-    pl[[i]] <- plotMatrix(A[[i]])
+  for (i in 1:l) {
+    if (!checkIsVar(vars[[i]])) {
+      stop("Inputs must be var objects")
+    } 
   }
   
-  multiplot(plotlist = pl, cols = p)
+  pl <- list()
+  varorder <- length(vars[[1]]$A)
+  differentVarOrder <- FALSE
+  for (i in 1:l) {
+    if (varorder != length(vars[[i]]$A)) {
+      differentVarOrder <- TRUE
+      varorder <- min(varorder, length(vars[[i]]$A))
+    }  
+  }
+  
+  if (differentVarOrder == TRUE) {
+    warning("Different VAR orders: plotting up to the min one")
+  }
+  
+  for (i in 1:l) {
+    for (j in 1:varorder) {
+      pl[[((i-1)*varorder)+j]] <- plotMatrix(vars[[i]]$A[[j]])
+    }
+  }
+  
+  multiplot(plotlist = pl, cols = p, layout = matrix(1:(l*varorder), nrow = l, byrow = TRUE))
+  
 }
 
-#' @title Plot VAR models for comparison
+#' @title Plot VECMs
 #' 
-#' @description Plot all the matrices of a two VAR models
+#' @description Plot all the matrices of a VECM model
 #' 
-#' @param var1 the list containing the first VAR model matrices to be plotted
-#' @param var2 the list containing the second VAR model matrices to be plotted
-#' @return An \code{image} plot with a particular color palette (black zero entries, red 
+#' @param v a VECM object (as from \code{fitVECM})
+#' @return An \code{image} plot with a specific color palette (black zero entries, red 
 #' for the negative ones and green for the positive)
-#' @usage plotComparisonVAR(var1, var2)
+#' @usage plotVECM(v)
 #' 
 #' @export
-plotComparisonVAR <- function(var1, var2) {
+plotVECM <- function(v) {
   
-  if (!(checkIsVar(var1) & checkIsVar(var2))) {
-    stop("Inputs must be VARs")
+  if (attr(v, "class") != "vecm") {
+    stop("v must be a VECM object")
   }
-  
-  p1 <- length(var1$A)
-  p2 <- length(var2$A)
-  
-  if (p1 != p2) {
-    warning("Different VAR orders: plotting up to the min one")
-    p <- min(p1,p2)
-  } else {
-    p <- p1
-  }
-  
+
+  l <- length(v$G)
   pl <- list()
   
-  for (i in 1:p) {
-    pl[[i]] <- plotMatrix(var1$A[[i]])
+  pl[[1]] <- plotMatrix(v$Pi)
+  
+  for (i in 1:l) {
+    pl[[i+1]] <- plotMatrix(v$G[[i]])
   }
-  #title("Estimate")
-  for (i in 1:p) {
-    pl[[i + p]] <- plotMatrix(var2$A[[i]])
-  }
-  #title("Simulation")
-  multiplot(plotlist = pl, cols = p, layout = matrix(1:(2*p), nrow = 2, byrow = TRUE))
+  
+  multiplot(plotlist = pl, cols = l+1, layout = matrix(1:(l+1), nrow = 1, byrow = TRUE))
+  
 }
 
 # Multiple plot function
@@ -136,3 +143,4 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
     }
   }
 }
+

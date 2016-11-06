@@ -28,7 +28,7 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
                         mu = 0, method = "normal", covariance = "Toeplitz", ...) {
 
   opt <- list(...)
-  # Create a var object to save the matrices
+  # Create a var object to save the matrices (the output)
   out <- list()
   attr(out, "class") <- "var"
   attr(out, "type") <- "simulation"
@@ -41,7 +41,7 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
     if (!checkMatrices(out$A)){
       stop("The matrices you passed are incompatible.")
     }
-    if (max(Mod(eigen(as.matrix(companionVAR(out)))$values)) > 1) {
+    if (max(Mod(eigen(as.matrix(companionVAR(out)))$values)) >= 1) {
       warning("The VAR you passed is instable.")
     }
   } else { 
@@ -105,14 +105,11 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
 
   # Matrix for MA part
   theta <- matrix(0, N, N)
-  # ar <- 1:p
-
+  
   # Generate the VAR process
   data <- generateVARseries(nobs = nobs, mu, AR = out$A, sigma = C, skip = 200)
 
-  # Output
-  #out <- list()
-  #out$A <- A
+  # Complete the output
   out$series <- data$series
   out$noises <- data$noises
   out$sigma <- C
@@ -123,7 +120,7 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
 
 generateVARseries <- function(nobs, mu, AR, sigma, skip = 200) {
 
-  ## This function creates the simulated time series
+  # This function creates the simulated time series
 
   N <- nrow(sigma)
   nT <- nobs + skip
@@ -162,19 +159,30 @@ generateVARseries <- function(nobs, mu, AR, sigma, skip = 200) {
 }
 
 checkMatrices <- function(A) {
+  
+  # This function check if all the matrices passed have the same dimensions
   if (!is.list(A)) {
+    
     return(FALSE)
+  
   } else {
+    
     l <- length(A)
+    
     if(l>1){
+    
       for (i in 1:(l-1)) {
+        
         if (sum(1-(dim(A[[i]]) == dim(A[[i+1]]))) != 0) {
           return(FALSE)
         }
+        
       }
       return(TRUE)
+    
     } else {
       return(TRUE)
     }
+    
   }
 }

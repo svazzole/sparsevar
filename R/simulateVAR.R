@@ -28,23 +28,40 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
                         mu = 0, method = "normal", covariance = "Toeplitz", ...) {
 
   opt <- list(...)
+  # Create a var object to save the matrices
+  out <- list()
+  attr(out, "class") <- "var"
+  attr(out, "type") <- "simulation"
+  
+  out$A <- list()
+  
   if (!is.null(opt$fixedMat)) {
     # The user passed a list of matrices
-    ## TODO: check that the matrices are compatible
-    A <- opt$fixedMat
+    out$A <- opt$fixedMat
+    if (!checkMatrices(out$A)){
+      stop("The matrices you passed are incompatible.")
+    }
+    if (max(Mod(eigen(as.matrix(companionVAR(out)))$values)) > 1) {
+      warning("The VAR you passed is instable.")
+    }
   } else { 
-    # Create the list of the VAR matrices
-    A <- list()
-    for (i in 1:p) {
-      A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE, p = p, ...)
-      l <- max(Mod(eigen(A[[i]])$values))
-      while ((l > 1) | (l == 0)) {
-        A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE, p = p, ...)
-        l <- max(Mod(eigen(A[[i]])$values))
+    stable <- FALSE
+    while (stable == FALSE) {
+      for (i in 1:p) {
+        out$A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE, p = p, ...)
+        l <- max(Mod(eigen(out$A[[i]])$values))
+        while ((l > 1) | (l == 0)) {
+          out$A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE, p = p, ...)
+          l <- max(Mod(eigen(out$A[[i]])$values))
+        }
+        out$A[[i]] <- 1/sqrt(p) * out$A[[i]]
       }
-      A[[i]] <- 1/sqrt(p) * A[[i]]
+      if (max(Mod(eigen(as.matrix(companionVAR(out)))$values)) < 1) {
+        stable <- TRUE
+      }
     }
   }
+  
   # Covariance Matrix: Toeplitz, Block1 or Block2
   if (covariance == "block1"){
 
@@ -91,17 +108,15 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   # ar <- 1:p
 
   # Generate the VAR process
-  data <- generateVARseries(nobs = nobs, mu, AR = A, sigma = C, skip = 200)
+  data <- generateVARseries(nobs = nobs, mu, AR = out$A, sigma = C, skip = 200)
 
   # Output
-  out <- list()
-  out$A <- A
+  #out <- list()
+  #out$A <- A
   out$series <- data$series
   out$noises <- data$noises
   out$sigma <- C
 
-  attr(out, "class") <- "var"
-  attr(out, "type") <- "simulation"
   return(out)
 
 }
@@ -144,4 +159,22 @@ generateVARseries <- function(nobs, mu, AR, sigma, skip = 200) {
   out$noises <- at
   return(out)
 
+}
+
+checkMatrices <- function(A) {
+  if (!is.list(A)) {
+    return(FALSE)
+  } else {
+    l <- length(A)
+    if(l>1){
+      for (i in 1:(l-1)) {
+        if (sum(1-(dim(A[[i]]) == dim(A[[i+1]]))) != 0) {
+          return(FALSE)
+        }
+      }
+      return(TRUE)
+    } else {
+      return(TRUE)
+    }
+  }
 }

@@ -6,6 +6,20 @@
 
 using namespace Rcpp;
 
+// maxprod
+double maxprod(arma::mat X, arma::vec y, arma::uvec v, arma::vec m);
+RcppExport SEXP sparsevar_maxprod(SEXP XSEXP, SEXP ySEXP, SEXP vSEXP, SEXP mSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type v(vSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type m(mSEXP);
+    __result = Rcpp::wrap(maxprod(X, y, v, m));
+    return __result;
+END_RCPP
+}
 // gLoss
 double gLoss(arma::colvec r);
 RcppExport SEXP sparsevar_gLoss(SEXP rSEXP) {
@@ -29,21 +43,9 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// tp
-arma::sp_mat tp(const arma::sp_mat X, const arma::sp_mat Y);
-RcppExport SEXP sparsevar_tp(SEXP XSEXP, SEXP YSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< const arma::sp_mat >::type X(XSEXP);
-    Rcpp::traits::input_parameter< const arma::sp_mat >::type Y(YSEXP);
-    __result = Rcpp::wrap(tp(X, Y));
-    return __result;
-END_RCPP
-}
-// cdfit_gaussian
-arma::sp_mat cdfit_gaussian(arma::sp_mat X, arma::colvec Y, arma::colvec lambda, double eps, int max_iter, double gamma, Rcpp::NumericVector multiplier, double alpha, int dfmax, SEXP user);
-RcppExport SEXP sparsevar_cdfit_gaussian(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP epsSEXP, SEXP max_iterSEXP, SEXP gammaSEXP, SEXP multiplierSEXP, SEXP alphaSEXP, SEXP dfmaxSEXP, SEXP userSEXP) {
+// cdfit_gaussianTEST
+Rcpp::List cdfit_gaussianTEST(arma::sp_mat X, arma::colvec Y, arma::colvec lambda, double eps, int max_iter, double gamma, arma::colvec multiplier, double alpha, int dfmax, int user);
+RcppExport SEXP sparsevar_cdfit_gaussianTEST(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP epsSEXP, SEXP max_iterSEXP, SEXP gammaSEXP, SEXP multiplierSEXP, SEXP alphaSEXP, SEXP dfmaxSEXP, SEXP userSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -53,11 +55,22 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
     Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
     Rcpp::traits::input_parameter< double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type multiplier(multiplierSEXP);
+    Rcpp::traits::input_parameter< arma::colvec >::type multiplier(multiplierSEXP);
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< int >::type dfmax(dfmaxSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type user(userSEXP);
-    __result = Rcpp::wrap(cdfit_gaussian(X, Y, lambda, eps, max_iter, gamma, multiplier, alpha, dfmax, user));
+    Rcpp::traits::input_parameter< int >::type user(userSEXP);
+    __result = Rcpp::wrap(cdfit_gaussianTEST(X, Y, lambda, eps, max_iter, gamma, multiplier, alpha, dfmax, user));
+    return __result;
+END_RCPP
+}
+// standardize2
+Rcpp::List standardize2(arma::mat X);
+RcppExport SEXP sparsevar_standardize2(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    __result = Rcpp::wrap(standardize2(X));
     return __result;
 END_RCPP
 }

@@ -19,7 +19,8 @@ Imports:
     mvtnorm,
     picasso,
     corpcor,
-    Rcpp
+    Rcpp,
+    RcppArmadillo
 Suggests:
     knitr,
     testthat

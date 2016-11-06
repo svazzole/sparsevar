@@ -104,8 +104,8 @@ varENET <- function(data, p, lambdas, opt) {
 #' @param opt a list containing the options
 #'
 #' @export
-varSCAD <- function(data, p, lambdas, opt) {
 
+varSCAD <- function(data, p, lambdas, opt, penalty = "SCAD") {
   ## Fit a VAR for a sequence of lambdas
   nc <- ncol(data)
   nr <- nrow(data)
@@ -113,11 +113,13 @@ varSCAD <- function(data, p, lambdas, opt) {
   # transform the dataset
   trDt <- transformData(data, p, opt)
 
-  fit <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y, family = "gaussian", penalty = "SCAD",
-                        alpha = 1, lambda = lambdas)
-
+  if (penalty == "SCAD") {
+    fit <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y, family = "gaussian", penalty = "SCAD",
+                          alpha = 1, lambda = lambdas)
+  } else {
+    fit <- sparsevar::scadReg(as(trDt$X, "dgCMatrix"), trDt$y, alpha = 1, lambda = lambdas)
+  }
   return(fit)
-
 }
 
 #' @title VAR MCP

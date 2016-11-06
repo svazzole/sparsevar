@@ -9,11 +9,13 @@ b <- rep(1, 100)
 crossprod(A,b)
 
 ## Test2 -----------------------------------------------------------------------
-sim <- simulateVAR(N = 20)
+sim <- simulateVAR(N = 100)
 
 trDt <- transformData(sim$series, 1, list())
 
 X <- as(trDt$X, "dgCMatrix")
 y <- trDt$y
 
+Rcpp::sourceCpp(file = "/home/svazzole/workspace/r/sparsevar/src/scad.cpp")
 z <- sparsevar::crossprod(X,y)
+z <- crossprod(X,y)

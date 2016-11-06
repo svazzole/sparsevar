@@ -7,7 +7,7 @@
 companionVAR(v)
 }
 \arguments{
-\item{v}{the VAR object as from fitVAR or simulateVAR}
+\item{v}{the VAR object as from \code{fitVAR} or \code{simulateVAR}}
 }
 \description{
 Build the VAR(1) representation of a VAR(p) process

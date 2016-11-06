@@ -6,7 +6,7 @@
 #'
 #' @section sparsevar functions:
 #' \code{fitVAR}, \code{fitVECM}, \code{simulateVAR}, \code{createSparseMatrix},
-#' \code{plotMatrix}, \code{plotVAR}, \code{plotComparisonVAR},
+#' \code{plotMatrix}, \code{plotVAR}, \code{plotVECM}
 #' \code{l2norm}, \code{l1norm}, \code{lInftyNorm}, \code{maxNorm}, \code{frobNorm},
 #' \code{spectralRadius}, \code{spectralNorm}, \code{impulseResponse}
 #' 

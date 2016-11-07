@@ -17,7 +17,7 @@ plotMatrix <- function(M) {
   nr <- nrow(M)
   nc <- ncol(M)
   M <- t(M)[, nc:1]
-  ggplot2::ggplot(reshape2::melt(M), ggplot2::aes_string(x='Var1', y='Var2', fill='value')) + ggplot2::geom_raster() + 
+  ggplot2::ggplot(reshape2::melt(M), ggplot2::aes_string(x='Var1', y='Var2', fill='value')) + ggplot2::geom_raster() +
            ggplot2::scale_fill_gradient2(low='red', high='green', mid='black') + ggplot2::xlab("Row") + ggplot2::ylab("Col")
   
 }

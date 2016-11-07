@@ -4,7 +4,7 @@
 \alias{simulateVAR}
 \title{VAR simulation}
 \usage{
-simulateVAR(N, p, nobs, rho, sparsity, mu, method, covariance)
+simulateVAR(N, p, nobs, rho, sparsity, mu, method, covariance, ...)
 }
 \arguments{
 \item{N}{dimension of the time series.}

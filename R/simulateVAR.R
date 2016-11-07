@@ -2,7 +2,7 @@
 #'
 #' @description This function generates a simulated multivariate VAR time series.
 #'
-#' @usage simulateVAR(N, p, nobs, rho, sparsity, mu, method, covariance)
+#' @usage simulateVAR(N, p, nobs, rho, sparsity, mu, method, covariance, ...)
 #'
 #' @param N dimension of the time series.
 #' @param p number of lags of the VAR model.

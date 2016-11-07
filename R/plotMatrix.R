@@ -64,7 +64,7 @@ plotVAR <- function(...) {
     }
   }
   
-  multiplot(plotlist = pl, cols = p, layout = matrix(1:(l*varorder), nrow = l, byrow = TRUE))
+  multiplot(plotlist = pl, cols = varorder, layout = matrix(1:(l*varorder), nrow = l, byrow = TRUE))
   
 }
 

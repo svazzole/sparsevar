@@ -4,7 +4,7 @@
 \alias{plotVAR}
 \title{Plot VARs}
 \usage{
-plotVAR(var1, var2)
+plotVAR(...)
 }
 \arguments{
 \item{...}{a sequence of VAR objects (one or more

@@ -1,5 +1,5 @@
 ## Test environments
-* local Xubuntu install, R 3.2.5 and R 3.3.1
+* local Xubuntu install, R 3.3.2
 * win-builder (devel and release)
 
 ## R CMD check results

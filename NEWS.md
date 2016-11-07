@@ -1,3 +1,13 @@
+# sparsevar 0.0.10
+
+- Added plotVECM function
+- Removed plotComparisonVAR (substituted by plotVAR)
+- Added the option to generate VARs with given matrices
+- Fixed AIC
+- Fixed problems with error bands options
+- Added tests
+- Added the function computeForecasts
+
 # sparsevar 0.0.9
 
 - Fast SCAD estimation (using picasso package; works only with SCAD and timeSlice)

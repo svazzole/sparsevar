@@ -30,7 +30,7 @@ plotMatrix <- function(M) {
 #' than one, as from \code{simulateVAR} or \code{fitVAR})
 #' @return An \code{image} plot with a specific color palette (black zero entries, red 
 #' for the negative ones and green for the positive)
-#' @usage plotVAR(var1, var2)
+#' @usage plotVAR(...)
 #' 
 #' @export
 plotVAR <- function(...) {

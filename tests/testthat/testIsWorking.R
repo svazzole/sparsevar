@@ -1,6 +1,3 @@
-library(testthat)
-library(sparsevar)
-
 context("Testing generation of VARs")
 
 test_that("sparsevar", {

@@ -53,6 +53,7 @@ fitVECM <- function(data, p = 1, penalty = "ENET", method = "cv", logScale = TRU
   }
   
   output <- list()
+  output$mu <- resultsVAR$mu
   output$Pi <- Pi
   output$G <- G
   output$fit <- resultsVAR$fit

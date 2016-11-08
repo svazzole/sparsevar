@@ -30,6 +30,7 @@ fitVECM <- function(data, p = 1, penalty = "ENET", method = "cv", logScale = TRU
   p <- p + 1
   
   opt <- list(...)
+  opt$center <- FALSE
   
   # by default log-scale the data
   if (logScale == TRUE) {

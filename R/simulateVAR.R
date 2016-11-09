@@ -50,13 +50,24 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
       for (i in 1:p) {
         out$A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = FALSE, p = p, ...)
         l <- max(Mod(eigen(out$A[[i]])$values))
+        if (l > 1) {
+          out$A[[i]] <- out$A[[i]]/l
+        }
+        # while ((l > 1) | (l == 0)) {
+        #   out$A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = FALSE, p = p, ...)
+        #   l <- max(Mod(eigen(out$A[[i]])$values))
+        # }
         while ((l > 1) | (l == 0)) {
           out$A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = FALSE, p = p, ...)
           l <- max(Mod(eigen(out$A[[i]])$values))
+          if (l > 1) {
+            out$A[[i]] <- out$A[[i]]/(l+0.1)
+          }
         }
-        out$A[[i]] <- 1/sqrt(p) * out$A[[i]]
+        # out$A[[i]] <- 1/sqrt(p) * out$A[[i]]
       }
-      if (max(Mod(eigen(as.matrix(companionVAR(out)))$values)) < 1) {
+      cVAR <- as.matrix(companionVAR(out))
+      if (max(Mod(eigen(cVAR)$values)) < 1) {
         stable <- TRUE
       }
     }
@@ -103,6 +114,13 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
 
   }
 
+  if (!is.null(opt$SNR)) {
+    if (opt$SNR == 0) {
+      stop("Signal to Noise Ratio must be greater than 0.")
+    }
+    s <- max(abs(cVAR))/opt$SNR
+    C <- diag(s,N,N) %*% C %*% diag(s,N,N)
+  }
   # Matrix for MA part
   theta <- matrix(0, N, N)
   

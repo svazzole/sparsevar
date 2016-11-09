@@ -5,7 +5,8 @@
 \title{Monte Carlo simulations}
 \usage{
 mcSimulations(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
-  penalty = "ENET", covariance = "toeplitz", method = "normal", ...)
+  penalty = "ENET", covariance = "Toeplitz", method = "normal",
+  modelSel = "cv", ...)
 }
 \arguments{
 \item{N}{dimension of the multivariate time series.}
@@ -24,6 +25,8 @@ mcSimulations(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
 \item{covariance}{type of covariance matrix to be used in the generation of the sparse VAR model.}
 
 \item{method}{which type of distribution to use in the generation of the entries of the matrices.}
+
+\item{modelSel}{select which model selection criteria to use (\code{"cv"} or \code{"timeslice"}).}
 
 \item{...}{(TODO: complete)}
 }

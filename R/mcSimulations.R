@@ -11,14 +11,15 @@
 #' \code{"SCAD"} or \code{"MCP"}.
 #' @param covariance type of covariance matrix to be used in the generation of the sparse VAR model.
 #' @param method which type of distribution to use in the generation of the entries of the matrices.
+#' @param modelSel select which model selection criteria to use (\code{"cv"} or \code{"timeslice"}).
 #' @param ... (TODO: complete)
 #' 
 #' @return a \code{nMc}x5 matrix with the results of the Monte Carlo estimation
  
 #' @export
 mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05, 
-                          penalty = "ENET", covariance = "toeplitz", 
-                          method = "normal", ...) {
+                          penalty = "ENET", covariance = "Toeplitz", 
+                          method = "normal", modelSel = "cv", ...) {
 
   results <- list()
   
@@ -28,12 +29,12 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
     
   for (i in 1:nMC){
 
-      s <- simulateVAR(nobs = nobs, N = N, rho = rho, sparsity = sparsity, covariance = covariance, method = method)
+      s <- simulateVAR(nobs = nobs, N = N, rho = rho, sparsity = sparsity, covariance = covariance, method = method, ...)
       rets <- s$series
       genA <- s$A[[1]]
       spRad <- max(Mod(eigen(genA)$values))
       
-      res <- fitVAR(data = rets, penalty = penalty, ...)
+      res <- fitVAR(data = rets, penalty = penalty, method = modelSel, ...)
       
       A <- res$A[[1]]
       estSpRad <- max(Mod(eigen(A)$values))

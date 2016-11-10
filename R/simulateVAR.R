@@ -48,23 +48,12 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
     stable <- FALSE
     while (stable == FALSE) {
       for (i in 1:p) {
-        out$A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = FALSE, p = p, ...)
+        out$A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE, p = p, ...)
         l <- max(Mod(eigen(out$A[[i]])$values))
-        if (l > 1) {
-          out$A[[i]] <- out$A[[i]]/l
-        }
-        # while ((l > 1) | (l == 0)) {
-        #   out$A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = FALSE, p = p, ...)
-        #   l <- max(Mod(eigen(out$A[[i]])$values))
-        # }
         while ((l > 1) | (l == 0)) {
-          out$A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = FALSE, p = p, ...)
+          out$A[[i]] <- createSparseMatrix(sparsity = sparsity, N = N, method = method, stationary = TRUE, p = p, ...)
           l <- max(Mod(eigen(out$A[[i]])$values))
-          if (l > 1) {
-            out$A[[i]] <- out$A[[i]]/(l+0.1)
-          }
         }
-        # out$A[[i]] <- 1/sqrt(p) * out$A[[i]]
       }
       cVAR <- as.matrix(companionVAR(out))
       if (max(Mod(eigen(cVAR)$values)) < 1) {
@@ -74,7 +63,7 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   }
   
   # Covariance Matrix: Toeplitz, Block1 or Block2
-  if (covariance == "block1"){
+  if (covariance == "block1") {
 
     l <- floor(N/2)
     I <- diag(1 - rho, nrow = N)
@@ -92,19 +81,19 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
     r[(l+1):N, (l+1):N] <- rho
     C <- I + r
 
-  } else if (covariance == "Toeplitz"){
+  } else if (covariance == "Toeplitz") {
 
     r <- rho^(1:N)
     C <- Matrix::toeplitz(r)
 
-  } else if (covariance == "Wishart"){
+  } else if (covariance == "Wishart") {
 
     r <- rho^(1:N)
     S <- Matrix::toeplitz(r)
     C <- stats::rWishart(1, 2*N, S)
     C <- as.matrix(C[, , 1])
 
-  } else if (covariance == "diagonal"){
+  } else if (covariance == "diagonal") {
 
     C <- diag(x = rho, nrow = N, ncol = N)
 

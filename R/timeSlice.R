@@ -72,7 +72,7 @@ timeSliceVAR_ENET <- function(data, p, opt) {
   A <- splitMatrix(A, p)
 
   # Now that we have the matrices compute the residuals
-  res <- computeResiduals(data, A)
+  res <- computeResiduals(trDt$series, A)
 
   # Create the output
   output = list()

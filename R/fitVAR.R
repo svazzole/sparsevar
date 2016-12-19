@@ -136,7 +136,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   A <- splitMatrix(A, p)
 
   # Now that we have the matrices compute the residuals
-  res <- computeResiduals(data, A)
+  res <- computeResiduals(trDt$series, A)
 
   # To extract the sd of mse
   if (penalty == "ENET"){

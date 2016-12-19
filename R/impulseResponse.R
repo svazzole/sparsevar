@@ -77,7 +77,7 @@ checkImpulseZero <- function(irf) {
 #' are 0.
 #' 
 #' @export
-errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, verbose = TRUE) {
+errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, verbose = TRUE, mode = "fast") {
   
   lambda <- v$lambda 
   p <- length(v$A)
@@ -96,21 +96,32 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, verbose = TRUE) {
     # create Xs and Ys (temp variables)
     o <- bootstrappedVAR(v)
     
-    if (v$penalty == "ENET"){
-      # fit ENET to a specific value of lambda
-      fit <- varENET(o, p, lambda, opt = list(method = v$method, penalty = v$penalty))
-      
-      Avector <- stats::coef(fit, s = lambda)
-      A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
-      
-    } else if (v$penalty == "SCAD") {
-      fit <- varSCAD(o, p, lambda, opt = list(method = v$method, penalty = v$penalty))    
-      Avector <- fit$beta[2:nrow(fit$beta), 1]
-      A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
+    if (mode == "fast") {
+      if (v$penalty == "ENET"){
+          # fit ENET to a specific value of lambda
+          fit <- varENET(o, p, lambda, opt = list(method = v$method, penalty = v$penalty))
+          Avector <- stats::coef(fit, s = lambda)
+          A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
+      } else if (v$penalty == "SCAD") {
+        fit <- varSCAD(o, p, lambda, opt = list(method = v$method, penalty = v$penalty))    
+        Avector <- fit$beta[2:nrow(fit$beta), 1]
+        A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
+      } else {
+        fit <- varMCP(o, p, lambda, opt = list(method = v$method, penalty = v$penalty))    
+        Avector <- fit$beta[2:nrow(fit$beta), 1]
+        A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
+      }
     } else {
-      fit <- varMCP(o, p, lambda, opt = list(method = v$method, penalty = v$penalty))    
-      Avector <- fit$beta[2:nrow(fit$beta), 1]
-      A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
+      # fit ENET on a series of lambdas 
+      fit <- fitVAR(o, p, penalty=v$penalty, method=v$method)
+      A <- fit$A 
+      tmpA <- A[[1]]
+      if (p>1) {
+        for (i in 2:p){
+          tmpA <- cbind(tmpA, A[[i]]) 
+        }
+      }
+      A <- tmpA
     }
 
     M <- cbind(diag(x = 1, nrow = (nc*(p-1)), ncol = (nc*(p-1))), matrix(0, nrow = (nc*(p-1)), ncol = nc))

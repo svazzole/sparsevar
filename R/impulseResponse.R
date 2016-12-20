@@ -113,7 +113,8 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, verbose = TRUE, mode = 
       }
     } else {
       # fit ENET on a series of lambdas 
-      fit <- fitVAR(o, p, penalty=v$penalty, method=v$method)
+      ## TODO: check if threshold = TRUE / FALSE
+      fit <- fitVAR(o, p, penalty=v$penalty, method=v$method, threshold = TRUE)
       A <- fit$A 
       tmpA <- A[[1]]
       if (p>1) {

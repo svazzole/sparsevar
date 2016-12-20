@@ -42,7 +42,7 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
       stop("The matrices you passed are incompatible.")
     }
     if (max(Mod(eigen(as.matrix(companionVAR(out)))$values)) >= 1) {
-      warning("The VAR you passed is instable.")
+      warning("The VAR you passed is unstable.")
     }
   } else { 
     stable <- FALSE

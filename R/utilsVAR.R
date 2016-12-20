@@ -268,7 +268,7 @@ bootstrappedVAR <- function(v) {
   zt[1:p,] <- s[1:p,]
 
   for (t0 in (p+1):t) {
-    ix <- sample(1:t, 1)
+    ix <- sample((p+1):t, 1)
     u <- r[ix, ]
     vv <- rep(0, N)
     for (i in 1:p){

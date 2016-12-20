@@ -15,6 +15,8 @@ plotIRFGrid(irf, eb, indexes, type)
 
 \item{type}{plot the irf (\code{type = "irf"} by default) or the orthogonal irf 
 (\code{type = "oirf"})}
+
+\item{bands}{which type of bands to plot ("quantiles" (default) or  "sd")}
 }
 \value{
 An \code{image} plot relative to the impulse response function.

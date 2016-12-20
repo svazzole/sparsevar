@@ -59,11 +59,12 @@ plotIRF <- function(irf, eb, i, j, type = "irf", bands = "quantiles") {
     stop("Unknown type")
   }
 
-  ggplot2::ggplot(d, ggplot2::aes(x = d[,1], y = d[,2])) + ggplot2::geom_line() + ggplot2::xlab("Time") + ggplot2::ylab(irfString) +
+  ggplot2::ggplot(d, ggplot2::aes(x = d[,1], y = d[,2])) + ggplot2::ylab(irfString) +
     ggplot2::geom_line(data = d, ggplot2::aes(x = t, y = d[,3]), linetype = "dashed", color = "blue") + 
     ggplot2::geom_line(data = d, ggplot2::aes(x = t, y = d[,4]), linetype = "dashed", color = "blue") + 
-    ggplot2::geom_line(data = d, ggplot2::aes(x = t, y = d[,5]), color = "red")
-  
+    ggplot2::geom_ribbon(data = d, ggplot2::aes(ymin=d[,3],ymax=d[,4]), fill="lightsteelblue2", alpha="0.75") + 
+    ggplot2::geom_line(data = d, ggplot2::aes(x = t, y = d[,5]), color = "red") + 
+    ggplot2::geom_line() + ggplot2::xlab("Time")
 }
 
 #' @title IRF grid plot
@@ -75,11 +76,12 @@ plotIRF <- function(irf, eb, i, j, type = "irf", bands = "quantiles") {
 #' @param indexes a vector containing the indeces that you want to plot
 #' @param type plot the irf (\code{type = "irf"} by default) or the orthogonal irf 
 #' (\code{type = "oirf"})
+#' @param bands which type of bands to plot ("quantiles" (default) or  "sd")
 #' @return An \code{image} plot relative to the impulse response function.
 #' @usage plotIRFGrid(irf, eb, indexes, type)
 #' 
 #' @export
-plotIRFGrid <- function(irf, eb, indexes, type = "irf") {
+plotIRFGrid <- function(irf, eb, indexes, type = "irf", bands = "quantiles") {
   
   n <- length(indexes)
   g <- expand.grid(indexes, indexes)
@@ -88,7 +90,7 @@ plotIRFGrid <- function(irf, eb, indexes, type = "irf") {
   pl <- list()
   
   for (i in 1:nrgrid) {
-    pl[[i]] <- plotIRF(irf, eb, g[i,1], g[i,2], type = type)
+    pl[[i]] <- plotIRF(irf, eb, g[i,1], g[i,2], type = type, bands = bands)
   }
   
   multiplot(plotlist = pl, cols = n, layout = matrix(1:nrgrid, nrow = n, byrow = TRUE))

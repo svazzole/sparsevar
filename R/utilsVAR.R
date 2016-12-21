@@ -266,7 +266,7 @@ bootstrappedVAR <- function(v) {
 
   zt <- matrix(0, nrow = t, ncol = N)
   zt[1:p,] <- s[1:p,]
-
+  
   for (t0 in (p+1):t) {
     ix <- sample((p+1):t, 1)
     u <- r[ix, ]

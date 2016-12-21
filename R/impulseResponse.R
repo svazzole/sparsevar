@@ -196,6 +196,7 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, resampling = "bootstrap
     output$oirfQLB <- oirfQLB
     
     attr(output, "class") <- "irfBands"
+    attr(output, "resampling") <- "bootstrap"
     return(output)
     
   }  else if (resampling == "jackknife") {
@@ -290,10 +291,10 @@ jackknife <- function(v, irf, verbose = TRUE, mode = "fast", alpha) {
     for (j in 1:nc) {
       for (k in 1:len) {
 
-        irfUB[i,j,k] <- qUB*stats::sd(irfs[i,j,k,])
-        oirfUB[i,j,k] <- qUB*stats::sd(oirfs[i,j,k,])
-        irfLB[i,j,k] <- qLB*stats::sd(irfs[i,j,k,])
-        oirfLB[i,j,k] <- qLB*stats::sd(oirfs[i,j,k,])
+        irfUB[i,j,k] <- base::mean(irfs[i,j,k,]) + qUB*stats::sd(irfs[i,j,k,])
+        oirfUB[i,j,k] <- base::mean(oirfs[i,j,k,]) + qUB*stats::sd(oirfs[i,j,k,])
+        irfLB[i,j,k] <- base::mean(irfs[i,j,k,]) + qLB*stats::sd(irfs[i,j,k,])
+        oirfLB[i,j,k] <- base::mean(oirfs[i,j,k,]) + qLB*stats::sd(oirfs[i,j,k,])
         
       }
       if (verbose == TRUE){
@@ -314,6 +315,7 @@ jackknife <- function(v, irf, verbose = TRUE, mode = "fast", alpha) {
   output$oirfLB <- oirfLB
   
   attr(output, "class") <- "irfBands"
+  attr(output, "resampling") <- "jackknife"
   return(output)
 }
 

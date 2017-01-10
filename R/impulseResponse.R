@@ -242,8 +242,8 @@ jackknife <- function(v, irf, verbose = TRUE, mode = "fast", alpha) {
     if (mode == "fast") {
       if (v$penalty == "ENET"){
         # fit ENET to a specific value of lambda
-        fit <- glmnet::glmnet(trDt$X, trDt$y, lambda = lambda)
-        #fit <- varENET(data, p, lambda, opt = list(method = v$method, penalty = v$penalty))
+        #fit <- glmnet::glmnet(trDt$X, trDt$y, lambda = lambda)
+        fit <- varENET(data, p, lambda, opt = list(method = v$method, penalty = v$penalty))
         Avector <- stats::coef(fit, s = lambda)
         A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
       } else if (v$penalty == "SCAD") {

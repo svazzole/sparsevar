@@ -65,23 +65,31 @@ checkImpulseZero <- function(irf) {
 #' 
 #' @description A function to estimate the confidence intervals for irf and oirf.
 #' 
-#' @usage errorBandsIRF(v, irf, alpha, M, verbose)
+#' @usage errorBandsIRF(v, irf, alpha, M, resampling, ...)
 #'
 #' @param v a var object as from fitVAR or simulateVAR
 #' @param irf irf output from impulseResponse function
 #' @param alpha level of confidence (default \code{alpha = 0.01})
 #' @param M number of bootstrapped series (default \code{M = 100})
-#' @param verbose logical; if \code{TRUE} print progrss bars
+#' @param resampling type of resampling: \code{"bootstrap"} or \code{"jackknife"}
+#' @param ... some options for the estimation: \code{verbose = TRUE} or \code{FALSE}, 
+#' \code{mode = "fast"} or \code{"slow"}, \code{threshold = TRUE} or \code{FALSE}.
 #' 
 #' @return a matrix containing the indices of the impulse response function that
 #' are 0.
 #' 
 #' @export
-errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, resampling = "bootstrap", verbose = TRUE, mode = "fast") {
+errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, resampling = "bootstrap", ...) {
 
+  opt <- list(...)
+  verbose <- ifelse(!is.null(opt$verbose), opt$verbose, TRUE)
+  mode <- ifelse(!is.null(opt$mode), opt$mode, "fast")
+  threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
+  
   if (resampling == "bootstrap"){
     lambda <- v$lambda 
     p <- length(v$A)
+    nr <- ncol(v$series) 
     nc <- ncol(v$A[[1]]) 
     len <- dim(irf$irf)[3]
     
@@ -112,23 +120,24 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, resampling = "bootstrap
           Avector <- fit$beta[2:nrow(fit$beta), 1]
           A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
         }
+        
+        if (threshold == TRUE) {
+          applyThreshold(A, nr, nc, p)
+        }
+        
+        M <- cbind(diag(x = 1, nrow = (nc*(p-1)), ncol = (nc*(p-1))), matrix(0, nrow = (nc*(p-1)), ncol = nc))
+        bigA <- rbind(A,M)  
+        
       } else {
         # fit ENET on a series of lambdas 
-        ## TODO: check if threshold = TRUE / FALSE
-        fit <- fitVAR(o, p, penalty=v$penalty, method=v$method, threshold = TRUE)
-        A <- fit$A 
-        tmpA <- A[[1]]
-        if (p>1) {
-          for (i in 2:p){
-            tmpA <- cbind(tmpA, A[[i]]) 
-          }
+        if (threshold == TRUE) {
+          fit <- fitVAR(o, p, penalty=v$penalty, method=v$method, threshold = TRUE)          
+        } else {
+          fit <- fitVAR(o, p, penalty=v$penalty, method=v$method)
         }
-        A <- tmpA
+        bigA <- companionVAR(fit)
       }
-      
-      M <- cbind(diag(x = 1, nrow = (nc*(p-1)), ncol = (nc*(p-1))), matrix(0, nrow = (nc*(p-1)), ncol = nc))
-      bigA <- rbind(A,M)  
-      
+
       tmpRes <- getIRF(v, bigA, len, irf$cholP)
       irfs[,,,k] <- tmpRes$irf
       oirfs[,,,k] <- tmpRes$oirf
@@ -201,7 +210,7 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, resampling = "bootstrap
     
   }  else if (resampling == "jackknife") {
     
-    output <- jackknife(v, irf, verbose, alpha = alpha)
+    output <- jackknife(v, irf, alpha = alpha, ...)
     return(output)
     
   } else {
@@ -211,7 +220,7 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, resampling = "bootstrap
 
 }
 
-jackknife <- function(v, irf, verbose = TRUE, mode = "fast", alpha) {
+jackknife <- function(v, irf, mode = "fast", alpha, ...) {
 
   lambda <- v$lambda 
   p <- length(v$A)
@@ -219,11 +228,16 @@ jackknife <- function(v, irf, verbose = TRUE, mode = "fast", alpha) {
   len <- dim(irf$irf)[3]
   nr <- nrow(v$series)
   
+  opt <- list(...)
+  verbose <- ifelse(!is.null(opt$verbose), opt$verbose, TRUE)
+  mode <- ifelse(!is.null(opt$mode), opt$mode, "fast")
+  threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
+  
   irfs <- array(data = rep(0,len*nc^2*nr), dim = c(nc,nc,len+1, nr))
   oirfs <- array(data = rep(0,len*nc^2*nr), dim = c(nc,nc,len+1, nr))
     
   if (verbose == TRUE){
-    cat("Step 1 of 2: bootstrapping series and re-estimating VAR...\n")
+    cat("Step 1 of 2: jack knifing series and re-estimating VAR...\n")
     pb <- utils::txtProgressBar(min = 0, max = nr, style = 3)
   }
   
@@ -242,7 +256,6 @@ jackknife <- function(v, irf, verbose = TRUE, mode = "fast", alpha) {
     if (mode == "fast") {
       if (v$penalty == "ENET"){
         # fit ENET to a specific value of lambda
-        #fit <- glmnet::glmnet(trDt$X, trDt$y, lambda = lambda)
         fit <- varENET(data, p, lambda, opt = list(method = v$method, penalty = v$penalty))
         Avector <- stats::coef(fit, s = lambda)
         A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
@@ -255,23 +268,24 @@ jackknife <- function(v, irf, verbose = TRUE, mode = "fast", alpha) {
         Avector <- fit$beta[2:nrow(fit$beta), 1]
         A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
       }
+      
+      if (threshold == TRUE) {
+        applyThreshold(A, nr, nc, p)
+      }
+      
+      M <- cbind(diag(x = 1, nrow = (nc*(p-1)), ncol = (nc*(p-1))), matrix(0, nrow = (nc*(p-1)), ncol = nc))
+      bigA <- rbind(A,M)  
+      
     } else {
       # fit ENET on a series of lambdas 
-      ## TODO: check if threshold = TRUE / FALSE
-      fit <- fitVAR(data, p, penalty=v$penalty, method=v$method, threshold = TRUE)
-      A <- fit$A 
-      tmpA <- A[[1]]
-      if (p>1) {
-        for (i in 2:p){
-          tmpA <- cbind(tmpA, A[[i]]) 
-        }
+      if (threshold == TRUE) {
+        fit <- fitVAR(data, p, penalty=v$penalty, method=v$method, threshold = TRUE)        
+      } else {
+        fit <- fitVAR(data, p, penalty=v$penalty, method=v$method)
       }
-      A <- tmpA
+      bigA <- companionVAR(fit)
     }
-    
-    M <- cbind(diag(x = 1, nrow = (nc*(p-1)), ncol = (nc*(p-1))), matrix(0, nrow = (nc*(p-1)), ncol = nc))
-    bigA <- rbind(A,M)  
-    
+
     tmpRes <- getIRF(v, bigA, len, irf$cholP)
     irfs[,,,k] <- tmpRes$irf
     oirfs[,,,k] <- tmpRes$oirf

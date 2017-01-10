@@ -28,6 +28,9 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
                         mu = 0, method = "normal", covariance = "Toeplitz", ...) {
 
   opt <- list(...)
+  fixedMat <- opt$fixedMat
+  SNR <- opt$SNR
+  
   # Create a var object to save the matrices (the output)
   out <- list()
   attr(out, "class") <- "var"
@@ -35,9 +38,9 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
   
   out$A <- list()
   
-  if (!is.null(opt$fixedMat)) {
+  if (!is.null(fixedMat)) {
     # The user passed a list of matrices
-    out$A <- opt$fixedMat
+    out$A <- fixedMat
     if (!checkMatrices(out$A)){
       stop("The matrices you passed are incompatible.")
     }
@@ -103,13 +106,15 @@ simulateVAR <- function(N = 100, p = 1, nobs = 250, rho = 0.5, sparsity = 0.05,
 
   }
 
-  if (!is.null(opt$SNR)) {
-    if (opt$SNR == 0) {
+  # Adjust Signal to Noise Ratio
+  if (!is.null(SNR)) {
+    if (SNR == 0) {
       stop("Signal to Noise Ratio must be greater than 0.")
     }
     s <- max(abs(cVAR))/opt$SNR
     C <- diag(s,N,N) %*% C %*% diag(s,N,N)
   }
+  
   # Matrix for MA part
   theta <- matrix(0, N, N)
   
@@ -169,24 +174,16 @@ checkMatrices <- function(A) {
   
   # This function check if all the matrices passed have the same dimensions
   if (!is.list(A)) {
-    
-    return(FALSE)
-  
+    stop("The matrices must be passed in a list")
   } else {
-    
     l <- length(A)
-    
     if(l>1){
-    
       for (i in 1:(l-1)) {
-        
         if (sum(1-(dim(A[[i]]) == dim(A[[i+1]]))) != 0) {
           return(FALSE)
         }
-        
       }
       return(TRUE)
-    
     } else {
       return(TRUE)
     }

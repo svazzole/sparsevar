@@ -421,3 +421,12 @@ computeForecasts <- function(v, numSteps = 1) {
   f <- f + matrix(rep(mu, length(mu)), length(mu), numSteps)
   return(f)
 }
+
+applyThreshold <- function(A, nr, nc, p) {
+  
+  tr <- 1 / sqrt(p*nc*log(nr))
+  L <- abs(A) >= tr
+  A <- A * L
+  return(A)
+  
+}

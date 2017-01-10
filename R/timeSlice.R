@@ -24,11 +24,13 @@ timeSliceVAR_ENET <- function(data, p, opt) {
   nr <- nrow(data)
   nc <- ncol(data)
 
-  l <- ifelse(is.null(opt$leaveOut), 10, opt$leaveOut)
+  threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
+  returnFit <- ifelse(!is.null(opt$returnFit), opt$returnFit, FALSE)
+  methodCov <- ifelse(!is.null(opt$methodCov), opt$methodCov, "tiger")
+  a  <- ifelse(!is.null(opt$alpha), opt$alpha, 1)
+  l <- ifelse(!is.null(opt$leaveOut), opt$leaveOut, 10)
   ## TODO: Add the look ahead period > 1
   winLength <- nr - l
-  a  <- ifelse(is.null(opt$alpha), 1, opt$alpha)
-
   horizon <- 1
 
   trDt <- transformData(data[1:winLength, ], p, opt)
@@ -60,14 +62,10 @@ timeSliceVAR_ENET <- function(data, p, opt) {
 
   # If threshold = TRUE then set to zero all the entries that are smaller than
   # the threshold
-  if (!is.null(opt$threshold)) {
-    if (opt$threshold == TRUE) {
-      tr <- 1 / sqrt(p*nc*log(nr))
-      L <- abs(A) >= tr
-      A <- A * L
-    }
+  if (threshold == TRUE) {
+    A <- applyThreshold(A, nr, nc, p)
   }
-
+  
   # Get back the list of VAR matrices (of length p)
   A <- splitMatrix(A, p)
 
@@ -80,10 +78,8 @@ timeSliceVAR_ENET <- function(data, p, opt) {
   output$A <- A
 
   # Do you want the fit?
-  if (!is.null(opt$returnFit)) {
-    if (opt$returnFit == TRUE) {
-      output$fit <- fit
-    }
+  if (returnFit == TRUE) {
+    output$fit <- fit
   }
 
   output$lambda <- finalRes[ix, 1]
@@ -92,7 +88,10 @@ timeSliceVAR_ENET <- function(data, p, opt) {
   output$time <- elapsed
   output$series <- trDt$series
   output$residuals <- res
-  output$sigma <- stats::cov(res)
+  
+  # Variance/Covariance estimation
+  output$sigma <- estimateCovariance(res, methodCovariance = methodCov)
+  
   output$penalty <- "ENET"
   output$method <- "timeSlice"
   attr(output, "class") <- "var"
@@ -110,14 +109,16 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
   nc <- ncol(data)
 
   picasso <- ifelse(!is.null(opt$picasso), opt$picasso, FALSE)
-
-  l <- ifelse(is.null(opt$leaveOut), 10, opt$leaveOut)
+  threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
+  returnFit <- ifelse(!is.null(opt$returnFit), opt$returnFit, FALSE)
+  methodCov <- ifelse(!is.null(opt$methodCov), opt$methodCov, "tiger")  
+  a  <- ifelse(!is.null(opt$alpha), opt$alpha, 1)
+  ## TODO: Add the look ahead period > 1
+  l <- ifelse(!is.null(opt$leaveOut), opt$leaveOut, 10)
   winLength <- nr - l
-  a  <- ifelse(is.null(opt$alpha), 1, opt$alpha)
-
   horizon <- 1
+  
   trDt <- transformData(data[1:winLength, ], p, opt)
-
 
   if (!picasso) {
     if (penalty == "SCAD") {

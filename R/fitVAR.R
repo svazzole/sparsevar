@@ -61,6 +61,9 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   nr <- nrow(data)
   
   picasso <- ifelse(!is.null(opt$picasso), opt$picasso, FALSE)
+  threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
+  returnFit <- ifelse(!is.null(opt$returnFit), opt$returnFit, FALSE)
+  methodCov <- ifelse(!is.null(opt$methodCov), opt$methodCov, "tiger")
   
   if(picasso) {
     stop("picasso available only with timeSlice method.")
@@ -86,7 +89,8 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
   } else if (penalty == "SCAD") {
 
-    # convert from sparse matrix to std matrix (SCAD does not work with sparse matrices)
+    # convert from sparse matrix to std matrix (SCAD does not work with sparse 
+    # matrices)
     trDt$X <- as.matrix(trDt$X)
 
     # fit the SCAD model
@@ -102,7 +106,8 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
   } else if (penalty == "MCP") {
 
-    # convert from sparse matrix to std matrix (MCP does not work with sparse matrices)
+    # convert from sparse matrix to std matrix (MCP does not work with sparse 
+    # matrices)
     trDt$X <- as.matrix(trDt$X)
 
     # fit the MCP model
@@ -124,13 +129,8 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
   # If threshold = TRUE then set to zero all the entries that are smaller than
   # the threshold
-  if (!is.null(opt$threshold)) {
-    if (opt$threshold == TRUE) {
-      #tr <- 1 / (nr^(0.49))
-      tr <- 1 / sqrt(p*nc*log(nr))
-      L <- abs(A) >= tr
-      A <- A * L
-    }
+  if (threshold == TRUE) {
+    A <- applyThreshold(A, nr, nc, p)
   }
 
   # Get back the list of VAR matrices (of length p)
@@ -148,39 +148,28 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
     mseSD <- fit$cvse[ix]
   }
 
-
   # Create the output
   output = list()
   output$mu <- trDt$mu
   output$A <- A
 
   # Do you want the fit?
-  if (!is.null(opt$returnFit)) {
-    if (opt$returnFit == TRUE) {
-      output$fit <- fit
-    }
+  if (returnFit == TRUE) {
+    output$fit <- fit
   }
 
-  # If ENET is used, return the lambda
-  ## TODO: check. Why fit$lambda.min in both cases?
-  if (penalty == "ENET") {
-    output$lambda <- fit$lambda.min
-  } else {
-    output$lambda <- fit$lambda.min
-  }
-
+  # Return the "best" lambda 
+  output$lambda <- fit$lambda.min
+  
   output$mse <- mse
   output$mseSD <- mseSD
   output$time <- elapsed
   output$series <- trDt$series
   output$residuals <- res
 
-  if (is.null(opt$methodCov)) {
-    output$sigma <- estimateCovariance(res)
-  } else {
-    output$sigma <- estimateCovariance(res, methodCovariance = opt$methodCov)
-  }
-
+  # Variance/Covariance estimation
+  output$sigma <- estimateCovariance(res, methodCovariance = methodCov)
+  
   output$penalty <- penalty
   output$method <- "cv"
   attr(output, "class") <- "var"
@@ -202,9 +191,6 @@ cvVAR_ENET <- function(X, y, nvar, opt) {
     foldsIDs <- numeric(0)
   } else {
     nr <- nrow(X)
-    #nv <<- nvar
-    #foldsIDs <- sort(rep(seq(nf), length = nr))
-    #foldsIDs <- rep(seq(nf), length = nr)
     foldsIDs <- rep(sort(rep(seq(nf), length.out = nr/nvar)), nvar)
   }
 

@@ -12,7 +12,7 @@
 #' @export
 impulseResponse <- function(v, len = 20) {
   
-  ## TODO: v can be also a simulation!
+  # Check if v is a VAR object
   if (!checkIsVar(v)) { 
     stop("Input v must be a VAR object")
   }

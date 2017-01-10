@@ -230,11 +230,20 @@ jackknife <- function(v, irf, verbose = TRUE, mode = "fast", alpha) {
   for (k in 1:nr) {
     # create Xs and Ys (temp variables)
     data <- v$series[-k, ]
+    trDt <- transformData(data, p, opt = list(method = v$method, penalty = v$penalty))
+    trDt$X <- trDt$X
+    trDt$y <- trDt$y
+
+    # data <- v$series
+    # trDt <- transformData(data, p, opt = list(method = v$method, penalty = v$penalty))
+    # trDt$X <- trDt$X[-k, ]
+    # trDt$y <- trDt$y[-k]
     
     if (mode == "fast") {
       if (v$penalty == "ENET"){
         # fit ENET to a specific value of lambda
-        fit <- varENET(data, p, lambda, opt = list(method = v$method, penalty = v$penalty))
+        fit <- glmnet::glmnet(trDt$X, trDt$y, lambda = lambda)
+        #fit <- varENET(data, p, lambda, opt = list(method = v$method, penalty = v$penalty))
         Avector <- stats::coef(fit, s = lambda)
         A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
       } else if (v$penalty == "SCAD") {

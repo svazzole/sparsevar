@@ -257,13 +257,15 @@ bootstrappedVAR <- function(v) {
   if (!checkIsVar(v)) {
     stop("v must be a var object")
   }
+  
   r <- v$residuals
   s <- v$series
   A <- v$A
   N <- ncol(A[[1]])
   p <- length(A)
   t <- nrow(r)
-
+  r <- r - matrix(colMeans(r), ncol = N, nrow = t)
+  
   zt <- matrix(0, nrow = t, ncol = N)
   zt[1:p,] <- s[1:p,]
   

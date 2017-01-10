@@ -126,6 +126,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   # the threshold
   if (!is.null(opt$threshold)) {
     if (opt$threshold == TRUE) {
+      #tr <- 1 / (nr^(0.49))
       tr <- 1 / sqrt(p*nc*log(nr))
       L <- abs(A) >= tr
       A <- A * L

@@ -62,9 +62,10 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   
   picasso <- ifelse(!is.null(opt$picasso), opt$picasso, FALSE)
   threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
+  thresholdType <- ifelse(!is.null(opt$thresholdType), opt$thresholdType, "soft")
   returnFit <- ifelse(!is.null(opt$returnFit), opt$returnFit, FALSE)
   methodCov <- ifelse(!is.null(opt$methodCov), opt$methodCov, "tiger")
-  
+
   if(picasso) {
     stop("picasso available only with timeSlice method.")
   }
@@ -130,7 +131,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   # If threshold = TRUE then set to zero all the entries that are smaller than
   # the threshold
   if (threshold == TRUE) {
-    A <- applyThreshold(A, nr, nc, p)
+    A <- applyThreshold(A, nr, nc, p, type = thresholdType)
   }
 
   # Get back the list of VAR matrices (of length p)

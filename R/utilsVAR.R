@@ -422,9 +422,16 @@ computeForecasts <- function(v, numSteps = 1) {
   return(f)
 }
 
-applyThreshold <- function(A, nr, nc, p) {
+applyThreshold <- function(A, nr, nc, p, type = "soft") {
   
-  tr <- 1 / sqrt(p*nc*log(nr))
+  if (type == "soft") {
+    tr <- 1 / sqrt(p*nc*log(nr))    
+  } else if (type == "hard") {
+    tr <- (nc)^(-0.49)    
+  } else {
+    stop("Unknown threshold type. Possible values are: \"soft\" or \"hard\"")
+  }
+  
   L <- abs(A) >= tr
   A <- A * L
   return(A)

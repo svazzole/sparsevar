@@ -85,7 +85,8 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, resampling = "bootstrap
   verbose <- ifelse(!is.null(opt$verbose), opt$verbose, TRUE)
   mode <- ifelse(!is.null(opt$mode), opt$mode, "fast")
   threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
-  
+  thresholdType <- ifelse(!is.null(opt$thresholdType), opt$thresholdType, "soft")
+
   if (resampling == "bootstrap"){
     lambda <- v$lambda 
     p <- length(v$A)
@@ -122,7 +123,7 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, resampling = "bootstrap
         }
         
         if (threshold == TRUE) {
-          applyThreshold(A, nr, nc, p)
+          applyThreshold(A, nr, nc, p, type = thresholdType)
         }
         
         M <- cbind(diag(x = 1, nrow = (nc*(p-1)), ncol = (nc*(p-1))), matrix(0, nrow = (nc*(p-1)), ncol = nc))
@@ -232,6 +233,7 @@ jackknife <- function(v, irf, mode = "fast", alpha, ...) {
   verbose <- ifelse(!is.null(opt$verbose), opt$verbose, TRUE)
   mode <- ifelse(!is.null(opt$mode), opt$mode, "fast")
   threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
+  thresholdType <- ifelse(!is.null(opt$thresholdType), opt$thresholdType, "soft")
   
   irfs <- array(data = rep(0,len*nc^2*nr), dim = c(nc,nc,len+1, nr))
   oirfs <- array(data = rep(0,len*nc^2*nr), dim = c(nc,nc,len+1, nr))
@@ -270,7 +272,7 @@ jackknife <- function(v, irf, mode = "fast", alpha, ...) {
       }
       
       if (threshold == TRUE) {
-        applyThreshold(A, nr, nc, p)
+        applyThreshold(A, nr, nc, p, type = thresholdType)
       }
       
       M <- cbind(diag(x = 1, nrow = (nc*(p-1)), ncol = (nc*(p-1))), matrix(0, nrow = (nc*(p-1)), ncol = nc))

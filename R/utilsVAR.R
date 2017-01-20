@@ -338,12 +338,12 @@ informCrit <- function(v) {
       nc <- ncol(v[[i]]$residuals)
       d <- det(sigma)
       r[i,1] <- log(d) + (2*p*nc^2)/nr                 # AIC
-      r[i,2] <- log(d) + (p*nc^2)/nr * log(nr)         # Schwarz
+      r[i,2] <- log(d) + (log(nr)/nr) * (p*nc^2)       # BIC
       r[i,3] <- log(d) + (2*p*nc^2)/nr * log(log(nr))  # Hannan-Quinn
       
     }
     results <- data.frame(r)
-    colnames(results) <- c("AIC", "Schwarz", "HannanQuinn")
+    colnames(results) <- c("AIC", "BIC", "HannanQuinn")
   } else {
     stop("Input must be a list of var models.")
   }

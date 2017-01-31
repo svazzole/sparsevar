@@ -44,7 +44,8 @@ twoStepOLS <- function(series, p = 1, penalty ="ENET", method = "cv", ...) {
   b1 <- R%*%ga
   A <- matrix(b1, ncol = N, byrow = F)
   
-  varA <- matrix(diag(R%*%(solve(t(R)%*%(kronecker(G,s))%*%R)/nobs)%*%t(R)), ncol = N, byrow = F)
+  varCov <- R%*%(solve(t(R)%*%(kronecker(G,s))%*%R)/nobs)%*%t(R)
+  varA <- matrix(diag(varCov), ncol = N, byrow = F)
   
   result <- list()
   attr(result, "class") <- "var"
@@ -56,6 +57,7 @@ twoStepOLS <- function(series, p = 1, penalty ="ENET", method = "cv", ...) {
   lA <- result$A[[1]] - 2 * sqrt(result$varA[[1]])
   L <- (uA<0) | (lA>0)
   result$cleanA <- result$A[[1]] * L
-  
+  result$residuals <- fit$residuals
+  result$varCov <- varCov
   return(result)
 }

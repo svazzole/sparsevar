@@ -38,6 +38,13 @@ fitVAR <- function(data, p = 1, penalty = "ENET", method = "cv", ...) {
 
   opt <- list(...)
 
+  # convert data to matrix 
+  if (!is.matrix(data)){
+    data <- as.matrix(data)
+  }
+  
+  cnames <- colnames(data)
+  
   if (method == "cv") {
     # use CV to find lambda
     opt$method <- "cv"
@@ -51,6 +58,14 @@ fitVAR <- function(data, p = 1, penalty = "ENET", method = "cv", ...) {
     stop("Unknown method. Possible values are \"cv\" or \"timeSlice\"")
   }
 
+  # Add the names of the variables to the matrices
+  if (!is.null(cnames)) {
+    for (k in 1:length(out$A)) {
+      colnames(out$A[[k]]) <- cnames
+      rownames(out$A[[k]]) <- cnames
+    }
+  }
+  
   return(out)
 
 }
@@ -153,7 +168,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   output = list()
   output$mu <- trDt$mu
   output$A <- A
-
+  
   # Do you want the fit?
   if (returnFit == TRUE) {
     output$fit <- fit

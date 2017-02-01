@@ -18,7 +18,8 @@ plotMatrix <- function(M) {
   nc <- ncol(M)
   M <- t(M)[, nc:1]
   ggplot2::ggplot(reshape2::melt(M), ggplot2::aes_string(x='Var1', y='Var2', fill='value')) + ggplot2::geom_raster() +
-           ggplot2::scale_fill_gradient2(low='red', high='green', mid='black') + ggplot2::xlab("Row") + ggplot2::ylab("Col")
+  ggplot2::scale_fill_gradient2(low='red', high='green', mid='black') + ggplot2::xlab("Row") + ggplot2::ylab("Col") +
+  ggplot2::theme(axis.text.x=ggplot2::element_text(angle=45,hjust=1,vjust=1))   
   
 }
 
@@ -89,8 +90,10 @@ plotVECM <- function(v) {
   
   pl[[1]] <- plotMatrix(v$Pi)
   
-  for (i in 1:l) {
-    pl[[i+1]] <- plotMatrix(v$G[[i]])
+  if (l > 0) {
+    for (i in 1:l) {
+      pl[[i+1]] <- plotMatrix(v$G[[i]])
+    }
   }
   
   multiplot(plotlist = pl, cols = l+1, layout = matrix(1:(l+1), nrow = 1, byrow = TRUE))

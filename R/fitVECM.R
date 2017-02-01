@@ -22,7 +22,7 @@
 #' @return time elapsed time for the estimation
 #' 
 #' @export
-fitVECM <- function(data, p = 1, penalty = "ENET", method = "cv", logScale = TRUE, ...) {
+fitVECM <- function(data, p = 0, penalty = "ENET", method = "cv", logScale = TRUE, ...) {
   
   nr <- nrow(data)
   nc <- ncol(data)
@@ -49,8 +49,10 @@ fitVECM <- function(data, p = 1, penalty = "ENET", method = "cv", logScale = TRU
   # Gamma matrices
   G <- list()
   
-  for (k in 1:(p-1)) {
-    G[[k]] <- - matrixSum(M, ix = k+1)
+  if (p>1){
+    for (k in 1:(p-1)) {
+      G[[k]] <- - matrixSum(M, ix = k+1)
+    }
   }
   
   output <- list()
@@ -92,5 +94,31 @@ matrixSum <- function(M, ix = 1) {
   }
   
   return(A)
+  
+}
+
+#' @export
+decomposePi <- function(vecm, rk) {
+  
+  if(attr(vecm, "class")!="vecm") {
+    stop("The input is not a vecm object.")
+  }
+  
+  nc <- ncol(vecm$Pi)
+  
+  if(rk >=1) {
+    a <- vecm$Pi[,1:rk]
+    s <- solve(vecm$sigma)
+    b <- t(solve(t(a)%*%s%*%a)%*%(t(a)%*%s%*%vecm$Pi[,(rk+1):nc]))
+    b <- rbind(diag(1, rk, rk), b)
+  } else {
+    a <- numeric(0,length = nc)
+    b <- vecm$Pi
+  }
+
+  out <- list()
+  out$alpha <- a
+  out$beta <- b
+  return(out)
   
 }

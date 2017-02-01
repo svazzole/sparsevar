@@ -105,17 +105,54 @@ decomposePi <- function(vecm, rk) {
   }
   
   nc <- ncol(vecm$Pi)
+  Pi <- vecm$Pi
+  colnames(Pi) <- NULL
+  rownames(Pi) <- NULL
+  sig <- solve(vecm$sigma)
+  colnames(sig) <- NULL
+  rownames(sig) <- NULL
   
   if(rk >=1) {
-    a <- vecm$Pi[,1:rk]
-    s <- solve(vecm$sigma)
-    b <- t(solve(t(a)%*%s%*%a)%*%(t(a)%*%s%*%vecm$Pi[,(rk+1):nc]))
+    a <- Pi[,1:rk]
+    b <- t(solve(t(a)%*%sig%*%a)%*%(t(a)%*%sig%*%Pi[,(rk+1):nc]))
     b <- rbind(diag(1, rk, rk), b)
   } else {
     a <- numeric(0,length = nc)
-    b <- vecm$Pi
+    b <- Pi
   }
 
+  out <- list()
+  out$alpha <- a
+  out$beta <- b
+  return(out)
+  
+}
+
+#' @export
+decomposePi2 <- function(vecm, rk) {
+  
+  if(attr(vecm, "class")!="vecm") {
+    stop("The input is not a vecm object.")
+  }
+  
+  nc <- ncol(vecm$Pi)
+  Pi <- vecm$Pi
+  colnames(Pi) <- NULL
+  rownames(Pi) <- NULL
+  
+  if(rk >=1) {
+    a <- Pi[,1:rk]
+    # s <- solve(vecm$sigma)
+    # b <- t(solve(t(a)%*%s%*%a)%*%(t(a)%*%s%*%vecm$Pi[,(rk+1):nc]))
+    # b <- rbind(diag(1, rk, rk), b)
+    A <- kronecker(diag(1,nc,nc), a)
+    B <- as.numeric(Pi)
+    b <- matrix(qr.solve(A,B), ncol = rk, nrow = nc, byrow = TRUE)
+  } else {
+    a <- numeric(0,length = nc)
+    b <- Pi
+  }
+  
   out <- list()
   out$alpha <- a
   out$beta <- b

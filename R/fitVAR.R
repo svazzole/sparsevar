@@ -184,7 +184,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   output$residuals <- res
 
   # Variance/Covariance estimation
-  output$sigma <- estimateCovariance(res, methodCovariance = methodCov)
+  output$sigma <- estimateCovariance(res)
   
   output$penalty <- penalty
   output$method <- "cv"

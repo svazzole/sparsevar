@@ -90,7 +90,7 @@ timeSliceVAR_ENET <- function(data, p, opt) {
   output$residuals <- res
   
   # Variance/Covariance estimation
-  output$sigma <- estimateCovariance(res, methodCovariance = methodCov)
+  output$sigma <- estimateCovariance(res)
   
   output$penalty <- "ENET"
   output$method <- "timeSlice"
@@ -213,7 +213,10 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
   output$time <- elapsed
   output$series <- trDt$series
   output$residuals <- res
-  output$sigma <- stats::cov(res)
+  
+  # Variance/Covariance estimation
+  output$sigma <- estimateCovariance(res)
+  
   output$penalty <- penalty
   output$method <- "timeSlice"
   attr(output, "class") <- "var"

@@ -109,7 +109,7 @@ decomposePi <- function(vecm, rk) {
   Pi <- vecm$Pi
   colnames(Pi) <- NULL
   rownames(Pi) <- NULL
-  sig <- solve(vecm$sigma)
+  sig <- corpcor::invcov.shrink(vecm$residuals, verbose = FALSE)
   colnames(sig) <- NULL
   rownames(sig) <- NULL
   

@@ -1,6 +1,8 @@
 #' @export
 twoStepOLS <- function(series, p = 1, penalty ="ENET", method = "cv", ...) {
   
+  ## TODO: rewrite this function and add p>1 support
+  
   ## First step: estimate VAR using LASSO
   fit <- fitVAR(data = series, p = p, penalty = penalty, method = method, ...)
   
@@ -28,7 +30,7 @@ twoStepOLS <- function(series, p = 1, penalty ="ENET", method = "cv", ...) {
   y <- as.vector(t(fit$series[-(1:p), ]))
   
   # Metodo A MANO
-  s <- solve(fit$sigma)
+  s <- corpcor::invcov.shrink(fit$residuals, verbose = FALSE)
   G <- t(fit$series[-nobs, ])%*%fit$series[-nobs, ] / nobs
   
   V <- solve(t(R)%*%(kronecker(G,s)%*%R))
@@ -60,4 +62,5 @@ twoStepOLS <- function(series, p = 1, penalty ="ENET", method = "cv", ...) {
   result$residuals <- fit$residuals
   result$varCov <- varCov
   return(result)
+  
 }

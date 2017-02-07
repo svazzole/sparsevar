@@ -355,19 +355,17 @@ informCrit <- function(v) {
   return(results)
 }
 
-estimateCovariance <- function(res, methodCovariance = "tiger", ...) {
-
-  opt <- list(...)
+estimateCovariance <- function(res) {
 
   nc <- ncol(res)
-  nr <- nrow(res)
 
-  if (nr < nc){
-    tmpFit <- flare::sugm(res, method = methodCovariance, verbose = FALSE)
-    l <- length(tmpFit$icov)
-    sigma <- solve(tmpFit$icov[[l]])
-  } else {
-    sigma <- stats::cov(res)
+  s <- corpcor::cov.shrink(res, verbose = FALSE)
+  sigma <- matrix(0, ncol = nc, nrow = nc)
+  
+  for (i in 1:nc) {
+    for (j in 1:nc) {
+      sigma[i,j] <- s[i,j]
+    }
   }
 
   return(sigma)

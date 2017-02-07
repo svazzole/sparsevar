@@ -17,8 +17,8 @@ Imports:
     reshape2,
     grid,
     mvtnorm,
-    flare,
-    picasso
+    picasso,
+    corpcor
 Suggests:
     knitr,
     testthat

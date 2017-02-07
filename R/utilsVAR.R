@@ -326,10 +326,14 @@ informCrit <- function(v) {
     k <- length(v)
     r <- matrix(0, nrow = k, ncol = 3)
     for (i in 1:k) {
-      if (attr(v[[1]], "class") == "var") {
+      if (attr(v[[1]], "class") == "var" | attr(v[[1]], "class") == "vecm") {
         p <- length(v[[i]]$A)
-      } else if (attr(v[[1]], "class") == "vecm") {
-        p <- length(v[[1]]$G) + 1
+        # Compute sparsity
+        s <- 0
+        for (l in 1:p) {
+          s <- s + sum(v[[i]]$A[[l]]!=0)
+        }
+        sp <- s/(p*ncol(v[[i]]$A[[1]])^2)
       } else {
         stop("List elements must be var or vecm objects.")
       }
@@ -337,9 +341,9 @@ informCrit <- function(v) {
       nr <- nrow(v[[i]]$residuals)
       nc <- ncol(v[[i]]$residuals)
       d <- det(sigma)
-      r[i,1] <- log(d) + (2*p*nc^2)/nr                 # AIC
-      r[i,2] <- log(d) + (log(nr)/nr) * (p*nc^2)       # BIC
-      r[i,3] <- log(d) + (2*p*nc^2)/nr * log(log(nr))  # Hannan-Quinn
+      r[i,1] <- log(d) + (2*p*sp*nc^2)/nr                 # AIC
+      r[i,2] <- log(d) + (log(nr)/nr) * (p*sp*nc^2)       # BIC
+      r[i,3] <- log(d) + (2*p*sp*nc^2)/nr * log(log(nr))  # Hannan-Quinn
       
     }
     results <- data.frame(r)

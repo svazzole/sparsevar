@@ -59,6 +59,7 @@ fitVECM <- function(data, p = 0, penalty = "ENET", method = "cv", logScale = TRU
   output$mu <- resultsVAR$mu
   output$Pi <- Pi
   output$G <- G
+  output$A <- resultsVAR$A
   output$fit <- resultsVAR$fit
   output$mse <- resultsVAR$mse
   output$mseSD <- resultsVAR$mseSD
@@ -148,14 +149,17 @@ decomposePi2 <- function(vecm, rk) {
     A <- kronecker(diag(1,nc,nc), a)
     B <- as.numeric(Pi)
     b <- matrix(qr.solve(A,B), ncol = rk, nrow = nc, byrow = TRUE)
+    bT <- matrix(qr.solve(A,B), ncol = rk, nrow = nc, byrow = FALSE)
   } else {
     a <- numeric(0,length = nc)
     b <- Pi
+    bT <- t(Pi)
   }
   
   out <- list()
   out$alpha <- a
   out$beta <- b
+  out$betaT <- bT
   return(out)
   
 }

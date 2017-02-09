@@ -214,6 +214,8 @@ errorBandsIRF <- function(v, irf, alpha = 0.01, M = 100, resampling = "bootstrap
     output <- jackknife(v, irf, alpha = alpha, ...)
     return(output)
     
+  } else if (resampling == "bootstrapOLS") {
+    output <- bootstrapOLS(v, irf, alpha = alpha, ...)
   } else {
     stop("Unknown resampling method. Possible values are \"bootstrap\" or \"jackknife\"")
   }
@@ -343,6 +345,134 @@ jackknife <- function(v, irf, mode = "fast", alpha, ...) {
   attr(output, "resampling") <- "jackknife"
   return(output)
 }
+
+
+bootstrapOLS <- function(v, irf, mode = "fast", alpha, ...) {
+  
+  lambda <- v$lambda 
+  p <- length(v$A)
+  nc <- ncol(v$A[[1]]) 
+  len <- dim(irf$irf)[3]
+  nr <- nrow(v$series)
+  
+  opt <- list(...)
+  verbose <- ifelse(!is.null(opt$verbose), opt$verbose, TRUE)
+  mode <- ifelse(!is.null(opt$mode), opt$mode, "fast")
+  threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
+  thresholdType <- ifelse(!is.null(opt$thresholdType), opt$thresholdType, "soft")
+  
+  irfs <- array(data = rep(0,len*nc^2*nr), dim = c(nc,nc,len+1, nr))
+  oirfs <- array(data = rep(0,len*nc^2*nr), dim = c(nc,nc,len+1, nr))
+  
+  if (verbose == TRUE){
+    cat("Step 1 of 2: bootstrappingOLS series and re-estimating VAR...\n")
+    pb <- utils::txtProgressBar(min = 0, max = nr, style = 3)
+  }
+  
+  for (k in 1:nr) {
+    # create Xs and Ys (temp variables)
+    o <- bootstrappedVAR(v)
+    
+    N <- ncol(v$A[[1]])
+    nobs <- nrow(v$series)
+    
+    bigA <- companionVAR(v)
+    
+    trDt <- transformData(o, p = p, opt = list(method = v$method, scale = FALSE, center = TRUE))
+    
+    nonZeroEntries <- as.matrix(bigA != 0)
+    
+    ## Create matrix R
+    t <- as.vector(nonZeroEntries)
+    n <- sum(t != 0)
+    ix <- which(t != 0)
+    j <- 1:n
+    
+    R <- matrix(0, ncol = n, nrow = length(t))
+    for(zz in 1:n) {
+      R[ix[zz],j[zz]] <- 1
+    } 
+    
+    X <- as.matrix(trDt$X)
+    y <- as.vector(t(o[-(1:p), ]))
+    
+    # Metodo A MANO
+    s <- corpcor::invcov.shrink(v$residuals, verbose = FALSE)
+    G <- t(o[-nobs, ])%*%o[-nobs, ] / nobs
+    
+    V <- solve(t(R)%*%(kronecker(G,s)%*%R))
+    VV <- nonZeroEntries
+    VV[nonZeroEntries] <- diag(V)
+    G1 <- solve(t(R)%*%(kronecker(t(o[-nobs, ])%*%o[-nobs, ], s))%*%R) 
+    G2 <- t(R)%*%(kronecker(t(o[-nobs,]), s))
+    
+    g <- G1 %*% G2#[ , (N+1):(length(y) + N)]
+    ga <- g %*% y
+    
+    b1 <- vector(length = N*N)
+    b1 <- R%*%ga
+    A <- matrix(b1, ncol = N, byrow = F)
+
+      
+    M <- cbind(diag(x = 1, nrow = (nc*(p-1)), ncol = (nc*(p-1))), matrix(0, nrow = (nc*(p-1)), ncol = nc))
+    bigA <- rbind(A,M)  
+      
+    tmpRes <- getIRF(v, bigA, len, irf$cholP)
+    irfs[,,,k] <- tmpRes$irf
+    oirfs[,,,k] <- tmpRes$oirf
+    
+    if (verbose == TRUE){
+      utils::setTxtProgressBar(pb, k)
+    }
+  }
+  
+  if (verbose == TRUE){
+    close(pb)
+    cat("Step 2 of 2: computing quantiles...\n")
+    pb <- utils::txtProgressBar(min = 0, max = (nc*nc), style = 3)
+  }
+  
+  irfUB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
+  irfLB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
+  oirfUB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
+  oirfLB <- array(data = rep(0,len*nc^2), dim = c(nc,nc,len))
+  
+  a <- alpha/2
+  qLB <- stats::qnorm(a)
+  qUB <- stats::qnorm((1-a))
+  
+  for (i in 1:nc) {
+    for (j in 1:nc) {
+      for (k in 1:len) {
+        
+        irfUB[i,j,k] <- base::mean(irfs[i,j,k,]) + qUB*stats::sd(irfs[i,j,k,])
+        oirfUB[i,j,k] <- base::mean(oirfs[i,j,k,]) + qUB*stats::sd(oirfs[i,j,k,])
+        irfLB[i,j,k] <- base::mean(irfs[i,j,k,]) + qLB*stats::sd(irfs[i,j,k,])
+        oirfLB[i,j,k] <- base::mean(oirfs[i,j,k,]) + qLB*stats::sd(oirfs[i,j,k,])
+        
+      }
+      if (verbose == TRUE){
+        utils::setTxtProgressBar(pb, (i-1)*nc + j)
+      }
+    }
+  }
+  
+  if (verbose == TRUE){
+    close(pb)
+  }
+  
+  output <- list()
+  
+  output$irfUB <- irfUB
+  output$oirfUB <- oirfUB
+  output$irfLB <- irfLB
+  output$oirfLB <- oirfLB
+  
+  attr(output, "class") <- "irfBands"
+  attr(output, "resampling") <- "jackknife"
+  return(output)
+}
+
 
 getIRF <- function (v, bigA, len = 20, P) {
   

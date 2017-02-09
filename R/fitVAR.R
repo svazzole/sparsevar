@@ -149,6 +149,9 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
     A <- applyThreshold(A, nr, nc, p, type = thresholdType)
   }
 
+  # The full matrix A
+  fullA <- A
+  
   # Get back the list of VAR matrices (of length p)
   A <- splitMatrix(A, p)
 

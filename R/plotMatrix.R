@@ -100,16 +100,8 @@ plotVECM <- function(v) {
   
 }
 
-#' @title Plot VECMs
+#' @title Multiplots with ggplot
 #' 
-#' @description Plot all the matrices of a VECM model
-#' 
-#' @param v a VECM object (as from \code{fitVECM})
-#' @return An \code{image} plot with a specific color palette (black zero entries, red 
-#' for the negative ones and green for the positive)
-#' @usage plotVECM(v)
-#' 
-
 #' @description Multiple plot function. ggplot objects can be passed in ..., or 
 #' to plotlist (as a list of ggplot objects)
 #' @param ... a sequence of ggplots to be plotted in the grid.
@@ -119,7 +111,7 @@ plotVECM <- function(v) {
 #' If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
 #' then plot 1 will go in the upper left, 2 will go in the upper right, and
 #' 3 will go all the way across the bottom.
-#' From R Cookbook
+#' Taken from R Cookbook
 #' 
 #' @return A ggplot containing the plots passed as arguments 
 #' @export

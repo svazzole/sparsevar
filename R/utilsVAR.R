@@ -333,7 +333,7 @@ informCrit <- function(v) {
         for (l in 1:p) {
           s <- s + sum(v[[i]]$A[[l]]!=0)
         }
-        sp <- s/(p*ncol(v[[i]]$A[[1]])^2)
+        sp <- s/(p*ncol(v[[i]]$A[[1]])^2)          
       } else {
         stop("List elements must be var or vecm objects.")
       }

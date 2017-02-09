@@ -117,7 +117,7 @@ decomposePi <- function(vecm, rk) {
     a <- Pi[,1:rk]
     b <- t(solve(t(a)%*%sig%*%a)%*%(t(a)%*%sig%*%Pi[,(rk+1):nc]))
     b <- rbind(diag(1, rk, rk), b)
-  } else if (rk == nc)
+  } else if (rk == nc) {
     a <- Pi
     b <- diag(1, rk, rk)
   } else {

@@ -220,16 +220,16 @@ cvVAR_ENET <- function(X, y, nvar, opt) {
       # cl <- doMC::registerDoMC(cores = ncores) # using doMC as in glmnet vignettes
       cl <- doParallel::registerDoParallel(cores = ncores)
       if (length(foldsIDs) == 0) {
-        cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = TRUE)
+        cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = TRUE, standardize = FALSE)
       } else {
-        cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, foldid = foldsIDs, parallel = TRUE)
+        cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, foldid = foldsIDs, parallel = TRUE, standardize = FALSE)
       }
     }
   } else {
     if (length(foldsIDs) == 0) {
-      cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = FALSE)
+      cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = FALSE, standardize = FALSE)
     } else {
-      cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, foldid = foldsIDs, parallel = FALSE)
+      cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, foldid = foldsIDs, parallel = FALSE, standardize = FALSE)
     }
 
   }

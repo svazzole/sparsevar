@@ -116,7 +116,7 @@ accuracy <- function(referenceM, A) {
 checkIsVar <- function(v) {
   
   if (!is.null(attr(v,"class"))){
-    ifelse(attr(v,"class") == "var", return(TRUE), return(FALSE))
+    ifelse(attr(v,"class") == "var" | attr(v,"class") == "varx", return(TRUE), return(FALSE))
   } else {
     return(FALSE)
   }

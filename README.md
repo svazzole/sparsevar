@@ -10,12 +10,12 @@ Some R functions useful to estimate sparse VAR / VECM models.
 ### Installation
 
 To install the stable version from CRAN:
-```{r}
+```r
 install.package("sparsevar")
 ```
 
 To install the developing version:
-```{r}
+```r
 install.packages("devtools")
 devtools::install_github("svazzole/sparsevar", "master")
 ```
@@ -24,34 +24,34 @@ Check [here](https://www.rstudio.com/products/rpackages/devtools/) to understand
 ### Quick start
 
 To load the `sparsevar` package simply type
-```{r}
+```r
 library(sparsevar)
 ```
 
 Using the function included in the package, we simply generate a 20x20 VAR(2) process
-```{r}
+```r
 set.seed(1)
 sim <- simulateVAR(N = 20, p = 2)
 ```
 This command will generate a model with two sparse matrices with 5% of non-zero entries and a Toeplitz variance-covariance matrix with rho = 0.5.
 We can estimate the matrices of the process using for example
-```{r}
+```r
 fit <- fitVAR(sim$series, p = 2, threshold = TRUE)
 ```
 
 The results can be seen by plotting the two `var` objects
-```{r}
+```r
 plotVAR(sim, fit)
 ```
 the first row of the plot is made by the matrices of the simulated process and the second row is formed by their estimates.
 
 The fit contains also the estimate of the variance/covariance matrix of the residuals
-```{r}
+```r
 plotMatrix(fit$sigma)
 ```
 
 which can be compared with the covariance matrix of the errors of the generating process
-```{r}
+```r
 plotMatrix(sim$sigma)
 ```
 

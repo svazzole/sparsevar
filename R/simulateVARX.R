@@ -1,4 +1,4 @@
-#' @title VAR simulation
+#' @title VARX simulation
 #'
 #' @description This function generates a simulated multivariate VAR time series.
 #'

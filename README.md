@@ -83,4 +83,5 @@ For plotting:
 
 ### References
 [[1](http://projecteuclid.org/euclid.aos/1434546214)] Basu, Sumanta; Michailidis, George. Regularized estimation in sparse high-dimensional time series models. Ann. Statist. 43 (2015), no. 4, 1535--1567. doi:10.1214/15-AOS1315.
+
 [[2](https://books.google.it/books/?id=COUFCAAAQBAJ&redir_esc=y)] Lütkepohl, Helmut. New Introduction to Multiple Time Series Analysis. Springer Science & Business Media, 2005, ISBN 3540277528.

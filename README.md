@@ -60,14 +60,16 @@ plotMatrix(sim$sigma)
 The functions included for model estimation are:
 
 - `fitVAR`: to estimate a sparse VAR multivariate time series with ENET, SCAD or MC+;
+- `fitVARX`: to estimate a sparse VAR-X model using ENET;
 - `fitVECM`: to estimate a sparse VECM (Vector Error Correction Model) using LS with penalty (again: ENET, SCAD or MC+);
 - `impulseResponse`: compute the impulse response function;
-- `errorBands`: estimate the error bands for the IRF (using bootstrap);
+- `errorBands`: estimate the error bands for the IRF (using bootstrap).
 
 For simulations:
 
 - `simulateVAR`: to generate a sparse VAR multivariate time series;
-- `createSparseMatrix`: used to create sparse matrices with a given density;
+- `simulateVARX`: to generate a sparse VARX time series;
+- `createSparseMatrix`: used to create sparse matrices with a given density.
 
 For plotting:
 
@@ -76,5 +78,9 @@ For plotting:
 - `plotIRF`: plot IRF function;
 - `plotGridIRF`: multiple plots of IRF.
 
+### Papers using `sparsevar`
+[[1](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005364)] Gibbons SM, Kearney SM, Smillie CS, Alm EJ (2017) Two dynamic regimes in the human gut microbiome. PLoS Comput Biol 13(2): e1005364.
+
 ### References
 [[1](http://projecteuclid.org/euclid.aos/1434546214)] Basu, Sumanta; Michailidis, George. Regularized estimation in sparse high-dimensional time series models. Ann. Statist. 43 (2015), no. 4, 1535--1567. doi:10.1214/15-AOS1315.
+[[2](https://books.google.it/books/?id=COUFCAAAQBAJ&redir_esc=y)] Lütkepohl, Helmut. New Introduction to Multiple Time Series Analysis. Springer Science & Business Media, 2005, ISBN 3540277528.

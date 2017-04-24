@@ -25,7 +25,7 @@
 #'
 #' @export
 simulateVARX <- function(N = 40, K = 10, p = 1, m = 1, nobs = 250, rho = 0.5, 
-                         sparsityM = 0.05, sparsityB = 0.5, sparsityC = 0.5, 
+                         sparsityA1 = 0.05, sparsityA2 = 0.5, sparsityA3 = 0.5, 
                          mu = 0, method = "normal", covariance = "Toeplitz", ...) {
   
   opt <- list(...)
@@ -38,15 +38,15 @@ simulateVARX <- function(N = 40, K = 10, p = 1, m = 1, nobs = 250, rho = 0.5,
   attr(out, "type") <- "simulation"
   
   out$A <- list()
-  out$B <- list()
-  out$C <- list()
-  out$D <- list()
-  out$M <- list()
+  out$A1 <- list()
+  out$A2 <- list()
+  out$A3 <- list()
+  out$A4 <- list()
   pX <- max(p,m)
   
   # Create D matrices (null)
   for (i in 1:pX) {
-    out$D[[i]] <- matrix(0, nrow = K, ncol = N)
+    out$A4[[i]] <- matrix(0, nrow = K, ncol = N)
   }
   
   stable <- FALSE
@@ -57,50 +57,50 @@ simulateVARX <- function(N = 40, K = 10, p = 1, m = 1, nobs = 250, rho = 0.5,
     
     # Create random C matrices with a given sparsity
     for (i in 1:s) {
-      out$C[[i]] <- createSparseMatrix(sparsity = sparsityC, N = K, method = method, stationary = TRUE, p = 1, ...)
-      l <- max(Mod(eigen(out$C[[i]])$values))
+      out$A3[[i]] <- createSparseMatrix(sparsity = sparsityA3, N = K, method = method, stationary = TRUE, p = 1, ...)
+      l <- max(Mod(eigen(out$A3[[i]])$values))
       while ((l > 1) | (l == 0)) {
-        out$C[[i]] <- createSparseMatrix(sparsity = sparsityC, N = K, method = method, stationary = TRUE, p = 1, ...)
-        l <- max(Mod(eigen(out$C[[i]])$values))
+        out$A3[[i]] <- createSparseMatrix(sparsity = sparsityA3, N = K, method = method, stationary = TRUE, p = 1, ...)
+        l <- max(Mod(eigen(out$A3[[i]])$values))
       }
     }
     if (s < pX) {
       for (i in (s+1):pX) {
-        out$C[[i]] <- matrix(0, nrow = K, ncol = K)
+        out$A3[[i]] <- matrix(0, nrow = K, ncol = K)
       }
     }
     
     # Create random A matrices with a given sparsity
     for (i in 1:p) {
-      out$M[[i]] <- createSparseMatrix(sparsity = sparsityM, N = N, method = method, stationary = TRUE, p = p, ...)
-      l <- max(Mod(eigen(out$M[[i]])$values))
+      out$A1[[i]] <- createSparseMatrix(sparsity = sparsityA1, N = N, method = method, stationary = TRUE, p = p, ...)
+      l <- max(Mod(eigen(out$A1[[i]])$values))
       while ((l > 1) | (l == 0)) {
-        out$M[[i]] <- createSparseMatrix(sparsity = sparsityM, N = N, method = method, stationary = TRUE, p = p, ...)
-        l <- max(Mod(eigen(out$M[[i]])$values))
+        out$A1[[i]] <- createSparseMatrix(sparsity = sparsityA1, N = N, method = method, stationary = TRUE, p = p, ...)
+        l <- max(Mod(eigen(out$A1[[i]])$values))
       }
     }
     if (p < pX) {
       for (i in (p+1):pX) {
-        out$M[[i]] <- matrix(0, nrow = N, ncol = N)
+        out$A1[[i]] <- matrix(0, nrow = N, ncol = N)
       }
     }
     
     # Create random B matrices
     for (i in 1:m) {
       R <- max(K, N)
-      tmp <- createSparseMatrix(sparsity = sparsityB, N = R, method = method, stationary = TRUE, p = p, ...)
-      out$B[[i]] <- tmp[1:N, 1:K] 
+      tmp <- createSparseMatrix(sparsity = sparsityA2, N = R, method = method, stationary = TRUE, p = p, ...)
+      out$A2[[i]] <- tmp[1:N, 1:K] 
     } 
     if (m < pX) {
       for (i in (m+1):pX) {
-        out$B[[i]] <- matrix(0, nrow = N, ncol = K)
+        out$A2[[i]] <- matrix(0, nrow = N, ncol = K)
       }
     }
     
     # Now "glue" all the matrices together
     for (i in 1:pX) {
-      tmp1 <- cbind(out$M[[i]], out$B[[i]])
-      tmp2 <- cbind(out$D[[i]], out$C[[i]])
+      tmp1 <- cbind(out$A1[[i]], out$A2[[i]])
+      tmp2 <- cbind(out$A4[[i]], out$A3[[i]])
       out$A[[i]] <- rbind(tmp1, tmp2) 
     }
     
@@ -168,7 +168,8 @@ simulateVARX <- function(N = 40, K = 10, p = 1, m = 1, nobs = 250, rho = 0.5,
   data <- generateVARseries(nobs = nobs, mu, AR = out$A, sigma = C, skip = 200)
   
   # Complete the output
-  out$series <- data$series
+  out$series <- data$series[,1:(N-K)]
+  out$Xt <- data$series[,(N-K+1):N]
   out$noises <- data$noises
   out$sigma <- C
   

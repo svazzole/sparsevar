@@ -8,7 +8,7 @@
 #' @usage plotMatrix(M)
 #' 
 #' @export
-plotMatrix <- function(M) {
+plotMatrix <- function(M, colors = "dark") {
   
   if (!is.matrix(M)) { 
     stop("Input must be a matrix") 
@@ -17,9 +17,18 @@ plotMatrix <- function(M) {
   nr <- nrow(M)
   nc <- ncol(M)
   M <- t(M)[, nr:1]
-  ggplot2::ggplot(reshape2::melt(M), ggplot2::aes_string(x='Var1', y='Var2', fill='value')) + ggplot2::geom_raster() +
-  ggplot2::scale_fill_gradient2(low='red', high='green', mid='black') + ggplot2::xlab("Row") + ggplot2::ylab("Col") +
-  ggplot2::theme(axis.text.x=ggplot2::element_text(angle=45,hjust=1,vjust=1))   
+  if (colors == "dark") {
+    ggplot2::ggplot(reshape2::melt(M), ggplot2::aes_string(x='Var1', y='Var2', fill='value')) + ggplot2::geom_raster() +
+    ggplot2::scale_fill_gradient2(low='red', high='green', mid='black') + ggplot2::xlab("Row") + ggplot2::ylab("Col") +
+    ggplot2::theme(axis.text.x=ggplot2::element_text(angle=45,hjust=1,vjust=1))    
+  } else if (colors == "light") {
+    ggplot2::ggplot(reshape2::melt(M), ggplot2::aes_string(x='Var1', y='Var2', fill='value')) + ggplot2::geom_raster() +
+    ggplot2::scale_fill_gradient2(low='red', high='blue', mid='white') + ggplot2::xlab("Row") + ggplot2::ylab("Col") +
+    ggplot2::theme(axis.text.x=ggplot2::element_text(angle=45,hjust=1,vjust=1))    
+  } else {
+    stop("Colors must be\"light\" or \"dark\".")
+  }
+   
   
 }
 
@@ -29,12 +38,14 @@ plotMatrix <- function(M) {
 #' 
 #' @param ... a sequence of VAR objects (one or more
 #' than one, as from \code{simulateVAR} or \code{fitVAR})
-#' @return An \code{image} plot with a specific color palette (black zero entries, red 
-#' for the negative ones and green for the positive)
+#' @param colors the gradient used to plot the matrix. It can be "light" (low =
+#' red -- mid = white -- high = blue) or "dark" (low = red -- mid = black -- 
+#' high = green)
+#' @return An \code{image} plot with a specific color palette 
 #' @usage plotVAR(...)
 #' 
 #' @export
-plotVAR <- function(...) {
+plotVAR <- function(..., colors = "dark") {
   
   vars <- list(...)
   l <- length(vars)
@@ -61,7 +72,7 @@ plotVAR <- function(...) {
   
   for (i in 1:l) {
     for (j in 1:varorder) {
-      pl[[((i-1)*varorder)+j]] <- plotMatrix(vars[[i]]$A[[j]])
+      pl[[((i-1)*varorder)+j]] <- plotMatrix(vars[[i]]$A[[j]], colors = colors)
     }
   }
   

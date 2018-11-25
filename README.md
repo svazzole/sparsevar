@@ -4,6 +4,7 @@
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/sparsevar)](https://cran.r-project.org/package=sparsevar)
 [![Downloads](http://cranlogs.r-pkg.org/badges/sparsevar)](https://cran.r-project.org/package=sparsevar)
 [![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/sparsevar?color=brightgreen)](https://cran.r-project.org/package=sparsevar)
+[![Build Status](https://travis-ci.org/svazzole/sparsevar.svg?branch=master)](https://travis-ci.org/svazzole/sparsevar)
 
 Some R functions useful to estimate sparse VAR / VECM models.
 

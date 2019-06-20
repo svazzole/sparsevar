@@ -206,7 +206,8 @@ cvVAR_ENET <- function(X, y, nvar, opt) {
   nf <- ifelse(is.null(opt$nfolds), 10, opt$nfolds)
   parall <- ifelse(is.null(opt$parallel), FALSE, opt$parallel)
   ncores <- ifelse(is.null(opt$ncores), 1, opt$ncores)
-
+  lambdas_list <- opt$lambdas_list
+  
   # Assign ids to the CV-folds (useful for replication of results)
   if (is.null(opt$foldsIDs)) {
     foldsIDs <- numeric(0)
@@ -222,18 +223,35 @@ cvVAR_ENET <- function(X, y, nvar, opt) {
       # cl <- doMC::registerDoMC(cores = ncores) # using doMC as in glmnet vignettes
       cl <- doParallel::registerDoParallel(cores = ncores)
       if (length(foldsIDs) == 0) {
-        cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = TRUE, standardize = FALSE)
+        if ( length(lambdas_list) < 2){
+          cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = TRUE, standardize = FALSE)
+        } else {
+          cvfit <- glmnet::cv.glmnet(X, y, alpha = a, lambda = lambdas_list, type.measure = tm, nfolds = nf, parallel = TRUE, standardize = FALSE)
+        }
       } else {
-        cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, foldid = foldsIDs, parallel = TRUE, standardize = FALSE)
+        if ( length(lambdas_list) < 2){
+          cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, foldid = foldsIDs, parallel = TRUE, standardize = FALSE)
+        } else {
+          cvfit <- glmnet::cv.glmnet(X, y, alpha = a, lambda = lambdas_list, type.measure = tm, foldid = foldsIDs, parallel = TRUE, standardize = FALSE)
+        }
       }
     }
   } else {
     if (length(foldsIDs) == 0) {
-      cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = FALSE, standardize = FALSE)
+      if ( length(lambdas_list) < 2){
+        cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, nfolds = nf, parallel = FALSE, standardize = FALSE)
+      } else {
+        cvfit <- glmnet::cv.glmnet(X, y, alpha = a, lambda = lambdas_list, type.measure = tm, nfolds = nf, parallel = FALSE, standardize = FALSE)
+      }
+      
     } else {
-      cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, foldid = foldsIDs, parallel = FALSE, standardize = FALSE)
+      if ( length(lambdas_list) < 2){
+        cvfit <- glmnet::cv.glmnet(X, y, alpha = a, nlambda = nl, type.measure = tm, foldid = foldsIDs, parallel = FALSE, standardize = FALSE)
+      } else {
+        cvfit <- glmnet::cv.glmnet(X, y, alpha = a, lambda = lambdas_list, type.measure = tm, foldid = foldsIDs, parallel = FALSE, standardize = FALSE)
+      }
     }
-
+    
   }
 
   return(cvfit)

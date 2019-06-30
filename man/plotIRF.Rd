@@ -25,4 +25,3 @@ An \code{image} plot relative to the impulse response function.
 \description{
 Plot a IRF object
 }
-

@@ -27,4 +27,3 @@ are 0.
 \description{
 A function to estimate the confidence intervals for irf and oirf.
 }
-

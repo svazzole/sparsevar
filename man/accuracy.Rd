@@ -14,4 +14,3 @@ accuracy(referenceM, A)
 \description{
 Compute the accuracy of a fit
 }
-

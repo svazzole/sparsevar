@@ -12,4 +12,3 @@ spectralNorm(M)
 \description{
 Compute the spectral norm of M
 }
-

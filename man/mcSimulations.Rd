@@ -37,4 +37,3 @@ a \code{nMc}x5 matrix with the results of the Monte Carlo estimation
 This function generates monte carlo simultaions of sparse VAR and 
 its estimation (at the moment only for VAR(1) processes).
 }
-

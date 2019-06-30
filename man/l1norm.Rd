@@ -12,4 +12,3 @@ l1norm(M)
 \description{
 Compute the L1 matrix norm of M
 }
-

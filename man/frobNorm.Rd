@@ -12,4 +12,3 @@ frobNorm(M)
 \description{
 Compute the Froebenius norm of M
 }
-

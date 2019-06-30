@@ -12,4 +12,3 @@ companionVAR(v)
 \description{
 Build the VAR(1) representation of a VAR(p) process
 }
-

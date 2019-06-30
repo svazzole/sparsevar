@@ -17,4 +17,3 @@ impulseResponse(v, len = 20)
 \description{
 A function to estimate the Impulse Response Function of a given VAR.
 }
-

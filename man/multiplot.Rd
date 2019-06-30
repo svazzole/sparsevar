@@ -4,7 +4,7 @@
 \alias{multiplot}
 \title{Multiplots with ggplot}
 \usage{
-multiplot(..., plotlist = NULL, file, cols = 1, layout = NULL)
+multiplot(..., plotlist = NULL, cols = 1, layout = NULL)
 }
 \arguments{
 \item{...}{a sequence of ggplots to be plotted in the grid.}
@@ -26,4 +26,3 @@ A ggplot containing the plots passed as arguments
 Multiple plot function. ggplot objects can be passed in ..., or 
 to plotlist (as a list of ggplot objects)
 }
-

@@ -18,4 +18,3 @@ varSCAD(data, p, lambdas, opt)
 \description{
 Estimate VAR using SCAD penalty
 }
-

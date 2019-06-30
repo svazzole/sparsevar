@@ -3,9 +3,10 @@
 #' @description Plot a sparse matrix
 #' 
 #' @param M the matrix to plot
+#' @param colors dark or light
 #' @return An \code{image} plot with a particular color palette (black zero entries, red 
 #' for the negative ones and green for the positive)
-#' @usage plotMatrix(M)
+#' @usage plotMatrix(M, colors)
 #' 
 #' @export
 plotMatrix <- function(M, colors = "dark") {
@@ -42,7 +43,7 @@ plotMatrix <- function(M, colors = "dark") {
 #' red -- mid = white -- high = blue) or "dark" (low = red -- mid = black -- 
 #' high = green)
 #' @return An \code{image} plot with a specific color palette 
-#' @usage plotVAR(...)
+#' @usage plotVAR(..., colors)
 #' 
 #' @export
 plotVAR <- function(..., colors = "dark") {
@@ -126,7 +127,7 @@ plotVECM <- function(v) {
 #' 
 #' @return A ggplot containing the plots passed as arguments 
 #' @export
-multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+multiplot <- function(..., plotlist=NULL, cols=1, layout=NULL) {
   # library(grid)
   
   # Make a list from the ... arguments and plotlist

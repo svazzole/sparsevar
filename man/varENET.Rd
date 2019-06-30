@@ -18,4 +18,3 @@ varENET(data, p, lambdas, opt)
 \description{
 Estimate VAR using ENET penalty
 }
-

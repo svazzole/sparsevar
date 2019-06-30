@@ -4,7 +4,7 @@
 \alias{plotIRFGrid}
 \title{IRF grid plot}
 \usage{
-plotIRFGrid(irf, eb, indexes, type)
+plotIRFGrid(irf, eb, indexes, type, bands)
 }
 \arguments{
 \item{irf}{the irf object computed using impulseResponse}
@@ -24,4 +24,3 @@ An \code{image} plot relative to the impulse response function.
 \description{
 Plot a IRF grid object
 }
-

@@ -52,4 +52,3 @@ and \code{method = "timeSlice"}).}
 A function to estimate a (possibly high-dimensional) multivariate VARX time series
 using penalized least squares methods, such as ENET, SCAD or MC+.
 }
-

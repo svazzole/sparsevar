@@ -16,4 +16,3 @@ transformData(data, p, opt)
 \description{
 Transform the input data
 }
-

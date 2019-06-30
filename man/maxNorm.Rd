@@ -12,4 +12,3 @@ maxNorm(M)
 \description{
 Compute the max-norm of M
 }
-

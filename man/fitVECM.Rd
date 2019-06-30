@@ -37,4 +37,3 @@ time elapsed time for the estimation
 A function to estimate a (possibly big) multivariate VECM time series
 using penalized least squares methods, such as ENET, SCAD or MC+.
 }
-

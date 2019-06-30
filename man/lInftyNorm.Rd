@@ -12,4 +12,3 @@ lInftyNorm(M)
 \description{
 Compute the L-infinity matrix norm of M
 }
-

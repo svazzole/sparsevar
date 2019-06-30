@@ -1,11 +1,9 @@
 Package: sparsevar
-Version: 0.0.10
+Version: 0.0.11
 Date: 2016-11-07
 Title: A Package for Sparse VAR/VECM Estimation
 Authors@R: c(person("Simone", "Vazzoler", role = c("aut", "cre"),
-                     email = "svazzole@gmail.com"),
-             person("Lorenzo", "Frattarolo", role = "aut"),
-             person("Monica", "Billio", role = "aut"))
+                     email = "svazzole@gmail.com"))
 Maintainer: Simone Vazzoler <svazzole@gmail.com>
 Imports:
     Matrix,
@@ -31,4 +29,4 @@ URL: http://github.com/svazzole/sparsevar
 BugReports: http://github.com/svazzole/sparsevar
 VignetteBuilder:
     knitr
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

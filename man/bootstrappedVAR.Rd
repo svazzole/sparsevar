@@ -12,4 +12,3 @@ bootstrappedVAR(v)
 \description{
 Build the bootstrapped series from the original var
 }
-

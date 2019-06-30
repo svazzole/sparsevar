@@ -1,4 +1,3 @@
-#' @export
 twoStepOLS <- function(series, p = 1, penalty ="ENET", method = "cv", ...) {
   
   ## TODO: rewrite this function and add p>1 support

@@ -13,4 +13,3 @@ informCrit(v)
 This function computes information criterias (AIC, Schwartz and
 Hannan-Quinn) for VARs.
 }
-

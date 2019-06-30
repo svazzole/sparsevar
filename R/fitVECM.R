@@ -98,13 +98,30 @@ matrixSum <- function(M, ix = 1) {
   
 }
 
+#' @title Decompose Pi VECM matrix
+#' 
+#' @description A function to estimate a (possibly big) multivariate VECM time series
+#' using penalized least squares methods, such as ENET, SCAD or MC+.
+#'  
+#' @usage decomposePi(vecm, rk, ...)
+#' 
+#' @param vecm the VECM object
+#' @param rk rank
+#' @param ... options for the function (TODO: specify)
+#' 
+#' @return alpha
+#' @return beta
+#' 
 #' @export
-decomposePi <- function(vecm, rk) {
+decomposePi <- function(vecm, rk, ...) {
   
   if(attr(vecm, "class")!="vecm") {
     stop("The input is not a vecm object.")
   }
   
+  # Different covariance methods?
+  opt <- list(...)
+    
   nc <- ncol(vecm$Pi)
   Pi <- vecm$Pi
   colnames(Pi) <- NULL
@@ -121,7 +138,7 @@ decomposePi <- function(vecm, rk) {
     a <- Pi
     b <- diag(1, rk, rk)
   } else {
-    a <- numeric(0,length = nc)
+    a <- numeric(length = nc)
     b <- Pi
   }
 
@@ -132,7 +149,6 @@ decomposePi <- function(vecm, rk) {
   
 }
 
-#' @export
 decomposePi2 <- function(vecm, rk) {
   
   if(attr(vecm, "class")!="vecm") {
@@ -154,7 +170,7 @@ decomposePi2 <- function(vecm, rk) {
     b <- matrix(qr.solve(A,B), ncol = rk, nrow = nc, byrow = TRUE)
     bT <- matrix(qr.solve(A,B), ncol = rk, nrow = nc, byrow = FALSE)
   } else {
-    a <- numeric(0,length = nc)
+    a <- numeric(length = nc)
     b <- Pi
     bT <- t(Pi)
   }

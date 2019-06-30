@@ -12,4 +12,3 @@ spectralRadius(M)
 \description{
 Compute the spectral radius of M
 }
-

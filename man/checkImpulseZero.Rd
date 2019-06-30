@@ -17,4 +17,3 @@ are 0.
 A function to find which entries of the impulse response function 
 are zero.
 }
-

@@ -4,10 +4,12 @@
 \alias{plotMatrix}
 \title{Matrix plot}
 \usage{
-plotMatrix(M)
+plotMatrix(M, colors)
 }
 \arguments{
 \item{M}{the matrix to plot}
+
+\item{colors}{dark or light}
 }
 \value{
 An \code{image} plot with a particular color palette (black zero entries, red 
@@ -16,4 +18,3 @@ for the negative ones and green for the positive)
 \description{
 Plot a sparse matrix
 }
-

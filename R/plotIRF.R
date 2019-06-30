@@ -117,7 +117,7 @@ plotIRF <- function(irf, eb, i, j, type = "irf", bands = "quantiles") {
 #' (\code{type = "oirf"})
 #' @param bands which type of bands to plot ("quantiles" (default) or  "sd")
 #' @return An \code{image} plot relative to the impulse response function.
-#' @usage plotIRFGrid(irf, eb, indexes, type)
+#' @usage plotIRFGrid(irf, eb, indexes, type, bands)
 #' 
 #' @export
 plotIRFGrid <- function(irf, eb, indexes, type = "irf", bands = "quantiles") {

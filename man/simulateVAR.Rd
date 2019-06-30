@@ -40,4 +40,3 @@ S the variance/covariance matrix of the process
 \description{
 This function generates a simulated multivariate VAR time series.
 }
-

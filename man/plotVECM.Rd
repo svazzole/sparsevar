@@ -16,4 +16,3 @@ for the negative ones and green for the positive)
 \description{
 Plot all the matrices of a VECM model
 }
-

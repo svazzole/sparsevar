@@ -18,4 +18,3 @@ varMCP(data, p, lambdas, opt)
 \description{
 Estimate VAR using MCP penalty
 }
-

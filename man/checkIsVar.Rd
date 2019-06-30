@@ -12,4 +12,3 @@ checkIsVar(v)
 \description{
 Check if the input is a var object
 }
-

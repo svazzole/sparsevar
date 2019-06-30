@@ -355,10 +355,13 @@ informCrit <- function(v) {
   return(results)
 }
 
-estimateCovariance <- function(res) {
+estimateCovariance <- function(res, ...) {
 
   nc <- ncol(res)
-
+  
+  # Different methods for covaraince estimation?
+  opt <- list(...)
+  
   s <- corpcor::cov.shrink(res, verbose = FALSE)
   sigma <- matrix(0, ncol = nc, nrow = nc)
   

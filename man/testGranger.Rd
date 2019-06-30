@@ -15,4 +15,3 @@ testGranger(v, eb)
 This function should retain only the coefficients of the
 matrices of the VAR that are statistically significative (from the bootstrap)
 }
-

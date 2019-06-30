@@ -6,3 +6,5 @@ R/todo/
 tests/testIRF*
 tests/testPicasso.R
 tests/testInformCrit.R
+.travis.yml
+LICENSE.md

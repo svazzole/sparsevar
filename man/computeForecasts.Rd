@@ -14,4 +14,3 @@ computeForecasts(v, numSteps)
 \description{
 This function computes forecasts for a given VAR.
 }
-

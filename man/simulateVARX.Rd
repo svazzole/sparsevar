@@ -4,16 +4,31 @@
 \alias{simulateVARX}
 \title{VARX simulation}
 \usage{
-simulateVARX(N, p, nobs, rho, sparsity, mu, method, covariance, ...)
+simulateVARX(N, K, p, m, nobs, rho, 
+                    sparsityA1, sparsityA2, sparsityA3,
+                    mu, method, covariance, ...)
 }
 \arguments{
 \item{N}{dimension of the time series.}
 
+\item{K}{TODO}
+
 \item{p}{number of lags of the VAR model.}
+
+\item{m}{TODO}
 
 \item{nobs}{number of observations to be generated.}
 
 \item{rho}{base value for the covariance matrix.}
+
+\item{sparsityA1}{density (in percentage) of the number of nonzero elements 
+of the A1 block.}
+
+\item{sparsityA2}{density (in percentage) of the number of nonzero elements 
+of the A2 block.}
+
+\item{sparsityA3}{density (in percentage) of the number of nonzero elements 
+of the A3 block.}
 
 \item{mu}{a vector containing the mean of the simulated process.}
 
@@ -26,8 +41,6 @@ values: \code{"toeplitz"}, \code{"block1"}, \code{"block2"} or simply \code{"dia
 \item{...}{the options for the simulation. These are:
 \code{muMat}: the mean of the entries of the VAR matrices;
 \code{sdMat}: the sd of the entries of the matrices;}
-
-\item{sparsity}{density (in percentage) of the number of nonzero elements of the VAR matrices.}
 }
 \value{
 A a list of NxN matrices ordered by lag
@@ -40,4 +53,3 @@ S the variance/covariance matrix of the process
 \description{
 This function generates a simulated multivariate VAR time series.
 }
-

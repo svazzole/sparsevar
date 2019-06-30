@@ -1,6 +1,6 @@
 Package: sparsevar
 Version: 0.0.11
-Date: 2016-11-07
+Date: 2019-06-28
 Title: A Package for Sparse VAR/VECM Estimation
 Authors@R: c(person("Simone", "Vazzoler", role = c("aut", "cre"),
                      email = "svazzole@gmail.com"))
@@ -16,7 +16,9 @@ Imports:
     grid,
     mvtnorm,
     picasso,
-    corpcor
+    corpcor,
+    Rcpp,
+    RcppArmadillo
 Suggests:
     knitr,
     testthat

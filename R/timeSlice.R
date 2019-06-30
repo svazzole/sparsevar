@@ -4,7 +4,7 @@ timeSliceVAR <- function(data, p = 1, penalty = "ENET", opt) {
     # call timeslice with ENET
     out <- timeSliceVAR_ENET(data, p, opt)
 
-  } else if (penalty == "SCAD" | penalty == "MCP") {
+  } else if (penalty == "SCAD" | penalty == "MCP" | penalty == "SCAD2") {
     # call timeslice with SCAD or MCP
     out <- timeSliceVAR_SCAD(data, p, opt, penalty)
 
@@ -124,9 +124,12 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
     if (penalty == "SCAD") {
       lam <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y, family = "gaussian", penalty = "SCAD",
                             alpha = 1)$lambda
-    } else {
+    } else if (penalty == "MCP") {
       lam <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y, family = "gaussian", penalty = "MCP",
                             alpha = 1)$lambda
+    } else {
+
+      lam <- sparsevar::scadReg(as(trDt$X, "dgCMatrix"), trDt$y, alpha = 1)$lambda
     }
   } else {
     lam <- picasso::picasso(trDt$X, trDt$y, method = "scad", nlambda = 100)$lambda
@@ -139,9 +142,9 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
 
     d <- data[i:(winLength + i), ]
     if (!picasso) {
-      if (penalty == "SCAD") {
-        fit <- varSCAD(d[1:(nrow(d)-1), ], p, lam, opt)
-        resTS[, i+1] <- computeErrors(d, p, fit, penalty = "SCAD")
+      if (penalty == "SCAD" | penalty == "SCAD2") {
+        fit <- varSCAD(d[1:(nrow(d)-1), ], p, lam, opt, penalty)
+        resTS[, i+1] <- computeErrors(d, p, fit, penalty = penalty)
       } else {
         fit <- varMCP(d[1:(nrow(d)-1), ], p, lam, opt)
         resTS[, i+1] <- computeErrors(d, p, fit, penalty = "MCP")
@@ -165,10 +168,14 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
   if (!picasso) {
     if (penalty == "SCAD") {
       fit <- varSCAD(data, p, finalRes[ix,1], opt)
-    } else {
+      Avector <- fit$beta[2:nrow(fit$beta), 1]
+    } else if (penalty == "MCP") {
       fit <- varMCP(data, p, finalRes[ix,1], opt)
+      Avector <- fit$beta[2:nrow(fit$beta), 1]
+    } else {
+      fit <- varSCAD(data, p, finalRes[ix,1], opt, penalty == "SCAD2")
+      Avector <- fit$beta[1:nrow(fit$beta), 1]
     }
-    Avector <- fit$beta[2:nrow(fit$beta), 1]
     A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
   } else {
     trDt <- transformData(data, p, opt)
@@ -241,6 +248,9 @@ computeErrors <- function(data, p, fit, penalty = "ENET") {
       A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, byrow = TRUE)
     } else if (penalty == "SCAD" | penalty == "MCP") {
       Avector <- fit$beta[2:nrow(fit$beta), i]
+      A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
+    } else {
+      Avector <- fit$beta[1:nrow(fit$beta), i]
       A <- matrix(Avector, nrow = nc, ncol = nc*p, byrow = TRUE)
     }
 

@@ -1,3 +1,6 @@
+#' @useDynLib sparsevar
+#' @importFrom Rcpp sourceCpp
+#'
 #' @title Multivariate VAR estimation
 #'
 #' @description A function to estimate a (possibly high-dimensional) 
@@ -44,15 +47,15 @@ fitVAR <- function(data, p = 1, penalty = "ENET", method = "cv", ...) {
 
   opt <- list(...)
 
-  # convert data to matrix 
+  # convert data to matrix
   if (!is.matrix(data)){
     
     data <- as.matrix(data)
     
   }
-  
+
   cnames <- colnames(data)
-  
+
   if (method == "cv") {
     
     # use CV to find lambda
@@ -79,16 +82,15 @@ fitVAR <- function(data, p = 1, penalty = "ENET", method = "cv", ...) {
       rownames(out$A[[k]]) <- cnames
     }
   }
-  
-  return(out)
 
+  return(out)
 }
 
 cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
   nc <- ncol(data)
   nr <- nrow(data)
-  
+
   picasso <- ifelse(!is.null(opt$picasso), opt$picasso, FALSE)
   threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
   
@@ -123,7 +125,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
   } else if (penalty == "SCAD") {
 
-    # convert from sparse matrix to std matrix (SCAD does not work with sparse 
+    # convert from sparse matrix to std matrix (SCAD does not work with sparse
     # matrices)
     trDt$X <- as.matrix(trDt$X)
 
@@ -191,7 +193,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   output = list()
   output$mu <- trDt$mu
   output$A <- A
-  
+
   # Do you want the fit?
   if (returnFit == TRUE) {
     
@@ -199,9 +201,9 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
     
   }
 
-  # Return the "best" lambda 
+  # Return the "best" lambda
   output$lambda <- fit$lambda.min
-  
+
   output$mse <- mse
   output$mseSD <- mseSD
   output$time <- elapsed

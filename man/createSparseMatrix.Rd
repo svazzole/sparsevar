@@ -20,7 +20,7 @@ Possible values are \code{TRUE} or \code{FALSE}. Default is \code{FALSE}.}
 
 \item{p}{normalization constant (used for VAR of order greater than 1, default = 1)}
 
-\item{...}{other options for the matrix (you can specify the mean \code{mu} and the 
+\item{...}{other options for the matrix (you can specify the mean \code{mu} and the
 standard deviation \code{sd}).}
 }
 \value{

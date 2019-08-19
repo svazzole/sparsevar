@@ -128,8 +128,8 @@ timeSliceVAR_SCAD <- function(data, p, opt, penalty) {
       lam <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y, family = "gaussian", penalty = "MCP",
                             alpha = 1)$lambda
     } else {
-
-      lam <- sparsevar::scadReg(as(trDt$X, "dgCMatrix"), trDt$y, alpha = 1)$lambda
+      stop("[WIP] Only SCAD and MCP regression are supported.")
+      # lam <- sparsevar::scadReg(as(trDt$X, "dgCMatrix"), trDt$y, alpha = 1)$lambda
     }
   } else {
     lam <- picasso::picasso(trDt$X, trDt$y, method = "scad", nlambda = 100)$lambda

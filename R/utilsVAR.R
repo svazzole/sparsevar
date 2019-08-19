@@ -96,12 +96,13 @@ varENET <- function(data, p, lambdas, opt) {
 #'
 #' @description Estimate VAR using SCAD penalty
 #'
-#' @usage varSCAD(data, p, lambdas, opt)
+#' @usage varSCAD(data, p, lambdas, opt, penalty)
 #'
 #' @param data the data
 #' @param p the order of the VAR
 #' @param lambdas a vector containing the lambdas to be used in the fit
 #' @param opt a list containing the options
+#' @param penalty a string "SCAD" or something else
 #'
 #' @export
 
@@ -117,7 +118,8 @@ varSCAD <- function(data, p, lambdas, opt, penalty = "SCAD") {
     fit <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y, family = "gaussian", penalty = "SCAD",
                           alpha = 1, lambda = lambdas)
   } else {
-    fit <- sparsevar::scadReg(as(trDt$X, "dgCMatrix"), trDt$y, alpha = 1, lambda = lambdas)
+    stop("[WIP] Only SCAD regression is supported at the moment")
+    # fit <- sparsevar::scadReg(as(trDt$X, "dgCMatrix"), trDt$y, alpha = 1, lambda = lambdas)
   }
   return(fit)
 }

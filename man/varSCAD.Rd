@@ -4,7 +4,7 @@
 \alias{varSCAD}
 \title{VAR SCAD}
 \usage{
-varSCAD(data, p, lambdas, opt)
+varSCAD(data, p, lambdas, opt, penalty)
 }
 \arguments{
 \item{data}{the data}
@@ -14,6 +14,8 @@ varSCAD(data, p, lambdas, opt)
 \item{lambdas}{a vector containing the lambdas to be used in the fit}
 
 \item{opt}{a list containing the options}
+
+\item{penalty}{a string "SCAD" or something else}
 }
 \description{
 Estimate VAR using SCAD penalty

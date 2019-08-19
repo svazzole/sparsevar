@@ -1,7 +1,8 @@
 #' @export
 scadReg <- function(X, y, family="gaussian", penalty="SCAD",
-                   gamma=3.7, alpha=1, lambda.min=ifelse(n>p,.001,.05), nlambda=100,
-                   lambda, eps=.001, max.iter=1000, convex=TRUE, dfmax=p+1, penalty.factor=rep(1, ncol(X)),
+                   gamma=3.7, alpha=1, lambda.min=ifelse(n > p, .001, .05),
+                   nlambda=100, lambda, eps=.001, max.iter=1000, convex=TRUE,
+                   dfmax=p + 1, penalty.factor=rep(1, ncol(X)),
                    warn=TRUE, returnX=FALSE, ...) {
   # Coersion
   # if (class(X) != "matrix") {

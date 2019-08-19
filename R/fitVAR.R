@@ -1,6 +1,3 @@
-#' @useDynLib sparsevar
-#' @importFrom Rcpp sourceCpp
-#'
 #' @title Multivariate VAR estimation
 #'
 #' @description A function to estimate a (possibly high-dimensional) 
@@ -49,30 +46,28 @@ fitVAR <- function(data, p = 1, penalty = "ENET", method = "cv", ...) {
 
   # convert data to matrix
   if (!is.matrix(data)){
-    
     data <- as.matrix(data)
-    
   }
 
   cnames <- colnames(data)
 
   if (method == "cv") {
-    
+
     # use CV to find lambda
     opt$method <- "cv"
     out <- cvVAR(data, p, penalty, opt)
-    
+
   } else if (method == "timeSlice") {
-    
+
     # use timeslice to find lambda
     opt$method <- "timeSlice"
     out <- timeSliceVAR(data, p, penalty, opt)
-    
+
   } else {
-    
+
     # error: unknown method
     stop("Unknown method. Possible values are \"cv\" or \"timeSlice\"")
-    
+
   }
 
   # Add the names of the variables to the matrices
@@ -93,14 +88,14 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
   picasso <- ifelse(!is.null(opt$picasso), opt$picasso, FALSE)
   threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
-  
-  thresholdType <- ifelse(!is.null(opt$thresholdType), 
+
+  thresholdType <- ifelse(!is.null(opt$thresholdType),
                           opt$thresholdType, "soft")
-  
+
   returnFit <- ifelse(!is.null(opt$returnFit), opt$returnFit, FALSE)
   methodCov <- ifelse(!is.null(opt$methodCov), opt$methodCov, "tiger")
 
-  if(picasso) {
+  if (picasso) {
     stop("picasso available only with timeSlice method.")
   }
   # transform the dataset
@@ -118,7 +113,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
     # extract the coefficients and reshape the matrix
     Avector <- stats::coef(fit, s = lambda)
-    A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, 
+    A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc * p,
                 byrow = TRUE)
 
     mse <- min(fit$cvm)
@@ -136,17 +131,17 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
     # extract the coefficients and reshape the matrix
     Avector <- stats::coef(fit, s = "lambda.min")
-    A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, 
+    A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc * p,
                 byrow = TRUE)
     mse <- min(fit$cve)
 
 
   } else if (penalty == "MCP") {
-    
+
     # convert from sparse matrix to std matrix (MCP does not work with sparse
     # matrices)
     trDt$X <- as.matrix(trDt$X)
-    
+
     # fit the MCP model
     t <- Sys.time()
     fit <- cvVAR_SCAD(trDt$X, trDt$y, opt)
@@ -154,15 +149,15 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
     # extract the coefficients and reshape the matrix
     Avector <- stats::coef(fit, s = "lambda.min")
-    A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc*p, 
+    A <- matrix(Avector[2:length(Avector)], nrow = nc, ncol = nc * p,
                 byrow = TRUE)
     mse <- min(fit$cve)
-    
+
   } else {
-    
+
     # Unknown penalty error
     stop("Unkown penalty. Available penalties are: ENET, SCAD, MCP.")
-    
+
   }
 
   # If threshold = TRUE then set to zero all the entries that are smaller than
@@ -173,7 +168,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
   # The full matrix A
   fullA <- A
-  
+
   # Get back the list of VAR matrices (of length p)
   A <- splitMatrix(A, p)
 
@@ -190,15 +185,13 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   }
 
   # Create the output
-  output = list()
+  output <- list()
   output$mu <- trDt$mu
   output$A <- A
 
   # Do you want the fit?
   if (returnFit == TRUE) {
-    
     output$fit <- fit
-    
   }
 
   # Return the "best" lambda
@@ -212,7 +205,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
   # Variance/Covariance estimation
   output$sigma <- estimateCovariance(res)
-  
+
   output$penalty <- penalty
   output$method <- "cv"
   attr(output, "class") <- "var"
@@ -231,25 +224,25 @@ cvVAR_ENET <- function(X, y, nvar, opt) {
 
   # Vector of lambdas to work on
   if (!is.null(opt$lambdas_list)) {
-    
+
     lambdas_list <- opt$lambdas_list
-    
+
   } else {
-    
+
     lambdas_list <- c(0)
-    
+
   }
 
   # Assign ids to the CV-folds (useful for replication of results)
   if (is.null(opt$foldsIDs)) {
-    
+
     foldsIDs <- numeric(0)
-    
+
   } else {
-    
+
     nr <- nrow(X)
-    foldsIDs <- rep(sort(rep(seq(nf), length.out = nr/nvar)), nvar)
-    
+    foldsIDs <- rep(sort(rep(seq(nf), length.out = nr / nvar)), nvar)
+
   }
 
   if(parall == TRUE) {

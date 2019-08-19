@@ -3,8 +3,12 @@
 cran-comments.md
 R/old/
 R/todo/
+R/scadReg.R
 tests/testIRF*
+tests/testSparse*
 tests/testPicasso.R
 tests/testInformCrit.R
+tests/testEigen.cpp
 .travis.yml
 LICENSE.md
+.github/*

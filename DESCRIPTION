@@ -17,8 +17,6 @@ Imports:
     mvtnorm,
     picasso,
     corpcor,
-    Rcpp,
-    RcppArmadillo
 Suggests:
     knitr,
     testthat
@@ -31,4 +29,5 @@ URL: http://github.com/svazzole/sparsevar
 BugReports: http://github.com/svazzole/sparsevar
 VignetteBuilder:
     knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
+Encoding: UTF-8

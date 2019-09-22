@@ -14,10 +14,8 @@
 #' @return An NxN sparse matrix.
 #' @examples
 #' M <- createSparseMatrix(N = 30, sparsity = 0.05, method = "normal", stationary = TRUE)
-#'
 #' @export
 createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALSE, p = 1, ...) {
-
   opt <- list(...)
   mu <- ifelse(!is.null(opt$muMat), opt$muMat, 0)
   sd <- ifelse(!is.null(opt$sdMat), opt$sdMat, 1)
@@ -30,7 +28,6 @@ createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALS
     Atmp <- numeric(length = N^2)
     Atmp[entries] <- nonZeroEntries
     A <- matrix(Atmp, nrow = N, ncol = N)
-
   } else if (method == "bimodal") {
     # bimodal (bi-normal) distributed nonzero entries
     nonZeroEntriesLeft <- stats::rnorm(n, mean = -mu, sd = sd)
@@ -40,33 +37,28 @@ createSparseMatrix <- function(N, sparsity, method = "normal", stationary = FALS
     Atmp <- numeric(length = N^2)
     Atmp[entries] <- nonZeroEntries
     A <- matrix(Atmp, nrow = N, ncol = N)
-
   } else if (method == "full") {
     # full matrix: used only for tests
-    e <- (0.9)^(1:N)#stats::runif(N, min=-1, max=1)
+    e <- (0.9)^(1:N) # stats::runif(N, min=-1, max=1)
     D <- diag(e)
-    P <- matrix(0,N,N)
-    while (det(P)==0) {
+    P <- matrix(0, N, N)
+    while (det(P) == 0) {
       P <- createSparseMatrix(N = N, sparsity = 1, method = "bimodal")
     }
     A <- solve(P) %*% D %*% P
     stationary <- FALSE
-
   } else {
     # invalid method
     stop("Unknown method. Possible methods are normal or bimodal.")
-
   }
 
   if (stationary == TRUE) {
     # if spectral radius < 1 is needed, return the re-normalized matrix
     # K <- 1 + base::abs(mu)
     K <- 1
-    return(1/(K * base::sqrt(p * sparsity * N * sd)) * A)
+    return(1 / (K * base::sqrt(p * sparsity * N * sd)) * A)
     # return(1/(max(Mod(eigen(A)$values)) + 0.01) * A)
   } else {
     return(A)
-
   }
-
 }

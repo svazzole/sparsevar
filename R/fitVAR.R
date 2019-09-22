@@ -84,24 +84,23 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   picasso <- ifelse(!is.null(opt$picasso), opt$picasso, FALSE)
   threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
 
-  thresholdType <- ifelse(!is.null(opt$thresholdType),
-    opt$thresholdType, "soft"
+  threshold_type <- ifelse(!is.null(opt$threshold_type),
+    opt$threshold_type, "soft"
   )
 
-  returnFit <- ifelse(!is.null(opt$returnFit), opt$returnFit, FALSE)
-  methodCov <- ifelse(!is.null(opt$methodCov), opt$methodCov, "tiger")
+  return_fit <- ifelse(!is.null(opt$return_fit), opt$return_fit, FALSE)
 
   if (picasso) {
     stop("picasso available only with timeSlice method.")
   }
   # transform the dataset
-  trDt <- transformData(data, p, opt)
+  tr_dt <- transformData(data, p, opt)
 
   if (penalty == "ENET") {
 
     # fit the ENET model
     t <- Sys.time()
-    fit <- cvVAR_ENET(trDt$X, trDt$y, nvar = nc, opt)
+    fit <- cvVAR_ENET(tr_dt$X, tr_dt$y, nvar = nc, opt)
     elapsed <- Sys.time() - t
 
     # extract what is needed
@@ -119,11 +118,11 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
     # convert from sparse matrix to std matrix (SCAD does not work with sparse
     # matrices)
-    trDt$X <- as.matrix(trDt$X)
+    tr_dt$X <- as.matrix(tr_dt$X)
 
     # fit the SCAD model
     t <- Sys.time()
-    fit <- cvVAR_SCAD(trDt$X, trDt$y, opt)
+    fit <- cvVAR_SCAD(tr_dt$X, tr_dt$y, opt)
     elapsed <- Sys.time() - t
 
     # extract the coefficients and reshape the matrix
@@ -137,11 +136,11 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
     # convert from sparse matrix to std matrix (MCP does not work with sparse
     # matrices)
-    trDt$X <- as.matrix(trDt$X)
+    tr_dt$X <- as.matrix(tr_dt$X)
 
     # fit the MCP model
     t <- Sys.time()
-    fit <- cvVAR_SCAD(trDt$X, trDt$y, opt)
+    fit <- cvVAR_SCAD(tr_dt$X, tr_dt$y, opt)
     elapsed <- Sys.time() - t
 
     # extract the coefficients and reshape the matrix
@@ -160,34 +159,31 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   # If threshold = TRUE then set to zero all the entries that are smaller than
   # the threshold
   if (threshold == TRUE) {
-    A <- applyThreshold(A, nr, nc, p, type = thresholdType)
+    A <- applyThreshold(A, nr, nc, p, type = threshold_type)
   }
-
-  # The full matrix A
-  fullA <- A
 
   # Get back the list of VAR matrices (of length p)
   A <- splitMatrix(A, p)
 
   # Now that we have the matrices compute the residuals
-  res <- computeResiduals(trDt$series, A)
+  res <- computeResiduals(tr_dt$series, A)
 
   # To extract the sd of mse
   if (penalty == "ENET") {
     ix <- which(fit$cvm == min(fit$cvm))
-    mseSD <- fit$cvsd[ix]
+    mse_sd <- fit$cvsd[ix]
   } else {
     ix <- which(fit$cve == min(fit$cve))
-    mseSD <- fit$cvse[ix]
+    mse_sd <- fit$cvse[ix]
   }
 
   # Create the output
   output <- list()
-  output$mu <- trDt$mu
+  output$mu <- tr_dt$mu
   output$A <- A
 
   # Do you want the fit?
-  if (returnFit == TRUE) {
+  if (return_fit == TRUE) {
     output$fit <- fit
   }
 
@@ -195,9 +191,9 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   output$lambda <- fit$lambda.min
 
   output$mse <- mse
-  output$mseSD <- mseSD
+  output$mse_sd <- mse_sd
   output$time <- elapsed
-  output$series <- trDt$series
+  output$series <- tr_dt$series
   output$residuals <- res
 
   # Variance/Covariance estimation
@@ -226,11 +222,11 @@ cvVAR_ENET <- function(X, y, nvar, opt) {
   }
 
   # Assign ids to the CV-folds (useful for replication of results)
-  if (is.null(opt$foldsIDs)) {
-    foldsIDs <- numeric(0)
+  if (is.null(opt$folds_ids)) {
+    folds_ids <- numeric(0)
   } else {
     nr <- nrow(X)
-    foldsIDs <- rep(sort(rep(seq(nf), length.out = nr / nvar)), nvar)
+    folds_ids <- rep(sort(rep(seq(nf), length.out = nr / nvar)), nvar)
   }
 
   if (parall == TRUE) {
@@ -238,11 +234,9 @@ cvVAR_ENET <- function(X, y, nvar, opt) {
       stop("The number of cores must be > 1")
     } else {
 
-      # cl <- doMC::registerDoMC(cores = ncores)
-      # using doMC as in glmnet vignettes
       cl <- doParallel::registerDoParallel(cores = ncores)
 
-      if (length(foldsIDs) == 0) {
+      if (length(folds_ids) == 0) {
         if (length(lambdas_list) < 2) {
           cvfit <- glmnet::cv.glmnet(X, y,
             alpha = a, nlambda = nl,
@@ -260,20 +254,20 @@ cvVAR_ENET <- function(X, y, nvar, opt) {
         if (length(lambdas_list) < 2) {
           cvfit <- glmnet::cv.glmnet(X, y,
             alpha = a, nlambda = nl,
-            type.measure = tm, foldid = foldsIDs,
+            type.measure = tm, foldid = folds_ids,
             parallel = TRUE, standardize = FALSE
           )
         } else {
           cvfit <- glmnet::cv.glmnet(X, y,
             alpha = a, lambda = lambdas_list,
-            type.measure = tm, foldid = foldsIDs,
+            type.measure = tm, foldid = folds_ids,
             parallel = TRUE, standardize = FALSE
           )
         }
       }
     }
   } else {
-    if (length(foldsIDs) == 0) {
+    if (length(folds_ids) == 0) {
       if (length(lambdas_list) < 2) {
         cvfit <- glmnet::cv.glmnet(X, y,
           alpha = a, nlambda = nl,
@@ -291,13 +285,13 @@ cvVAR_ENET <- function(X, y, nvar, opt) {
       if (length(lambdas_list) < 2) {
         cvfit <- glmnet::cv.glmnet(X, y,
           alpha = a, nlambda = nl,
-          type.measure = tm, foldid = foldsIDs,
+          type.measure = tm, foldid = folds_ids,
           parallel = FALSE, standardize = FALSE
         )
       } else {
         cvfit <- glmnet::cv.glmnet(X, y,
           alpha = a, lambda = lambdas_list,
-          type.measure = tm, foldid = foldsIDs,
+          type.measure = tm, foldid = folds_ids,
           parallel = FALSE, standardize = FALSE
         )
       }

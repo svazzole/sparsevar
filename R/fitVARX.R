@@ -26,7 +26,7 @@
 #' \code{leaveOut}: in the time slice validation leave out the last \code{leaveOutLast} observations
 #' (default = 15);
 #' \code{horizon}: the horizon to use for estimating mse/mae (default = 1);
-#' \code{picasso}: use picasso package for estimation (only available for \code{penalty = "SCAD"} 
+#' \code{picasso}: use picasso package for estimation (only available for \code{penalty = "SCAD"}
 #' and \code{method = "timeSlice"}).
 #'
 #' @return \code{A} the list (of length \code{p}) of the estimated matrices of the process
@@ -37,26 +37,25 @@
 #'
 #' @export
 fitVARX <- function(data, p = 1, Xt, m = 1, penalty = "ENET", method = "cv", ...) {
-  
   opt <- list(...)
-  
-  # convert data to matrix 
-  if (!is.matrix(data)){
+
+  # convert data to matrix
+  if (!is.matrix(data)) {
     data <- as.matrix(data)
   }
-  
-  # convert data to matrix 
-  if (!is.matrix(Xt)){
+
+  # convert data to matrix
+  if (!is.matrix(Xt)) {
     Xt <- as.matrix(Xt)
   }
-  
+
   dataXt <- cbind(data, Xt)
-  
+
   cnames <- colnames(data)
   cnamesX <- colnames(Xt)
-  
-  pX <- max(p,m)
-  
+
+  pX <- max(p, m)
+
   if (method == "cv") {
     # use CV to find lambda
     opt$method <- "cv"
@@ -69,12 +68,12 @@ fitVARX <- function(data, p = 1, Xt, m = 1, penalty = "ENET", method = "cv", ...
     # error: unknown method
     stop("Unknown method. Possible values are \"cv\" or \"timeSlice\"")
   }
-  
+
   nc <- ncol(data)
   ncX <- ncol(Xt)
-  
+
   out <- VARtoVARX(out, p, m, nc, ncX)
-  
+
   # Add the names of the variables to the matrices
   if (!is.null(cnames)) {
     for (k in 1:length(out$A)) {
@@ -82,25 +81,24 @@ fitVARX <- function(data, p = 1, Xt, m = 1, penalty = "ENET", method = "cv", ...
       rownames(out$A[[k]]) <- cnames
     }
   }
-  
+
   return(out)
-  
 }
 
 VARtoVARX <- function(v, p, m, nc, ncX) {
   l <- length(v$A)
   newA <- list()
   B <- list()
-  for(i in 1:l) {
-    newA[[i]] <- v$A[[i]][1:nc,1:nc]
-    B[[i]] <- v$A[[i]][1:nc, (nc+1):ncol(v$A[[i]])]
+  for (i in 1:l) {
+    newA[[i]] <- v$A[[i]][1:nc, 1:nc]
+    B[[i]] <- v$A[[i]][1:nc, (nc + 1):ncol(v$A[[i]])]
   }
-  if (p<l) {
-    v$newA <- newA[-((p+1):l)]
+  if (p < l) {
+    v$newA <- newA[-((p + 1):l)]
     v$B <- B
-  } else if (m<l) {
+  } else if (m < l) {
     v$newA <- newA
-    v$B <- B[-((m+1):l)]
+    v$B <- B[-((m + 1):l)]
   } else {
     v$newA <- newA
     v$B <- B

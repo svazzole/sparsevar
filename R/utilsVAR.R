@@ -26,7 +26,7 @@ transformData <- function(data, p, opt) {
   if (center == TRUE) {
     if (opt$method == "timeSlice") {
       leaveOut <- ifelse(is.null(opt$leaveOut), 10, opt$leaveOut)
-      m <- colMeans(data[1:(nr-leaveOut),])
+      m <- colMeans(data[1:(nr - leaveOut), ])
     } else {
       m <- colMeans(data)
     }
@@ -37,12 +37,12 @@ transformData <- function(data, p, opt) {
   }
 
   if (scale == TRUE) {
-    #m <- colMeans(data)
+    # m <- colMeans(data)
     data <- apply(FUN = scale, X = data, MARGIN = 2)
   }
 
   # create Xs and Ys (temp variables)
-  tmpX <- data[1:(nr-1), ]
+  tmpX <- data[1:(nr - 1), ]
   tmpY <- data[2:(nr), ]
 
   # create the data matrix
@@ -62,7 +62,6 @@ transformData <- function(data, p, opt) {
   output$mu <- t(m)
 
   return(output)
-
 }
 
 #' @title VAR ENET
@@ -89,7 +88,6 @@ varENET <- function(data, p, lambdas, opt) {
   fit <- glmnet::glmnet(trDt$X, trDt$y, lambda = lambdas)
 
   return(fit)
-
 }
 
 #' @title VAR SCAD
@@ -115,8 +113,10 @@ varSCAD <- function(data, p, lambdas, opt, penalty = "SCAD") {
   trDt <- transformData(data, p, opt)
 
   if (penalty == "SCAD") {
-    fit <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y, family = "gaussian", penalty = "SCAD",
-                          alpha = 1, lambda = lambdas)
+    fit <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y,
+      family = "gaussian", penalty = "SCAD",
+      alpha = 1, lambda = lambdas
+    )
   } else {
     stop("[WIP] Only SCAD regression is supported at the moment")
     # fit <- sparsevar::scadReg(as(trDt$X, "dgCMatrix"), trDt$y, alpha = 1, lambda = lambdas)
@@ -145,52 +145,45 @@ varMCP <- function(data, p, lambdas, opt) {
   # transform the dataset
   trDt <- transformData(data, p, opt)
 
-  fit <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y, family = "gaussian", penalty = "MCP",
-                        alpha = 1, lambda = lambdas)
+  fit <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y,
+    family = "gaussian", penalty = "MCP",
+    alpha = 1, lambda = lambdas
+  )
 
   return(fit)
-
 }
 
 splitMatrix <- function(M, p) {
-
   nr <- nrow(M)
   A <- list()
 
   for (i in 1:p) {
-
-    ix <- ((i-1) * nr) + (1:nr)
+    ix <- ((i - 1) * nr) + (1:nr)
     A[[i]] <- M[1:nr, ix]
-
   }
 
   return(A)
 }
 
 duplicateMatrix <- function(data, p) {
-
   nr <- nrow(data)
   nc <- ncol(data)
 
   outputData <- data
 
   if (p > 1) {
-    for (i in 1:(p-1)) {
-
+    for (i in 1:(p - 1)) {
       tmpData <- matrix(0, nrow = nr, ncol = nc)
-      tmpData[(i+1):nr, ] <- data[1:(nr-i), ]
+      tmpData[(i + 1):nr, ] <- data[1:(nr - i), ]
       outputData <- cbind(outputData, tmpData)
-
     }
   }
 
   outputData <- outputData[p:nr, ]
   return(outputData)
-
 }
 
 computeResiduals <- function(data, A) {
-
   nr <- nrow(data)
   nc <- ncol(data)
   p <- length(A)
@@ -199,16 +192,13 @@ computeResiduals <- function(data, A) {
   f <- matrix(0, ncol = nc, nrow = nr)
 
   for (i in 1:p) {
-
-    tmpD <- rbind(matrix(0, nrow = i, ncol = nc), data[1:(nrow(data)-i), ])
+    tmpD <- rbind(matrix(0, nrow = i, ncol = nc), data[1:(nrow(data) - i), ])
     tmpF <- t(A[[i]] %*% t(tmpD))
     f <- f + tmpF
-
   }
 
   res <- data - f
   return(res)
-
 }
 
 #' @title Companion VAR
@@ -221,29 +211,27 @@ computeResiduals <- function(data, A) {
 #'
 #' @export
 companionVAR <- function(v) {
-
   if (!checkIsVar(v)) {
     stop("v must be a var object")
   }
   A <- v$A
   nc <- ncol(A[[1]])
   p <- length(A)
-  if (p>1){
-    bigA <- Matrix::Matrix(0, nrow = p*nc, ncol = p*nc, sparse = TRUE)
+  if (p > 1) {
+    bigA <- Matrix::Matrix(0, nrow = p * nc, ncol = p * nc, sparse = TRUE)
     for (k in 1:p) {
-      ix <- ((k-1) * nc) + (1:nc)
+      ix <- ((k - 1) * nc) + (1:nc)
       bigA[1:nc, ix] <- A[[k]]
     }
 
-    ixR <- (nc+1):nrow(bigA)
-    ixC <- 1:((p-1)*nc)
+    ixR <- (nc + 1):nrow(bigA)
+    ixC <- 1:((p - 1) * nc)
     bigA[ixR, ixC] <- diag(1, nrow = length(ixC), ncol = length(ixC))
   } else {
     bigA <- Matrix::Matrix(A[[1]], sparse = TRUE)
   }
 
   return(bigA)
-
 }
 
 #' @title Bootstrap VAR
@@ -271,22 +259,21 @@ bootstrappedVAR <- function(v) {
   r <- r - matrix(colMeans(r), ncol = N, nrow = t)
 
   zt <- matrix(0, nrow = t, ncol = N)
-  zt[1:p,] <- s[1:p,]
+  zt[1:p, ] <- s[1:p, ]
 
-  for (t0 in (p+1):t) {
-    ix <- sample((p+1):t, 1)
+  for (t0 in (p + 1):t) {
+    ix <- sample((p + 1):t, 1)
     u <- r[ix, ]
     vv <- rep(0, N)
-    for (i in 1:p){
+    for (i in 1:p) {
       ph <- A[[i]]
-      vv <- vv + ph %*% zt[(t0-i), ]
+      vv <- vv + ph %*% zt[(t0 - i), ]
     }
     vv <- vv + u
     zt[t0, ] <- vv
   }
 
-return(zt)
-
+  return(zt)
 }
 
 #' @title Test for Ganger Causality
@@ -301,17 +288,15 @@ return(zt)
 #'
 #' @export
 testGranger <- function(v, eb) {
-
   p <- length(v$A)
   A <- list()
   for (i in 1:p) {
-    L <- (eb$irfQUB[,,i+1] >= 0 & eb$irfQLB[,,i+1]<=0)
-    A[[i]] <- v$A[[i]] * (1-L)
+    L <- (eb$irfQUB[, , i + 1] >= 0 & eb$irfQLB[, , i + 1] <= 0)
+    A[[i]] <- v$A[[i]] * (1 - L)
   }
 
 
   return(A)
-
 }
 
 #' @title Computes information criteria for VARs
@@ -325,7 +310,6 @@ testGranger <- function(v, eb) {
 #'
 #' @export
 informCrit <- function(v) {
-
   if (is.list(v)) {
     k <- length(v)
     r <- matrix(0, nrow = k, ncol = 3)
@@ -335,9 +319,9 @@ informCrit <- function(v) {
         # Compute sparsity
         s <- 0
         for (l in 1:p) {
-          s <- s + sum(v[[i]]$A[[l]]!=0)
+          s <- s + sum(v[[i]]$A[[l]] != 0)
         }
-        sp <- s/(p*ncol(v[[i]]$A[[1]])^2)          
+        sp <- s / (p * ncol(v[[i]]$A[[1]])^2)
       } else {
         stop("List elements must be var or vecm objects.")
       }
@@ -346,10 +330,9 @@ informCrit <- function(v) {
       nc <- ncol(v[[i]]$residuals)
       d <- det(sigma)
 
-      r[i,1] <- log(d) + (2*p*sp*nc^2)/nr                 # AIC
-      r[i,2] <- log(d) + (log(nr)/nr) * (p*sp*nc^2)       # BIC
-      r[i,3] <- log(d) + (2*p*sp*nc^2)/nr * log(log(nr))  # Hannan-Quinn
-
+      r[i, 1] <- log(d) + (2 * p * sp * nc^2) / nr # AIC
+      r[i, 2] <- log(d) + (log(nr) / nr) * (p * sp * nc^2) # BIC
+      r[i, 3] <- log(d) + (2 * p * sp * nc^2) / nr * log(log(nr)) # Hannan-Quinn
     }
     results <- data.frame(r)
     colnames(results) <- c("AIC", "BIC", "HannanQuinn")
@@ -361,23 +344,21 @@ informCrit <- function(v) {
 }
 
 estimateCovariance <- function(res, ...) {
-
   nc <- ncol(res)
-  
+
   # Different methods for covaraince estimation?
   opt <- list(...)
-  
+
   s <- corpcor::cov.shrink(res, verbose = FALSE)
   sigma <- matrix(0, ncol = nc, nrow = nc)
-  
+
   for (i in 1:nc) {
     for (j in 1:nc) {
-      sigma[i,j] <- s[i,j]
+      sigma[i, j] <- s[i, j]
     }
   }
 
   return(sigma)
-
 }
 
 #' @title Computes forecasts for VARs
@@ -391,8 +372,7 @@ estimateCovariance <- function(res, ...) {
 #'
 #' @export
 computeForecasts <- function(v, numSteps = 1) {
-
-  if(!checkIsVar(v)) {
+  if (!checkIsVar(v)) {
     stop("You must pass a var object.")
   } else {
     mu <- v$mu
@@ -403,14 +383,13 @@ computeForecasts <- function(v, numSteps = 1) {
   if (!is.list(v)) {
     stop("v must be a var object or a list of matrices.")
   } else {
-
     nr <- nrow(data)
     nc <- ncol(v[[1]])
     p <- length(v)
 
     f <- matrix(0, nrow = nc, ncol = numSteps)
 
-    tmpData <- matrix(data = t(data[(nr-p+1):nr, ]), nrow = nc, ncol = numSteps)
+    tmpData <- matrix(data = t(data[(nr - p + 1):nr, ]), nrow = nc, ncol = numSteps)
     nr <- ncol(tmpData)
 
     for (n in 1:numSteps) {
@@ -419,9 +398,9 @@ computeForecasts <- function(v, numSteps = 1) {
           f[, n] <- f[, n] + v[[k]] %*% tmpData[, nr - k + 1]
         } else {
           if (nr > 1) {
-            tmpData <- cbind(tmpData[, 2:nr], f[, n-1])
+            tmpData <- cbind(tmpData[, 2:nr], f[, n - 1])
           } else {
-            tmpData <- as.matrix(f[, n-1])
+            tmpData <- as.matrix(f[, n - 1])
           }
           f[, n] <- f[, n] + v[[k]] %*% tmpData[, nr - k + 1]
         }
@@ -433,9 +412,8 @@ computeForecasts <- function(v, numSteps = 1) {
 }
 
 applyThreshold <- function(A, nr, nc, p, type = "soft") {
-
   if (type == "soft") {
-    tr <- 1 / sqrt(p*nc*log(nr))
+    tr <- 1 / sqrt(p * nc * log(nr))
   } else if (type == "hard") {
     tr <- (nc)^(-0.49)
   } else {
@@ -445,5 +423,4 @@ applyThreshold <- function(A, nr, nc, p, type = "soft") {
   L <- abs(A) >= tr
   A <- A * L
   return(A)
-
 }

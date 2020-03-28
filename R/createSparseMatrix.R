@@ -15,37 +15,43 @@
 #' \code{mu_mat} and the standard deviation \code{sd_mat}).
 #' @return An NxN sparse matrix.
 #' @examples
-#' M <- createSparseMatrix(N = 30, sparsity = 0.05, method = "normal",
-#' stationary = TRUE)
+#' M <- createSparseMatrix(
+#'   N = 30, sparsity = 0.05, method = "normal",
+#'   stationary = TRUE
+#' )
 #' @export
 createSparseMatrix <- function(N, sparsity, method = "normal",
                                stationary = FALSE, p = 1, ...) {
   opt <- list(...)
   mu <- ifelse(!is.null(opt$mu_mat), opt$mu_mat, 0)
   sd <- ifelse(!is.null(opt$sd_mat), opt$sd_mat, 1)
-  n <- floor(sparsity * (N ^ 2))
+  n <- floor(sparsity * (N^2))
 
   if (method == "normal") {
     # normal distributed nonzero entries
     non_zero_entries <- stats::rnorm(n, mean = mu, sd = sd)
-    entries <- sample(x = 1:(N ^ 2), size = n, replace = FALSE)
-    Atmp <- numeric(length = (N ^ 2))
+    entries <- sample(x = 1:(N^2), size = n, replace = FALSE)
+    Atmp <- numeric(length = (N^2))
     Atmp[entries] <- non_zero_entries
     A <- matrix(Atmp, nrow = N, ncol = N)
   } else if (method == "bimodal") {
     # bimodal (bi-normal) distributed nonzero entries
     non_zero_entries_left <- stats::rnorm(n, mean = -mu, sd = sd)
     non_zero_entries_right <- stats::rnorm(n, mean = mu, sd = sd)
-    non_zero_entries <- sample(x = c(non_zero_entries_left,
-                                   non_zero_entries_right),
-                             size = n, replace = FALSE)
-    entries <- sample(x = 1:(N ^ 2), size = n, replace = FALSE)
-    Atmp <- numeric(length = (N ^ 2))
+    non_zero_entries <- sample(
+      x = c(
+        non_zero_entries_left,
+        non_zero_entries_right
+      ),
+      size = n, replace = FALSE
+    )
+    entries <- sample(x = 1:(N^2), size = n, replace = FALSE)
+    Atmp <- numeric(length = (N^2))
     Atmp[entries] <- non_zero_entries
     A <- matrix(Atmp, nrow = N, ncol = N)
   } else if (method == "full") {
     # full matrix: used only for tests
-    e <- 0.9 ^ (1:N)
+    e <- 0.9^(1:N)
     D <- diag(e)
     P <- matrix(0, N, N)
     while (det(P) == 0) {

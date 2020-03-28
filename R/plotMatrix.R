@@ -18,12 +18,18 @@ plotMatrix <- function(M, colors = "dark") {
   nc <- ncol(M)
   M <- t(M)[, nr:1]
   if (colors == "dark") {
-    ggplot2::ggplot(reshape2::melt(M), ggplot2::aes_string(x = "Var1", y = "Var2", fill = "value")) + ggplot2::geom_raster() +
-      ggplot2::scale_fill_gradient2(low = "red", high = "green", mid = "black") + ggplot2::xlab("Row") + ggplot2::ylab("Col") +
+    ggplot2::ggplot(reshape2::melt(M), ggplot2::aes_string(x = "Var1", y = "Var2", fill = "value")) +
+      ggplot2::geom_raster() +
+      ggplot2::scale_fill_gradient2(low = "red", high = "green", mid = "black") +
+      ggplot2::xlab("Row") +
+      ggplot2::ylab("Col") +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1))
   } else if (colors == "light") {
-    ggplot2::ggplot(reshape2::melt(M), ggplot2::aes_string(x = "Var1", y = "Var2", fill = "value")) + ggplot2::geom_raster() +
-      ggplot2::scale_fill_gradient2(low = "red", high = "blue", mid = "white") + ggplot2::xlab("Row") + ggplot2::ylab("Col") +
+    ggplot2::ggplot(reshape2::melt(M), ggplot2::aes_string(x = "Var1", y = "Var2", fill = "value")) +
+      ggplot2::geom_raster() +
+      ggplot2::scale_fill_gradient2(low = "red", high = "blue", mid = "white") +
+      ggplot2::xlab("Row") +
+      ggplot2::ylab("Col") +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1))
   } else {
     stop("Colors must be\"light\" or \"dark\".")

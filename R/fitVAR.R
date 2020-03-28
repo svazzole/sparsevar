@@ -233,7 +233,6 @@ cvVAR_ENET <- function(X, y, nvar, opt) {
     if (ncores < 1) {
       stop("The number of cores must be > 1")
     } else {
-
       cl <- doParallel::registerDoParallel(cores = ncores)
 
       if (length(folds_ids) == 0) {

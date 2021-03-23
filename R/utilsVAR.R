@@ -37,7 +37,6 @@ transformData <- function(data, p, opt) {
   }
 
   if (scale == TRUE) {
-    # m <- colMeans(data)
     data <- apply(FUN = scale, X = data, MARGIN = 2)
   }
 
@@ -77,11 +76,6 @@ transformData <- function(data, p, opt) {
 #'
 #' @export
 varENET <- function(data, p, lambdas, opt) {
-
-  ## Fit a VAR for a sequence of lambdas
-  nc <- ncol(data)
-  nr <- nrow(data)
-
   # transform the dataset
   trDt <- transformData(data, p, opt)
 
@@ -105,10 +99,6 @@ varENET <- function(data, p, lambdas, opt) {
 #' @export
 
 varSCAD <- function(data, p, lambdas, opt, penalty = "SCAD") {
-  ## Fit a VAR for a sequence of lambdas
-  nc <- ncol(data)
-  nr <- nrow(data)
-
   # transform the dataset
   trDt <- transformData(data, p, opt)
 
@@ -119,7 +109,6 @@ varSCAD <- function(data, p, lambdas, opt, penalty = "SCAD") {
     )
   } else {
     stop("[WIP] Only SCAD regression is supported at the moment")
-    # fit <- sparsevar::scadReg(as(trDt$X, "dgCMatrix"), trDt$y, alpha = 1, lambda = lambdas)
   }
   return(fit)
 }
@@ -137,11 +126,6 @@ varSCAD <- function(data, p, lambdas, opt, penalty = "SCAD") {
 #'
 #' @export
 varMCP <- function(data, p, lambdas, opt) {
-
-  ## Fit a VAR for a sequence of lambdas
-  nc <- ncol(data)
-  nr <- nrow(data)
-
   # transform the dataset
   trDt <- transformData(data, p, opt)
 
@@ -345,10 +329,6 @@ informCrit <- function(v) {
 
 estimateCovariance <- function(res, ...) {
   nc <- ncol(res)
-
-  # Different methods for covaraince estimation?
-  opt <- list(...)
-
   s <- corpcor::cov.shrink(res, verbose = FALSE)
   sigma <- matrix(0, ncol = nc, nrow = nc)
 
@@ -371,7 +351,7 @@ estimateCovariance <- function(res, ...) {
 #' @param numSteps the number of forecasts to produce.
 #'
 #' @export
-computeForecasts <- function(v, numSteps = 1) {
+computeForecasts <- function(v, num_steps = 1) {
   if (!checkIsVar(v)) {
     stop("You must pass a var object.")
   } else {
@@ -387,40 +367,42 @@ computeForecasts <- function(v, numSteps = 1) {
     nc <- ncol(v[[1]])
     p <- length(v)
 
-    f <- matrix(0, nrow = nc, ncol = numSteps)
+    f <- matrix(0, nrow = nc, ncol = num_steps)
 
-    tmpData <- matrix(data = t(data[(nr - p + 1):nr, ]), nrow = nc, ncol = numSteps)
-    nr <- ncol(tmpData)
+    tmp_data <- matrix(data = t(data[(nr - p + 1):nr, ]),
+                      nrow = nc,
+                      ncol = num_steps)
+    nr <- ncol(tmp_data)
 
     for (n in 1:numSteps) {
       for (k in 1:p) {
         if (n == 1) {
-          f[, n] <- f[, n] + v[[k]] %*% tmpData[, nr - k + 1]
+          f[, n] <- f[, n] + v[[k]] %*% tmp_data[, nr - k + 1]
         } else {
           if (nr > 1) {
-            tmpData <- cbind(tmpData[, 2:nr], f[, n - 1])
+            tmp_data <- cbind(tmp_data[, 2:nr], f[, n - 1])
           } else {
-            tmpData <- as.matrix(f[, n - 1])
+            tmp_data <- as.matrix(f[, n - 1])
           }
-          f[, n] <- f[, n] + v[[k]] %*% tmpData[, nr - k + 1]
+          f[, n] <- f[, n] + v[[k]] %*% tmp_data[, nr - k + 1]
         }
       }
     }
   }
-  f <- f + matrix(rep(mu, length(mu)), length(mu), numSteps)
+  f <- f + matrix(rep(mu, length(mu)), length(mu), num_steps)
   return(f)
 }
 
-applyThreshold <- function(A, nr, nc, p, type = "soft") {
+applyThreshold <- function(a_mat, nr, nc, p, type = "soft") {
   if (type == "soft") {
     tr <- 1 / sqrt(p * nc * log(nr))
   } else if (type == "hard") {
-    tr <- (nc)^(-0.49)
+    tr <- (nc) ^ (-0.49)
   } else {
     stop("Unknown threshold type. Possible values are: \"soft\" or \"hard\"")
   }
 
-  L <- abs(A) >= tr
-  A <- A * L
-  return(A)
+  l_mat <- abs(a_mat) >= tr
+  a_mat <- a_mat * l_mat
+  return(a_mat)
 }

@@ -55,7 +55,7 @@ plotIRF <- function(irf, eb, i, j, type = "irf", bands = "quantiles") {
       ggplot2::ylab(irfString) +
       ggplot2::geom_line(data = d, ggplot2::aes(x = t, y = d[, 3]), linetype = "dashed", color = "blue") +
       ggplot2::geom_line(data = d, ggplot2::aes(x = t, y = d[, 4]), linetype = "dashed", color = "blue") +
-      ggplot2::geom_ribbon(data = d, ggplot2::aes(ymin = d[, 3], ymax = d[, 4]), fill = "lightsteelblue2", alpha = "0.75") +
+      ggplot2::geom_ribbon(data = d, ggplot2::aes(ymin = d[, 3], ymax = d[, 4]), fill = "lightsteelblue2", alpha = 0.75) +
       ggplot2::geom_line(data = d, ggplot2::aes(x = t, y = d[, 5]), color = "red") +
       ggplot2::geom_line() +
       ggplot2::xlab("Time")
@@ -88,7 +88,7 @@ plotIRF <- function(irf, eb, i, j, type = "irf", bands = "quantiles") {
       ggplot2::ylab(irfString) +
       ggplot2::geom_line(data = d, ggplot2::aes(x = t, y = d[, 3]), linetype = "dashed", color = "blue") +
       ggplot2::geom_line(data = d, ggplot2::aes(x = t, y = d[, 4]), linetype = "dashed", color = "blue") +
-      ggplot2::geom_ribbon(data = d, ggplot2::aes(ymin = d[, 3], ymax = d[, 4]), fill = "lightsteelblue2", alpha = "0.75") +
+      ggplot2::geom_ribbon(data = d, ggplot2::aes(ymin = d[, 3], ymax = d[, 4]), fill = "lightsteelblue2", alpha = 0.75) +
       ggplot2::geom_line(data = d, ggplot2::aes(x = t, y = d[, 5]), color = "red") +
       ggplot2::geom_line() +
       ggplot2::xlab("Time")

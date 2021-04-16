@@ -101,7 +101,7 @@ plotIRF <- function(irf, eb, i, j, type = "irf", bands = "quantiles") {
 #'
 #' @param irf the irf object computed using impulseResponse
 #' @param eb the error bands estimated using errorBands
-#' @param indexes a vector containing the indeces that you want to plot
+#' @param indexes a vector containing the indices that you want to plot
 #' @param type plot the irf (\code{type = "irf"} by default) or the orthogonal irf
 #' (\code{type = "oirf"})
 #' @param bands which type of bands to plot ("quantiles" (default) or  "sd")

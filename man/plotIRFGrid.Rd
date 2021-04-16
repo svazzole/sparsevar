@@ -11,7 +11,7 @@ plotIRFGrid(irf, eb, indexes, type, bands)
 
 \item{eb}{the error bands estimated using errorBands}
 
-\item{indexes}{a vector containing the indeces that you want to plot}
+\item{indexes}{a vector containing the indices that you want to plot}
 
 \item{type}{plot the irf (\code{type = "irf"} by default) or the orthogonal irf
 (\code{type = "oirf"})}

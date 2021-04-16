@@ -10,6 +10,6 @@ informCrit(v)
 \item{v}{a list of VAR objects as from fitVAR.}
 }
 \description{
-This function computes information criterias (AIC, Schwartz and
+This function computes information criteria (AIC, Schwartz and
 Hannan-Quinn) for VARs.
 }

@@ -20,3 +20,5 @@ tests/testInformCrit.R
 tests/testIRF*
 tests/testPicasso.R
 
+/doc/
+/Meta/

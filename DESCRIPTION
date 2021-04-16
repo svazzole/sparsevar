@@ -19,7 +19,9 @@ Imports:
     corpcor,
 Suggests:
     knitr,
+    markdown
     testthat
+VignetteBuilder: knitr
 Depends:
     R (>= 1.8.0)
 Description: A wrapper for sparse VAR/VECM time series models estimation

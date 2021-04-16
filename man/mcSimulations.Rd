@@ -43,6 +43,6 @@ mcSimulations(
 a \code{nMc}x5 matrix with the results of the Monte Carlo estimation
 }
 \description{
-This function generates monte carlo simultaions of sparse VAR and
+This function generates Monte Carlo simulations of sparse VAR and
 its estimation (at the moment only for VAR(1) processes).
 }

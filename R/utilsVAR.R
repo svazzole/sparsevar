@@ -345,10 +345,10 @@ estimateCovariance <- function(res, ...) {
 #'
 #' @description This function computes forecasts for a given VAR.
 #'
-#' @usage computeForecasts(v, numSteps)
+#' @usage computeForecasts(v, num_steps)
 #'
 #' @param v a VAR object as from fitVAR.
-#' @param numSteps the number of forecasts to produce.
+#' @param num_steps the number of forecasts to produce.
 #'
 #' @export
 computeForecasts <- function(v, num_steps = 1) {
@@ -374,7 +374,7 @@ computeForecasts <- function(v, num_steps = 1) {
                       ncol = num_steps)
     nr <- ncol(tmp_data)
 
-    for (n in 1:numSteps) {
+    for (n in 1:num_steps) {
       for (k in 1:p) {
         if (n == 1) {
           f[, n] <- f[, n] + v[[k]] %*% tmp_data[, nr - k + 1]

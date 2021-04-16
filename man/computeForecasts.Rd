@@ -4,12 +4,12 @@
 \alias{computeForecasts}
 \title{Computes forecasts for VARs}
 \usage{
-computeForecasts(v, numSteps)
+computeForecasts(v, num_steps)
 }
 \arguments{
 \item{v}{a VAR object as from fitVAR.}
 
-\item{numSteps}{the number of forecasts to produce.}
+\item{num_steps}{the number of forecasts to produce.}
 }
 \description{
 This function computes forecasts for a given VAR.

@@ -12,7 +12,7 @@ plotMatrix(M, colors)
 \item{colors}{dark or light}
 }
 \value{
-An \code{image} plot with a particular color palette (black zero entries, red 
+An \code{image} plot with a particular color palette (black zero entries, red
 for the negative ones and green for the positive)
 }
 \description{

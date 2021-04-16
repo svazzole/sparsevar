@@ -1,5 +1,5 @@
 Package: sparsevar
-Version: 0.0.12
+Version: 0.1.0
 Date: 2021-04-16
 Title: Sparse VAR/VECM Models Estimation
 Authors@R: c(person("Simone", "Vazzoler", role = c("aut", "cre"),
@@ -19,10 +19,10 @@ Imports:
     corpcor,
 Suggests:
     knitr,
-    rmarkdown
-    testthat
+    rmarkdown,
+    testthat,
 Depends:
-    R (>= 1.8.0)
+    R (>= 3.5.0)
 Description: A wrapper for sparse VAR/VECM time series models estimation
              using penalties like ENET (Elastic Net), SCAD (Smoothly Clipped 
              Absolute Deviation) and MCP (Minimax Concave Penalty). 
@@ -33,5 +33,5 @@ URL: http://github.com/svazzole/sparsevar
 BugReports: http://github.com/svazzole/sparsevar
 VignetteBuilder:
     knitr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 Encoding: UTF-8

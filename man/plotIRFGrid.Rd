@@ -13,7 +13,7 @@ plotIRFGrid(irf, eb, indexes, type, bands)
 
 \item{indexes}{a vector containing the indeces that you want to plot}
 
-\item{type}{plot the irf (\code{type = "irf"} by default) or the orthogonal irf 
+\item{type}{plot the irf (\code{type = "irf"} by default) or the orthogonal irf
 (\code{type = "oirf"})}
 
 \item{bands}{which type of bands to plot ("quantiles" (default) or  "sd")}

@@ -34,7 +34,7 @@ for parallel evaluation. Options for ENET estimation:
 \code{leaveOut}: in the time slice validation leave out the last \code{leaveOutLast} observations
 (default = 15);
 \code{horizon}: the horizon to use for estimating mse/mae (default = 1);
-\code{picasso}: use picasso package for estimation (only available for \code{penalty = "SCAD"} 
+\code{picasso}: use picasso package for estimation (only available for \code{penalty = "SCAD"}
 and \code{method = "timeSlice"}).}
 }
 \value{

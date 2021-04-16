@@ -11,7 +11,7 @@ plotVAR(..., colors)
 than one, as from \code{simulateVAR} or \code{fitVAR})}
 
 \item{colors}{the gradient used to plot the matrix. It can be "light" (low =
-red -- mid = white -- high = blue) or "dark" (low = red -- mid = black -- 
+red -- mid = white -- high = blue) or "dark" (low = red -- mid = black --
 high = green)}
 }
 \value{

@@ -3,11 +3,10 @@
 \docType{package}
 \name{sparsevar}
 \alias{sparsevar}
-\alias{sparsevar-package}
-\title{sparsevar: A package to estimate multivariate time series models (such as VAR and 
+\title{sparsevar: A package to estimate multivariate time series models (such as VAR and
 VECM), under the sparsity hypothesis.}
 \description{
-It performs the estimation of the matrices of the models using penalized 
+It performs the estimation of the matrices of the models using penalized
 least squares methods such as LASSO, SCAD and MCP.
 }
 \section{sparsevar functions}{

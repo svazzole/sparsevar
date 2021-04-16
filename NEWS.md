@@ -1,3 +1,8 @@
+# sparsevar 0.1.0
+
+- Fix bug in plotIRF
+- Linted code
+
 # sparsevar 0.0.11
 
 - Added CV on a predefined list of lambdas (thanks to PierrickPiette) 

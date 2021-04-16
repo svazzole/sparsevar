@@ -1,6 +1,6 @@
 Package: sparsevar
-Version: 0.0.11
-Date: 2019-08-19
+Version: 0.0.12
+Date: 2021-04-16
 Title: Sparse VAR/VECM Models Estimation
 Authors@R: c(person("Simone", "Vazzoler", role = c("aut", "cre"),
                      email = "svazzole@gmail.com"))
@@ -21,7 +21,6 @@ Suggests:
     knitr,
     markdown
     testthat
-VignetteBuilder: knitr
 Depends:
     R (>= 1.8.0)
 Description: A wrapper for sparse VAR/VECM time series models estimation

@@ -2,6 +2,7 @@
 
 - Fix bug in plotIRF
 - Linted code
+- Fixed knitr/markdown/rmarkdown problems as in https://github.com/yihui/knitr/issues/1864
 
 # sparsevar 0.0.11
 

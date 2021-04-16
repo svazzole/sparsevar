@@ -22,13 +22,13 @@
 
 - Fast SCAD estimation (using picasso package; works only with SCAD and timeSlice)
 - Added function to compute VAR forecasts
-- Added information criteria (AIC, SChwartz and Hannan-Quinn)
+- Added information criteria (AIC, Schwartz and Hannan-Quinn)
 - Fixed mean estimation for timeSlice
 
 # sparsevar 0.0.7
 
 - Major code rewriting
-- Remove dependecies from MTS and caret
+- Remove dependencies from MTS and caret
 - Added impulse response error bands (using bootstrap)
 - Added plot functions for IRF
 - New timeSlice estimation

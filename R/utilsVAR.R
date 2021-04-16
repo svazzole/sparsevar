@@ -285,7 +285,7 @@ testGranger <- function(v, eb) {
 
 #' @title Computes information criteria for VARs
 #'
-#' @description This function computes information criterias (AIC, Schwartz and
+#' @description This function computes information criteria (AIC, Schwartz and
 #' Hannan-Quinn) for VARs.
 #'
 #' @usage informCrit(v)

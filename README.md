@@ -80,7 +80,7 @@ For plotting:
 - `plotGridIRF`: multiple plots of IRF.
 
 ### Papers using `sparsevar`
-[[1](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005364)] Gibbons SM, Kearney SM, Smillie CS, Alm EJ (2017) Two dynamic regimes in the human gut microbiome. PLoS Comput Biol 13(2): e1005364.
+[[1](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005364)] Gibbons SM, Kearney SM, Smillie CS, Alm EJ (2017) Two dynamic regimes in the human gut microbiome. PLoS Comput. Biol. 13(2): e1005364.
 
 [[2](https://doi.org/10.1016/j.insmatheco.2019.07.004)] Quentin Guibert, Olivier Lopez, Pierrick Piette, Forecasting mortality rate improvements with a high-dimensional VAR, Insurance: Mathematics and Economics, Volume 88, 2019, Pages 255-272, ISSN 0167-6687.
 

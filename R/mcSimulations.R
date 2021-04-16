@@ -1,6 +1,6 @@
 #' @title Monte Carlo simulations
 #'
-#' @description This function generates monte carlo simultaions of sparse VAR and
+#' @description This function generates Monte Carlo simulations of sparse VAR and
 #' its estimation (at the moment only for VAR(1) processes).
 #' @param N dimension of the multivariate time series.
 #' @param nobs number of observations to be generated.

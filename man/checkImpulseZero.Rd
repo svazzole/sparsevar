@@ -14,6 +14,6 @@ a matrix containing the indices of the impulse response function that
 are 0.
 }
 \description{
-A function to find which entries of the impulse response function 
+A function to find which entries of the impulse response function
 are zero.
 }

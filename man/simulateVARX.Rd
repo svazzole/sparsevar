@@ -4,7 +4,7 @@
 \alias{simulateVARX}
 \title{VARX simulation}
 \usage{
-simulateVARX(N, K, p, m, nobs, rho, 
+simulateVARX(N, K, p, m, nobs, rho,
                     sparsityA1, sparsityA2, sparsityA3,
                     mu, method, covariance, ...)
 }
@@ -21,13 +21,13 @@ simulateVARX(N, K, p, m, nobs, rho,
 
 \item{rho}{base value for the covariance matrix.}
 
-\item{sparsityA1}{density (in percentage) of the number of nonzero elements 
+\item{sparsityA1}{density (in percentage) of the number of nonzero elements
 of the A1 block.}
 
-\item{sparsityA2}{density (in percentage) of the number of nonzero elements 
+\item{sparsityA2}{density (in percentage) of the number of nonzero elements
 of the A2 block.}
 
-\item{sparsityA3}{density (in percentage) of the number of nonzero elements 
+\item{sparsityA3}{density (in percentage) of the number of nonzero elements
 of the A3 block.}
 
 \item{mu}{a vector containing the mean of the simulated process.}

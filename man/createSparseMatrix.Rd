@@ -4,32 +4,42 @@
 \alias{createSparseMatrix}
 \title{Create Sparse Matrix}
 \usage{
-createSparseMatrix(N, sparsity, method = "normal", stationary = FALSE,
-  p = 1, ...)
+createSparseMatrix(
+  N,
+  sparsity,
+  method = "normal",
+  stationary = FALSE,
+  p = 1,
+  ...
+)
 }
 \arguments{
 \item{N}{the dimension of the square matrix}
 
 \item{sparsity}{the density of non zero elements}
 
-\item{method}{the method used to generate the entries of the matrix. Possible values are
-\code{"normal"} (default) or \code{"bimodal"}.}
+\item{method}{the method used to generate the entries of the matrix.
+Possible values are \code{"normal"} (default) or \code{"bimodal"}.}
 
 \item{stationary}{should the spectral radius of the matrix be smaller than 1?
 Possible values are \code{TRUE} or \code{FALSE}. Default is \code{FALSE}.}
 
-\item{p}{normalization constant (used for VAR of order greater than 1, default = 1)}
+\item{p}{normalization constant (used for VAR of order greater than 1,
+default = 1)}
 
-\item{...}{other options for the matrix (you can specify the mean \code{mu} and the
-standard deviation \code{sd}).}
+\item{...}{other options for the matrix (you can specify the mean
+\code{mu_mat} and the standard deviation \code{sd_mat}).}
 }
 \value{
 An NxN sparse matrix.
 }
 \description{
-Creates a sparse square matrix with a given sparsity and distribution.
+Creates a sparse square matrix with a given sparsity and
+distribution.
 }
 \examples{
-M <- createSparseMatrix(N = 30, sparsity = 0.05, method = "normal", stationary = TRUE)
-
+M <- createSparseMatrix(
+  N = 30, sparsity = 0.05, method = "normal",
+  stationary = TRUE
+)
 }

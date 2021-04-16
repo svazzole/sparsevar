@@ -4,9 +4,18 @@
 \alias{mcSimulations}
 \title{Monte Carlo simulations}
 \usage{
-mcSimulations(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
-  penalty = "ENET", covariance = "Toeplitz", method = "normal",
-  modelSel = "cv", ...)
+mcSimulations(
+  N,
+  nobs = 250,
+  nMC = 100,
+  rho = 0.5,
+  sparsity = 0.05,
+  penalty = "ENET",
+  covariance = "Toeplitz",
+  method = "normal",
+  modelSel = "cv",
+  ...
+)
 }
 \arguments{
 \item{N}{dimension of the multivariate time series.}
@@ -19,7 +28,7 @@ mcSimulations(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
 
 \item{sparsity}{density of non zero entries of the VAR matrices.}
 
-\item{penalty}{penalty function to use for LS estimation. Possible values are \code{"ENET"}, 
+\item{penalty}{penalty function to use for LS estimation. Possible values are \code{"ENET"},
 \code{"SCAD"} or \code{"MCP"}.}
 
 \item{covariance}{type of covariance matrix to be used in the generation of the sparse VAR model.}
@@ -34,6 +43,6 @@ mcSimulations(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
 a \code{nMc}x5 matrix with the results of the Monte Carlo estimation
 }
 \description{
-This function generates monte carlo simultaions of sparse VAR and 
+This function generates monte carlo simultaions of sparse VAR and
 its estimation (at the moment only for VAR(1) processes).
 }

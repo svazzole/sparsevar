@@ -23,6 +23,6 @@ Taken from R Cookbook}
 A ggplot containing the plots passed as arguments
 }
 \description{
-Multiple plot function. ggplot objects can be passed in ..., or 
+Multiple plot function. ggplot objects can be passed in ..., or
 to plotlist (as a list of ggplot objects)
 }

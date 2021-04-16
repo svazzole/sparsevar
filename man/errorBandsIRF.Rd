@@ -17,7 +17,7 @@ errorBandsIRF(v, irf, alpha, M, resampling, ...)
 
 \item{resampling}{type of resampling: \code{"bootstrap"} or \code{"jackknife"}}
 
-\item{...}{some options for the estimation: \code{verbose = TRUE} or \code{FALSE}, 
+\item{...}{some options for the estimation: \code{verbose = TRUE} or \code{FALSE},
 \code{mode = "fast"} or \code{"slow"}, \code{threshold = TRUE} or \code{FALSE}.}
 }
 \value{

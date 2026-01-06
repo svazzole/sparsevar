@@ -27,12 +27,12 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
   pb <- utils::txtProgressBar(min = 0, max = nMC, style = 3)
 
   for (i in 1:nMC) {
-    s <- simulateVAR(nobs = nobs, N = N, rho = rho, sparsity = sparsity, covariance = covariance, method = method, ...)
+    s <- simulate_var(nobs = nobs, N = N, rho = rho, sparsity = sparsity, covariance = covariance, method = method, ...)
     rets <- s$series
     genA <- s$A[[1]]
     spRad <- max(Mod(eigen(genA)$values))
 
-    res <- fitVAR(data = rets, penalty = penalty, method = modelSel, ...)
+    res <- fit_var(data = rets, penalty = penalty, method = modelSel, ...)
 
     A <- res$A[[1]]
     estSpRad <- max(Mod(eigen(A)$values))

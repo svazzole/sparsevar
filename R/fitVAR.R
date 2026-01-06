@@ -28,9 +28,7 @@
 #' validation (default = 100);
 #' \code{leaveOut}: in the time slice validation leave out the
 #' last \code{leaveOutLast} observations (default = 15);
-#' \code{horizon}: the horizon to use for estimating mse/mae (default = 1);
-#' \code{picasso}: use picasso package for estimation (only available
-#' for \code{penalty = "SCAD"} and \code{method = "timeSlice"}).
+#' \code{horizon}: the horizon to use for estimating mse/mae (default = 1).
 #'
 #' @return \code{A} the list (of length \code{p}) of the estimated matrices
 #' of the process
@@ -40,7 +38,7 @@
 #' @return \code{residuals} the time series of the residuals
 #'
 #' @export
-fitVAR <- function(data, p = 1, penalty = "ENET", method = "cv", ...) {
+fit_var <- function(data, p = 1, penalty = "ENET", method = "cv", ...) {
   opt <- list(...)
 
   # convert data to matrix
@@ -54,12 +52,12 @@ fitVAR <- function(data, p = 1, penalty = "ENET", method = "cv", ...) {
 
     # use CV to find lambda
     opt$method <- "cv"
-    out <- cvVAR(data, p, penalty, opt)
+    out <- cv_var(data, p, penalty, opt)
   } else if (method == "timeSlice") {
 
     # use timeslice to find lambda
     opt$method <- "timeSlice"
-    out <- timeSliceVAR(data, p, penalty, opt)
+    out <- time_slice_var(data, p, penalty, opt)
   } else {
 
     # error: unknown method
@@ -68,20 +66,19 @@ fitVAR <- function(data, p = 1, penalty = "ENET", method = "cv", ...) {
 
   # Add the names of the variables to the matrices
   if (!is.null(cnames)) {
-    for (k in 1:length(out$A)) {
+    for (k in seq_along(out$A)) {
       colnames(out$A[[k]]) <- cnames
       rownames(out$A[[k]]) <- cnames
     }
   }
 
-  return(out)
+  out
 }
 
-cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
+cv_var <- function(data, p, penalty = "ENET", opt = NULL) {
   nc <- ncol(data)
   nr <- nrow(data)
 
-  picasso <- ifelse(!is.null(opt$picasso), opt$picasso, FALSE)
   threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
 
   threshold_type <- ifelse(!is.null(opt$threshold_type),
@@ -90,17 +87,14 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
   return_fit <- ifelse(!is.null(opt$return_fit), opt$return_fit, FALSE)
 
-  if (picasso) {
-    stop("picasso available only with timeSlice method.")
-  }
   # transform the dataset
-  tr_dt <- transformData(data, p, opt)
+  tr_dt <- transform_data(data, p, opt)
 
   if (penalty == "ENET") {
 
     # fit the ENET model
     t <- Sys.time()
-    fit <- cvVAR_ENET(tr_dt$X, tr_dt$y, nvar = nc, opt)
+    fit <- cv_var_enet(tr_dt$X, tr_dt$y, nvar = nc, opt)
     elapsed <- Sys.time() - t
 
     # extract what is needed
@@ -122,7 +116,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
     # fit the SCAD model
     t <- Sys.time()
-    fit <- cvVAR_SCAD(tr_dt$X, tr_dt$y, opt)
+    fit <- cv_var_scad(tr_dt$X, tr_dt$y, opt)
     elapsed <- Sys.time() - t
 
     # extract the coefficients and reshape the matrix
@@ -140,7 +134,7 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
 
     # fit the MCP model
     t <- Sys.time()
-    fit <- cvVAR_SCAD(tr_dt$X, tr_dt$y, opt)
+    fit <- cv_var_scad(tr_dt$X, tr_dt$y, opt)
     elapsed <- Sys.time() - t
 
     # extract the coefficients and reshape the matrix
@@ -159,14 +153,14 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   # If threshold = TRUE then set to zero all the entries that are smaller than
   # the threshold
   if (threshold == TRUE) {
-    A <- applyThreshold(A, nr, nc, p, type = threshold_type)
+    A <- apply_threshold(A, nr, nc, p, type = threshold_type)
   }
 
   # Get back the list of VAR matrices (of length p)
-  A <- splitMatrix(A, p)
+  A <- split_matrix(A, p)
 
   # Now that we have the matrices compute the residuals
-  res <- computeResiduals(tr_dt$series, A)
+  res <- compute_residuals(tr_dt$series, A)
 
   # To extract the sd of mse
   if (penalty == "ENET") {
@@ -197,16 +191,16 @@ cvVAR <- function(data, p, penalty = "ENET", opt = NULL) {
   output$residuals <- res
 
   # Variance/Covariance estimation
-  output$sigma <- estimateCovariance(res)
+  output$sigma <- estimate_covariance(res)
 
   output$penalty <- penalty
   output$method <- "cv"
   attr(output, "class") <- "var"
   attr(output, "type") <- "fit"
-  return(output)
+  output
 }
 
-cvVAR_ENET <- function(X, y, nvar, opt) {
+cv_var_enet <- function(X, y, nvar, opt) {
   a <- ifelse(is.null(opt$alpha), 1, opt$alpha)
   nl <- ifelse(is.null(opt$nlambda), 100, opt$nlambda)
   tm <- ifelse(is.null(opt$type.measure), "mse", opt$type.measure)
@@ -297,39 +291,34 @@ cvVAR_ENET <- function(X, y, nvar, opt) {
     }
   }
 
-  return(cvfit)
+  cvfit
 }
 
-cvVAR_SCAD <- function(X, y, opt) {
+cv_var_scad <- function(X, y, opt) {
   e <- ifelse(is.null(opt$eps), 0.01, opt$eps)
   nf <- ifelse(is.null(opt$nfolds), 10, opt$nfolds)
   parall <- ifelse(is.null(opt$parallel), FALSE, opt$parallel)
   ncores <- ifelse(is.null(opt$ncores), 1, opt$ncores)
-  picasso <- ifelse(is.null(opt$picasso), FALSE, TRUE)
 
-  if (!picasso) {
-    if (parall == TRUE) {
-      if (ncores < 1) {
-        stop("The number of cores must be > 1")
-      } else {
-        cl <- parallel::makeCluster(ncores)
-        cvfit <- ncvreg::cv.ncvreg(X, y,
-          nfolds = nf, penalty = "SCAD",
-          eps = e, cluster = cl
-        )
-        parallel::stopCluster(cl)
-      }
+  if (parall == TRUE) {
+    if (ncores < 1) {
+      stop("The number of cores must be > 1")
     } else {
-      cvfit <- ncvreg::cv.ncvreg(X, y, nfolds = nf, penalty = "SCAD", eps = e)
+      cl <- parallel::makeCluster(ncores)
+      cvfit <- ncvreg::cv.ncvreg(X, y,
+        nfolds = nf, penalty = "SCAD",
+        eps = e, cluster = cl
+      )
+      parallel::stopCluster(cl)
     }
   } else {
-    cvfit <- picasso::picasso(X, y, method = "scad")
+    cvfit <- ncvreg::cv.ncvreg(X, y, nfolds = nf, penalty = "SCAD", eps = e)
   }
 
-  return(cvfit)
+  cvfit
 }
 
-cvVAR_MCP <- function(X, y, opt) {
+cv_var_mcp <- function(X, y, opt) {
   e <- ifelse(is.null(opt$eps), 0.01, opt$eps)
   nf <- ifelse(is.null(opt$nfolds), 10, opt$nfolds)
   parall <- ifelse(is.null(opt$parallel), FALSE, opt$parallel)
@@ -350,5 +339,8 @@ cvVAR_MCP <- function(X, y, opt) {
     cvfit <- ncvreg::cv.ncvreg(X, y, nfolds = nf, penalty = "MCP", eps = e)
   }
 
-  return(cvfit)
+  cvfit
 }
+
+#' @export
+fitVAR <- fit_var

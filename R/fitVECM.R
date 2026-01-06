@@ -38,7 +38,7 @@ fitVECM <- function(data, p = 0, penalty = "ENET", method = "cv", logScale = TRU
     # data[is.infinite(data)] <- 0
   }
 
-  resultsVAR <- fitVAR(data, p = p, penalty = penalty, method = method, ...)
+  resultsVAR <- fit_var(data, p = p, penalty = penalty, method = method, ...)
   M <- resultsVAR$A
   I <- diag(x = 1, nrow = nc, ncol = nc)
 
@@ -68,9 +68,9 @@ fitVECM <- function(data, p = 0, penalty = "ENET", method = "cv", logScale = TRU
   output$series <- resultsVAR$series
 
   if (is.null(opt$methodCov)) {
-    output$sigma <- estimateCovariance(output$residuals)
+    output$sigma <- estimate_covariance(output$residuals)
   } else {
-    output$sigma <- estimateCovariance(output$residuals, methodCovariance = opt$methodCov)
+    output$sigma <- estimate_covariance(output$residuals, methodCovariance = opt$methodCov)
   }
 
   output$penalty <- resultsVAR$penalty

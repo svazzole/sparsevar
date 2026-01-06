@@ -15,7 +15,6 @@ Imports:
     reshape2,
     grid,
     mvtnorm,
-    picasso,
     corpcor,
 Suggests:
     knitr,

@@ -90,7 +90,6 @@ The common arguments for the two functions are:
 ### Options for `penalty = "SCAD"` or `"MCP"`
 
   * `eps`: convergence tolerance
-  * `picasso`: `TRUE` or `FALSE`. If `TRUE` uses the `picasso` package for SCAD estimation.
 
 ### Output
 

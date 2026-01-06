@@ -3,6 +3,7 @@
 - Fix bug in plotIRF
 - Linted code
 - Fixed knitr/markdown/rmarkdown problems as in https://github.com/yihui/knitr/issues/1864
+- Removed optional picasso dependency; SCAD estimation uses ncvreg only
 
 # sparsevar 0.0.11
 
@@ -20,7 +21,7 @@
 
 # sparsevar 0.0.9
 
-- Fast SCAD estimation (using picasso package; works only with SCAD and timeSlice)
+- Fast SCAD estimation for timeSlice SCAD
 - Added function to compute VAR forecasts
 - Added information criteria (AIC, Schwartz and Hannan-Quinn)
 - Fixed mean estimation for timeSlice

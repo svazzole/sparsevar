@@ -3,14 +3,14 @@ twoStepOLS <- function(series, p = 1, penalty = "ENET", method = "cv", ...) {
   ## TODO: rewrite this function and add p>1 support
 
   ## First step: estimate VAR using LASSO
-  fit <- fitVAR(data = series, p = p, penalty = penalty, method = method, ...)
+  fit <- fit_var(data = series, p = p, penalty = penalty, method = method, ...)
 
   N <- ncol(fit$A[[1]])
   nobs <- nrow(fit$series)
 
-  bigA <- companionVAR(fit)
+  bigA <- companion_var(fit)
 
-  trDt <- transformData(fit$series, p = p, opt = list(method = method, scale = FALSE, center = TRUE))
+  trDt <- transform_data(fit$series, p = p, opt = list(method = method, scale = FALSE, center = TRUE))
 
   nonZeroEntries <- as.matrix(bigA != 0)
 
@@ -51,7 +51,7 @@ twoStepOLS <- function(series, p = 1, penalty = "ENET", method = "cv", ...) {
   result <- list()
   attr(result, "class") <- "var"
 
-  result$A <- splitMatrix(A, p)
+  result$A <- split_matrix(A, p)
   result$varA <- list(varA)
 
   uA <- result$A[[1]] + 2 * sqrt(result$varA[[1]])

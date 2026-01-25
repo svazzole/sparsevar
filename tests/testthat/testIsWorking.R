@@ -11,14 +11,14 @@ context("Testing estimation of VARs")
 
 test_that("sparsevar", {
   sim <- sparsevar::simulate_var(n = 30, p = 1)
-  fit <- sparsevar::fitVAR(sim$series, p = 1)
+  fit <- sparsevar::fit_var(sim$series, p = 1)
   expect_output(str(fit), "List of 11")
   expect_output(cat(attr(fit, "class")), "var")
   expect_output(cat(attr(fit, "type")), "fit")
-  
+
   sim <- sparsevar::simulate_var(n = 30, p = 1)
-  fit <- sparsevar::fit_var(sim$series, p = 1, 
-                           lambdas_list = c(0.1, 0.5, 0.3))
+  fit <- sparsevar::fit_var(sim$series, p = 1,
+                            lambdas_list = c(0.1, 0.5, 0.3))
   expect_output(str(fit), "List of 11")
   expect_output(cat(attr(fit, "class")), "var")
   expect_output(cat(attr(fit, "type")), "fit")

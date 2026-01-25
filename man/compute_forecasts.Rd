@@ -4,7 +4,7 @@
 \alias{compute_forecasts}
 \title{Computes forecasts for VARs}
 \usage{
-computeForecasts(v, num_steps)
+compute_forecasts(v, num_steps)
 }
 \arguments{
 \item{v}{a VAR object as from fitVAR.}

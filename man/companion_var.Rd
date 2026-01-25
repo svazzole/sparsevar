@@ -4,7 +4,7 @@
 \alias{companion_var}
 \title{Companion VAR}
 \usage{
-companionVAR(v)
+companion_var(v)
 }
 \arguments{
 \item{v}{the VAR object as from \code{fitVAR} or \code{simulateVAR}}

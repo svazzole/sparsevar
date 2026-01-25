@@ -4,7 +4,7 @@
 \alias{var_mcp}
 \title{VAR MCP}
 \usage{
-varMCP(data, p, lambdas, opt)
+var_mcp(data, p, lambdas, opt)
 }
 \arguments{
 \item{data}{the data}

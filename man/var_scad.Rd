@@ -4,7 +4,7 @@
 \alias{var_scad}
 \title{VAR SCAD}
 \usage{
-varSCAD(data, p, lambdas, opt, penalty)
+var_scad(data, p, lambdas, opt, penalty)
 }
 \arguments{
 \item{data}{the data}

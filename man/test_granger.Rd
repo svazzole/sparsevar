@@ -4,7 +4,7 @@
 \alias{test_granger}
 \title{Test for Ganger Causality}
 \usage{
-testGranger(v, eb)
+test_granger(v, eb)
 }
 \arguments{
 \item{v}{the VAR object as from fitVAR or simulateVAR}

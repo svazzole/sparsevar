@@ -4,7 +4,7 @@
 \alias{inform_crit}
 \title{Computes information criteria for VARs}
 \usage{
-informCrit(v)
+inform_crit(v)
 }
 \arguments{
 \item{v}{a list of VAR objects as from fitVAR.}

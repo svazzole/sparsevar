@@ -4,11 +4,15 @@
 \alias{simulate_varx}
 \title{VARX simulation}
 \usage{
-simulateVARX(N, K, p, m, nobs, rho,
-                    sparsityA1, sparsityA2, sparsityA3,
+simulate_varx(n, k, p, m, nobs, rho,
+                    sparsity_a1, sparsity_a2, sparsity_a3,
                     mu, method, covariance, ...)
 }
 \arguments{
+\item{n}{dimension of the time series.}
+
+\item{k}{TODO}
+
 \item{p}{number of lags of the VAR model.}
 
 \item{m}{TODO}
@@ -16,6 +20,15 @@ simulateVARX(N, K, p, m, nobs, rho,
 \item{nobs}{number of observations to be generated.}
 
 \item{rho}{base value for the covariance matrix.}
+
+\item{sparsity_a1}{density (in percentage) of the number of nonzero elements
+of the A1 block.}
+
+\item{sparsity_a2}{density (in percentage) of the number of nonzero elements
+of the A2 block.}
+
+\item{sparsity_a3}{density (in percentage) of the number of nonzero elements
+of the A3 block.}
 
 \item{mu}{a vector containing the mean of the simulated process.}
 
@@ -29,19 +42,6 @@ simply \code{"diagonal"}.}
 \item{...}{the options for the simulation. These are:
 \code{muMat}: the mean of the entries of the VAR matrices;
 \code{sdMat}: the sd of the entries of the matrices;}
-
-\item{N}{dimension of the time series.}
-
-\item{K}{TODO}
-
-\item{sparsityA1}{density (in percentage) of the number of nonzero elements
-of the A1 block.}
-
-\item{sparsityA2}{density (in percentage) of the number of nonzero elements
-of the A2 block.}
-
-\item{sparsityA3}{density (in percentage) of the number of nonzero elements
-of the A3 block.}
 }
 \value{
 A a list of NxN matrices ordered by lag

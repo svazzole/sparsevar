@@ -4,7 +4,7 @@
 \alias{var_enet}
 \title{VAR ENET}
 \usage{
-varENET(data, p, lambdas, opt)
+var_enet(data, p, lambdas, opt)
 }
 \arguments{
 \item{data}{the data}

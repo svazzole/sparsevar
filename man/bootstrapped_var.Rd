@@ -4,7 +4,7 @@
 \alias{bootstrapped_var}
 \title{Bootstrap VAR}
 \usage{
-bootstrappedVAR(v)
+bootstrapped_var(v)
 }
 \arguments{
 \item{v}{the VAR object as from fitVAR or simulateVAR}

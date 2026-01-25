@@ -4,7 +4,7 @@
 \alias{transform_data}
 \title{Transform data}
 \usage{
-transformData(data, p, opt)
+transform_data(data, p, opt)
 }
 \arguments{
 \item{data}{the data}

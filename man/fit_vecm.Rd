@@ -4,7 +4,7 @@
 \alias{fit_vecm}
 \title{Multivariate VECM estimation}
 \usage{
-fitVECM(data, p, penalty, method, logScale, ...)
+fit_vecm(data, p, penalty, method, logScale, ...)
 }
 \arguments{
 \item{data}{the data from the time series: variables

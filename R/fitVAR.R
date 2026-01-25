@@ -4,7 +4,7 @@
 #' multivariate VAR time series using penalized least squares methods,
 #' such as ENET, SCAD or MC+.
 #'
-#' @usage fitVAR(data, p = 1, penalty = "ENET", method = "cv", ...)
+#' @usage fit_var(data, p = 1, penalty = "ENET", method = "cv", ...)
 #'
 #' @param data the data from the time series: variables in columns and
 #' observations in rows
@@ -72,6 +72,7 @@ fit_var <- function(data, p = 1, penalty = "ENET", method = "cv", ...) {
   out
 }
 
+#' @export
 cv_var <- function(data, p, penalty = "ENET", opt = NULL) {
   nc <- ncol(data)
   nr <- nrow(data)

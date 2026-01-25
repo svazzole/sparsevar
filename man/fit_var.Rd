@@ -4,7 +4,7 @@
 \alias{fit_var}
 \title{Multivariate VAR estimation}
 \usage{
-fitVAR(data, p = 1, penalty = "ENET", method = "cv", ...)
+fit_var(data, p = 1, penalty = "ENET", method = "cv", ...)
 }
 \arguments{
 \item{data}{the data from the time series: variables in columns and

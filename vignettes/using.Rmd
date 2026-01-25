@@ -59,7 +59,7 @@ $$
 
 The results can be seen by plotting the matrices
 ```{r, warning=FALSE}
-plotVAR(sim, fit, fit_2)
+plot_var(sim, fit, fit_2)
 ```
 
 # Description of the package's functions

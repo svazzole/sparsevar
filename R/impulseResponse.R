@@ -3,7 +3,7 @@
 #' @description A function to estimate the Impulse Response Function of a
 #' given VAR.
 #'
-#' @usage impulseResponse(v, len = 20)
+#' @usage impulse_response(v, len = 20)
 #'
 #' @param v the data in the for of a VAR
 #' @param len length of the impulse response function
@@ -63,7 +63,7 @@ check_impulse_zero <- function(irf) {
 #' @description A function to estimate the confidence intervals for
 #' irf and oirf.
 #'
-#' @usage errorBandsIRF(v, irf, alpha, M, resampling, ...)
+#' @usage error_bands_irf(v, irf, alpha, M, resampling, ...)
 #'
 #' @param v a var object as from fitVAR or simulateVAR
 #' @param irf irf output from impulseResponse function

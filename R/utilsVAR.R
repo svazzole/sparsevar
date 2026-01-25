@@ -2,7 +2,7 @@
 #'
 #' @description Transform the input data
 #'
-#' @usage transformData(data, p, opt)
+#' @usage transform_data(data, p, opt)
 #'
 #' @param data the data
 #' @param p the order of the VAR
@@ -66,7 +66,7 @@ transform_data <- function(data, p, opt) {
 #'
 #' @description Estimate VAR using ENET penalty
 #'
-#' @usage varENET(data, p, lambdas, opt)
+#' @usage var_enet(data, p, lambdas, opt)
 #'
 #' @param data the data
 #' @param p the order of the VAR
@@ -85,7 +85,7 @@ var_enet <- function(data, p, lambdas, opt) {
 #'
 #' @description Estimate VAR using SCAD penalty
 #'
-#' @usage varSCAD(data, p, lambdas, opt, penalty)
+#' @usage var_scad(data, p, lambdas, opt, penalty)
 #'
 #' @param data the data
 #' @param p the order of the VAR
@@ -114,7 +114,7 @@ var_scad <- function(data, p, lambdas, opt, penalty = "SCAD") {
 #'
 #' @description Estimate VAR using MCP penalty
 #'
-#' @usage varMCP(data, p, lambdas, opt)
+#' @usage var_mcp(data, p, lambdas, opt)
 #'
 #' @param data the data
 #' @param p the order of the VAR
@@ -182,7 +182,7 @@ compute_residuals <- function(data, a) {
 #'
 #' @description Build the VAR(1) representation of a VAR(p) process
 #'
-#' @usage companionVAR(v)
+#' @usage companion_var(v)
 #'
 #' @param v the VAR object as from \code{fitVAR} or \code{simulateVAR}
 #'
@@ -213,7 +213,7 @@ companion_var <- function(v) {
 #'
 #' @description Build the bootstrapped series from the original var
 #'
-#' @usage bootstrappedVAR(v)
+#' @usage bootstrapped_var(v)
 #'
 #' @param v the VAR object as from fitVAR or simulateVAR
 #'
@@ -255,7 +255,7 @@ bootstrapped_var <- function(v) {
 #' @description This function should retain only the coefficients of the
 #' matrices of the VAR that are statistically significative (from the bootstrap)
 #'
-#' @usage testGranger(v, eb)
+#' @usage test_granger(v, eb)
 #'
 #' @param v the VAR object as from fitVAR or simulateVAR
 #' @param eb the error bands as obtained from errorBands
@@ -276,7 +276,7 @@ test_granger <- function(v, eb) {
 #' @description This function computes information criteria (AIC, Schwartz and
 #' Hannan-Quinn) for VARs.
 #'
-#' @usage informCrit(v)
+#' @usage inform_crit(v)
 #'
 #' @param v a list of VAR objects as from fitVAR.
 #'
@@ -330,7 +330,7 @@ estimate_covariance <- function(res, ...) {
 #'
 #' @description This function computes forecasts for a given VAR.
 #'
-#' @usage computeForecasts(v, num_steps)
+#' @usage compute_forecasts(v, num_steps)
 #'
 #' @param v a VAR object as from fitVAR.
 #' @param num_steps the number of forecasts to produce.

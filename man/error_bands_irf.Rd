@@ -4,7 +4,7 @@
 \alias{error_bands_irf}
 \title{Error bands for IRF}
 \usage{
-errorBandsIRF(v, irf, alpha, M, resampling, ...)
+error_bands_irf(v, irf, alpha, M, resampling, ...)
 }
 \arguments{
 \item{v}{a var object as from fitVAR or simulateVAR}

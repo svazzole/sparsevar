@@ -3,21 +3,21 @@
 #' @description This function generates a simulated multivariate VAR
 #' time series.
 #'
-#' @usage simulateVARX(N, K, p, m, nobs, rho,
-#'                     sparsityA1, sparsityA2, sparsityA3,
+#' @usage simulate_varx(n, k, p, m, nobs, rho,
+#'                     sparsity_a1, sparsity_a2, sparsity_a3,
 #'                     mu, method, covariance, ...)
 #'
-#' @param N dimension of the time series.
-#' @param K TODO
+#' @param n dimension of the time series.
+#' @param k TODO
 #' @param p number of lags of the VAR model.
 #' @param m TODO
 #' @param nobs number of observations to be generated.
 #' @param rho base value for the covariance matrix.
-#' @param sparsityA1 density (in percentage) of the number of nonzero elements
+#' @param sparsity_a1 density (in percentage) of the number of nonzero elements
 #' of the A1 block.
-#' @param sparsityA2 density (in percentage) of the number of nonzero elements
+#' @param sparsity_a2 density (in percentage) of the number of nonzero elements
 #' of the A2 block.
-#' @param sparsityA3 density (in percentage) of the number of nonzero elements
+#' @param sparsity_a3 density (in percentage) of the number of nonzero elements
 #' of the A3 block.
 #' @param mu a vector containing the mean of the simulated process.
 #' @param method which method to use to generate the VAR matrix. Possible values

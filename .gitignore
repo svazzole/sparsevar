@@ -71,6 +71,8 @@ rsconnect/
 
 
 # Custom locations
+.claude/
+Improvements*.md
 .env
 /doc/
 /Meta/

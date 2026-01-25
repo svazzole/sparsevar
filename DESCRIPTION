@@ -16,7 +16,8 @@ Imports:
     grid,
     mvtnorm,
     corpcor,
-    checkmate
+    checkmate,
+    rlang,
 Suggests:
     knitr,
     rmarkdown,

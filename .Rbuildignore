@@ -16,3 +16,6 @@ LICENSE.md
 ^doc$
 ^Meta$
 ^CRAN-RELEASE$
+.env
+.claude/*
+Improv*.md

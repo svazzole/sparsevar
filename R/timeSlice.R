@@ -1,3 +1,4 @@
+#' @export
 time_slice_var <- function(data, p = 1, penalty = "ENET", opt) {
   if (penalty == "ENET") {
     # call timeslice with ENET

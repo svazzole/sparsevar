@@ -4,7 +4,7 @@
 \alias{impulse_response}
 \title{Impulse Response Function}
 \usage{
-impulseResponse(v, len = 20)
+impulse_response(v, len = 20)
 }
 \arguments{
 \item{v}{the data in the for of a VAR}

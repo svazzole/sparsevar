@@ -71,7 +71,7 @@ rsconnect/
 
 
 # Custom locations
-
+.env
 /doc/
 /Meta/
 /scripts_outputs/

@@ -2,35 +2,49 @@
 #'
 #' @description Plot a sparse matrix
 #'
-#' @param M the matrix to plot
+#' @param m the matrix to plot
 #' @param colors dark or light
-#' @return An \code{image} plot with a particular color palette (black zero entries, red
-#' for the negative ones and green for the positive)
-#' @usage plotMatrix(M, colors)
+#' @return An \code{image} plot with a particular color palette
+#' (black zero entries, red for the negative ones and
+#' green for the positive)
+#' @usage plot_matrix(m, colors)
 #'
+#' @importFrom rlang .data
 #' @export
-plotMatrix <- function(M, colors = "dark") {
-  if (!is.matrix(M)) {
+plot_matrix <- function(m, colors = "dark") {
+  if (!is.matrix(m)) {
     stop("Input must be a matrix")
   }
 
-  nr <- nrow(M)
-  nc <- ncol(M)
-  M <- t(M)[, nr:1]
+  nr <- nrow(m)
+
+  m <- t(m)[, nr:1]
   if (colors == "dark") {
-    ggplot2::ggplot(reshape2::melt(M), ggplot2::aes_string(x = "Var1", y = "Var2", fill = "value")) +
+    ggplot2::ggplot(reshape2::melt(m),
+                    ggplot2::aes(x = .data$Var1,
+                                 y = .data$Var2,
+                                 fill = .data$value)) +
       ggplot2::geom_raster() +
-      ggplot2::scale_fill_gradient2(low = "red", high = "green", mid = "black") +
+      ggplot2::scale_fill_gradient2(low = "red",
+                                    high = "green",
+                                    mid = "black") +
       ggplot2::xlab("Row") +
       ggplot2::ylab("Col") +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1))
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45,
+                                                         hjust = 1,
+                                                         vjust = 1))
   } else if (colors == "light") {
-    ggplot2::ggplot(reshape2::melt(M), ggplot2::aes_string(x = "Var1", y = "Var2", fill = "value")) +
+    ggplot2::ggplot(reshape2::melt(m),
+                    ggplot2::aes(x = .data$Var1,
+                                 y = .data$Var2,
+                                 fill = .data$value)) +
       ggplot2::geom_raster() +
       ggplot2::scale_fill_gradient2(low = "red", high = "blue", mid = "white") +
       ggplot2::xlab("Row") +
       ggplot2::ylab("Col") +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1))
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45,
+                                                         hjust = 1,
+                                                         vjust = 1))
   } else {
     stop("Colors must be\"light\" or \"dark\".")
   }
@@ -46,40 +60,42 @@ plotMatrix <- function(M, colors = "dark") {
 #' red -- mid = white -- high = blue) or "dark" (low = red -- mid = black --
 #' high = green)
 #' @return An \code{image} plot with a specific color palette
-#' @usage plotVAR(..., colors)
+#' @usage plot_var(..., colors)
 #'
 #' @export
-plotVAR <- function(..., colors = "dark") {
+plot_var <- function(..., colors = "dark") {
   vars <- list(...)
   l <- length(vars)
 
   for (i in 1:l) {
-    if (!checkIsVar(vars[[i]])) {
+    if (!check_is_var(vars[[i]])) {
       stop("Inputs must be var objects")
     }
   }
 
   pl <- list()
   varorder <- length(vars[[1]]$A)
-  differentVarOrder <- FALSE
+  different_var_order <- FALSE
   for (i in 1:l) {
     if (varorder != length(vars[[i]]$A)) {
-      differentVarOrder <- TRUE
+      different_var_order <- TRUE
       varorder <- min(varorder, length(vars[[i]]$A))
     }
   }
 
-  if (differentVarOrder == TRUE) {
+  if (different_var_order == TRUE) {
     warning("Different VAR orders: plotting up to the min one")
   }
 
   for (i in 1:l) {
     for (j in 1:varorder) {
-      pl[[((i - 1) * varorder) + j]] <- plotMatrix(vars[[i]]$A[[j]], colors = colors)
+      pl[[((i - 1) * varorder) + j]] <- plot_matrix(vars[[i]]$A[[j]],
+                                                    colors = colors)
     }
   }
 
-  multiplot(plotlist = pl, cols = varorder, layout = matrix(1:(l * varorder), nrow = l, byrow = TRUE))
+  multiplot(plotlist = pl, cols = varorder,
+            layout = matrix(1:(l * varorder), nrow = l, byrow = TRUE))
 }
 
 #' @title Plot VECMs
@@ -87,12 +103,13 @@ plotVAR <- function(..., colors = "dark") {
 #' @description Plot all the matrices of a VECM model
 #'
 #' @param v a VECM object (as from \code{fitVECM})
-#' @return An \code{image} plot with a specific color palette (black zero entries, red
-#' for the negative ones and green for the positive)
-#' @usage plotVECM(v)
+#' @return An \code{image} plot with a specific color palette
+#' (black zero entries, red for the negative ones and green for
+#' the positive)
+#' @usage plot_vecm(v)
 #'
 #' @export
-plotVECM <- function(v) {
+plot_vecm <- function(v) {
   if (attr(v, "class") != "vecm") {
     stop("v must be a VECM object")
   }
@@ -100,15 +117,16 @@ plotVECM <- function(v) {
   l <- length(v$G)
   pl <- list()
 
-  pl[[1]] <- plotMatrix(v$Pi)
+  pl[[1]] <- plot_matrix(v$Pi)
 
   if (l > 0) {
     for (i in 1:l) {
-      pl[[i + 1]] <- plotMatrix(v$G[[i]])
+      pl[[i + 1]] <- plot_matrix(v$G[[i]])
     }
   }
 
-  multiplot(plotlist = pl, cols = l + 1, layout = matrix(1:(l + 1), nrow = 1, byrow = TRUE))
+  multiplot(plotlist = pl, cols = l + 1,
+            layout = matrix(1:(l + 1), nrow = 1, byrow = TRUE))
 }
 
 #' @title Multiplots with ggplot
@@ -127,32 +145,32 @@ plotVECM <- function(v) {
 #' @return A ggplot containing the plots passed as arguments
 #' @export
 multiplot <- function(..., plotlist = NULL, cols = 1, layout = NULL) {
-  # library(grid)
-
   # Make a list from the ... arguments and plotlist
   plots <- c(list(...), plotlist)
 
-  numPlots <- length(plots)
+  num_plots <- length(plots)
 
   # If layout is NULL, then use 'cols' to determine layout
   if (is.null(layout)) {
     # Make the panel
     # ncol: Number of columns of plots
     # nrow: Number of rows needed, calculated from # of cols
-    layout <- matrix(seq(1, cols * ceiling(numPlots / cols)),
-      ncol = cols, nrow = ceiling(numPlots / cols)
+    layout <- matrix(seq(1, cols * ceiling(num_plots / cols)),
+      ncol = cols, nrow = ceiling(num_plots / cols)
     )
   }
 
-  if (numPlots == 1) {
+  if (num_plots == 1) {
     print(plots[[1]])
   } else {
     # Set up the page
     grid::grid.newpage()
-    grid::pushViewport(grid::viewport(layout = grid::grid.layout(nrow(layout), ncol(layout))))
+    grid::pushViewport(
+      grid::viewport(layout = grid::grid.layout(nrow(layout), ncol(layout)))
+    )
 
     # Make each plot, in the correct location
-    for (i in 1:numPlots) {
+    for (i in 1:num_plots) {
       # Get the i,j matrix positions of the regions that contain this subplot
       matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
 

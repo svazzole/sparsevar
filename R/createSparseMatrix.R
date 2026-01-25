@@ -3,7 +3,7 @@
 #' @description Creates a sparse square matrix with a given sparsity and
 #' distribution.
 #'
-#' @param N the dimension of the square matrix
+#' @param n the dimension of the square matrix
 #' @param sparsity the density of non zero elements
 #' @param method the method used to generate the entries of the matrix.
 #' Possible values are \code{"normal"} (default) or \code{"bimodal"}.
@@ -13,51 +13,58 @@
 #' default = 1)
 #' @param ... other options for the matrix (you can specify the mean
 #' \code{mu_mat} and the standard deviation \code{sd_mat}).
-#' @return An NxN sparse matrix.
+#' @return An nxn sparse matrix.
 #' @examples
-#' M <- createSparseMatrix(
-#'   N = 30, sparsity = 0.05, method = "normal",
+#' M <- create_sparse_matrix(
+#'   n = 30, sparsity = 0.05, method = "normal",
 #'   stationary = TRUE
 #' )
 #' @export
-createSparseMatrix <- function(N, sparsity, method = "normal",
-                               stationary = FALSE, p = 1, ...) {
+create_sparse_matrix <- function(
+  n,
+  sparsity,
+  method = "normal",
+  stationary = FALSE,
+  p = 1,
+  ...
+) {
   opt <- list(...)
   mu <- ifelse(!is.null(opt$mu_mat), opt$mu_mat, 0)
   sd <- ifelse(!is.null(opt$sd_mat), opt$sd_mat, 1)
-  n <- floor(sparsity * (N^2))
+  non_zero_elms <- floor(sparsity * (n^2))
 
   if (method == "normal") {
     # normal distributed nonzero entries
-    non_zero_entries <- stats::rnorm(n, mean = mu, sd = sd)
-    entries <- sample(x = 1:(N^2), size = n, replace = FALSE)
-    Atmp <- numeric(length = (N^2))
-    Atmp[entries] <- non_zero_entries
-    A <- matrix(Atmp, nrow = N, ncol = N)
+    non_zero_entries <- stats::rnorm(non_zero_elms, mean = mu, sd = sd)
+    entries <- sample(x = 1:(n^2), size = non_zero_elms, replace = FALSE)
+    a_tmp <- numeric(length = (n^2))
+    a_tmp[entries] <- non_zero_entries
+    a_mat <- matrix(a_tmp, nrow = n, ncol = n)
   } else if (method == "bimodal") {
     # bimodal (bi-normal) distributed nonzero entries
-    non_zero_entries_left <- stats::rnorm(n, mean = -mu, sd = sd)
-    non_zero_entries_right <- stats::rnorm(n, mean = mu, sd = sd)
+    non_zero_entries_left <- stats::rnorm(non_zero_elms, mean = -mu, sd = sd)
+    non_zero_entries_right <- stats::rnorm(non_zero_elms, mean = mu, sd = sd)
     non_zero_entries <- sample(
       x = c(
         non_zero_entries_left,
         non_zero_entries_right
       ),
-      size = n, replace = FALSE
+      size = non_zero_elms,
+      replace = FALSE
     )
-    entries <- sample(x = 1:(N^2), size = n, replace = FALSE)
-    Atmp <- numeric(length = (N^2))
-    Atmp[entries] <- non_zero_entries
-    A <- matrix(Atmp, nrow = N, ncol = N)
+    entries <- sample(x = 1:(n^2), size = non_zero_elms, replace = FALSE)
+    a_tmp <- numeric(length = (n^2))
+    a_tmp[entries] <- non_zero_entries
+    a_mat <- matrix(a_tmp, nrow = n, ncol = n)
   } else if (method == "full") {
     # full matrix: used only for tests
-    e <- 0.9^(1:N)
-    D <- diag(e)
-    P <- matrix(0, N, N)
-    while (det(P) == 0) {
-      P <- createSparseMatrix(N = N, sparsity = 1, method = "bimodal")
+    e <- 0.9^(1:n)
+    d <- diag(e)
+    p <- matrix(0, n, n)
+    while (det(p) == 0) {
+      p <- create_sparse_matrix(n = n, sparsity = 1, method = "bimodal")
     }
-    A <- solve(P) %*% D %*% P
+    a_mat <- solve(p) %*% d %*% p
     stationary <- FALSE
   } else {
     # invalid method
@@ -66,9 +73,8 @@ createSparseMatrix <- function(N, sparsity, method = "normal",
 
   if (stationary == TRUE) {
     # if spectral radius < 1 is needed, return the re-normalized matrix
-    K <- 1
-    return(1 / (K * base::sqrt(p * sparsity * N * sd)) * A)
-  } else {
-    return(A)
+    k <- 1
+    a_mat <- 1 / (k * base::sqrt(p * sparsity * n * sd)) * a_mat
   }
+  a_mat
 }

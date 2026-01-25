@@ -1,15 +1,15 @@
-#' @title Transorm data
+#' @title Transform data
 #'
 #' @description Transform the input data
 #'
-#' @usage transformData(data, p, opt)
+#' @usage transform_data(data, p, opt)
 #'
 #' @param data the data
 #' @param p the order of the VAR
 #' @param opt a list containing the options
 #'
 #' @export
-transformData <- function(data, p, opt) {
+transform_data <- function(data, p, opt) {
 
   # get the number of rows and columns
   nr <- nrow(data)
@@ -25,8 +25,8 @@ transformData <- function(data, p, opt) {
 
   if (center == TRUE) {
     if (opt$method == "timeSlice") {
-      leaveOut <- ifelse(is.null(opt$leaveOut), 10, opt$leaveOut)
-      m <- colMeans(data[1:(nr - leaveOut), ])
+      leave_out <- ifelse(is.null(opt$leaveOut), 10, opt$leaveOut)
+      m <- colMeans(data[1:(nr - leave_out), ])
     } else {
       m <- colMeans(data)
     }
@@ -41,33 +41,32 @@ transformData <- function(data, p, opt) {
   }
 
   # create Xs and Ys (temp variables)
-  tmpX <- data[1:(nr - 1), ]
-  tmpY <- data[2:(nr), ]
+  tmp_x <- data[1:(nr - 1), ]
+  tmp_y <- data[2:(nr), ]
 
   # create the data matrix
-  tmpX <- duplicateMatrix(tmpX, p)
-  tmpY <- tmpY[p:nrow(tmpY), ]
+  tmp_x <- duplicate_matrix(tmp_x, p)
+  tmp_y <- tmp_y[p:nrow(tmp_y), ]
 
-  y <- as.vector(tmpY)
+  y <- as.vector(tmp_y)
 
   # Hadamard product for data
-  I <- Matrix::Diagonal(nc)
-  X <- kronecker(I, tmpX)
+  i <- Matrix::Diagonal(nc)
+  x <- kronecker(i, tmp_x)
 
   output <- list()
-  output$X <- X
+  output$X <- x
   output$y <- y
   output$series <- data
   output$mu <- t(m)
-
-  return(output)
+  output
 }
 
 #' @title VAR ENET
 #'
 #' @description Estimate VAR using ENET penalty
 #'
-#' @usage varENET(data, p, lambdas, opt)
+#' @usage var_enet(data, p, lambdas, opt)
 #'
 #' @param data the data
 #' @param p the order of the VAR
@@ -75,20 +74,18 @@ transformData <- function(data, p, opt) {
 #' @param opt a list containing the options
 #'
 #' @export
-varENET <- function(data, p, lambdas, opt) {
+var_enet <- function(data, p, lambdas, opt) {
   # transform the dataset
-  trDt <- transformData(data, p, opt)
-
-  fit <- glmnet::glmnet(trDt$X, trDt$y, lambda = lambdas)
-
-  return(fit)
+  tr_dt <- transform_data(data, p, opt)
+  fit <- glmnet::glmnet(tr_dt$X, tr_dt$y, lambda = lambdas)
+  fit
 }
 
 #' @title VAR SCAD
 #'
 #' @description Estimate VAR using SCAD penalty
 #'
-#' @usage varSCAD(data, p, lambdas, opt, penalty)
+#' @usage var_scad(data, p, lambdas, opt, penalty)
 #'
 #' @param data the data
 #' @param p the order of the VAR
@@ -98,26 +95,26 @@ varENET <- function(data, p, lambdas, opt) {
 #'
 #' @export
 
-varSCAD <- function(data, p, lambdas, opt, penalty = "SCAD") {
+var_scad <- function(data, p, lambdas, opt, penalty = "SCAD") {
   # transform the dataset
-  trDt <- transformData(data, p, opt)
+  tr_dt <- transform_data(data, p, opt)
 
   if (penalty == "SCAD") {
-    fit <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y,
+    fit <- ncvreg::ncvreg(as.matrix(tr_dt$X), tr_dt$y,
       family = "gaussian", penalty = "SCAD",
       alpha = 1, lambda = lambdas
     )
   } else {
     stop("[WIP] Only SCAD regression is supported at the moment")
   }
-  return(fit)
+  fit
 }
 
 #' @title VAR MCP
 #'
 #' @description Estimate VAR using MCP penalty
 #'
-#' @usage varMCP(data, p, lambdas, opt)
+#' @usage var_mcp(data, p, lambdas, opt)
 #'
 #' @param data the data
 #' @param p the order of the VAR
@@ -125,139 +122,132 @@ varSCAD <- function(data, p, lambdas, opt, penalty = "SCAD") {
 #' @param opt a list containing the options
 #'
 #' @export
-varMCP <- function(data, p, lambdas, opt) {
+var_mcp <- function(data, p, lambdas, opt) {
   # transform the dataset
-  trDt <- transformData(data, p, opt)
-
-  fit <- ncvreg::ncvreg(as.matrix(trDt$X), trDt$y,
+  tr_dt <- transform_data(data, p, opt)
+  fit <- ncvreg::ncvreg(as.matrix(tr_dt$X), tr_dt$y,
     family = "gaussian", penalty = "MCP",
     alpha = 1, lambda = lambdas
   )
-
-  return(fit)
+  fit
 }
 
-splitMatrix <- function(M, p) {
-  nr <- nrow(M)
-  A <- list()
-
+split_matrix <- function(m, p) {
+  nr <- nrow(m)
+  a <- list()
   for (i in 1:p) {
     ix <- ((i - 1) * nr) + (1:nr)
-    A[[i]] <- M[1:nr, ix]
+    a[[i]] <- m[1:nr, ix]
   }
-
-  return(A)
+  a
 }
 
-duplicateMatrix <- function(data, p) {
+duplicate_matrix <- function(data, p) {
   nr <- nrow(data)
   nc <- ncol(data)
 
-  outputData <- data
+  output_data <- data
 
   if (p > 1) {
     for (i in 1:(p - 1)) {
-      tmpData <- matrix(0, nrow = nr, ncol = nc)
-      tmpData[(i + 1):nr, ] <- data[1:(nr - i), ]
-      outputData <- cbind(outputData, tmpData)
+      tmp_data <- matrix(0, nrow = nr, ncol = nc)
+      tmp_data[(i + 1):nr, ] <- data[1:(nr - i), ]
+      output_data <- cbind(output_data, tmp_data)
     }
   }
 
-  outputData <- outputData[p:nr, ]
-  return(outputData)
+  output_data <- output_data[p:nr, ]
+  output_data
 }
 
-computeResiduals <- function(data, A) {
+compute_residuals <- function(data, a) {
   nr <- nrow(data)
   nc <- ncol(data)
-  p <- length(A)
+  p <- length(a)
 
   res <- matrix(0, ncol = nc, nrow = nr)
   f <- matrix(0, ncol = nc, nrow = nr)
 
   for (i in 1:p) {
-    tmpD <- rbind(matrix(0, nrow = i, ncol = nc), data[1:(nrow(data) - i), ])
-    tmpF <- t(A[[i]] %*% t(tmpD))
-    f <- f + tmpF
+    tmp_d <- rbind(matrix(0, nrow = i, ncol = nc), data[1:(nrow(data) - i), ])
+    tmp_f <- t(a[[i]] %*% t(tmp_d))
+    f <- f + tmp_f
   }
 
   res <- data - f
-  return(res)
+  res
 }
 
 #' @title Companion VAR
 #'
 #' @description Build the VAR(1) representation of a VAR(p) process
 #'
-#' @usage companionVAR(v)
+#' @usage companion_var(v)
 #'
 #' @param v the VAR object as from \code{fitVAR} or \code{simulateVAR}
 #'
 #' @export
-companionVAR <- function(v) {
-  if (!checkIsVar(v)) {
-    stop("v must be a var object")
+companion_var <- function(v) {
+  if (!check_is_var(v)) {
+    stop("Expected var object, got ", class(v))
   }
-  A <- v$A
-  nc <- ncol(A[[1]])
-  p <- length(A)
+  a <- v$A
+  nc <- ncol(a[[1]])
+  p <- length(a)
   if (p > 1) {
-    bigA <- Matrix::Matrix(0, nrow = p * nc, ncol = p * nc, sparse = TRUE)
+    big_a <- Matrix::Matrix(0, nrow = p * nc, ncol = p * nc, sparse = TRUE)
     for (k in 1:p) {
       ix <- ((k - 1) * nc) + (1:nc)
-      bigA[1:nc, ix] <- A[[k]]
+      big_a[1:nc, ix] <- a[[k]]
     }
-
-    ixR <- (nc + 1):nrow(bigA)
-    ixC <- 1:((p - 1) * nc)
-    bigA[ixR, ixC] <- diag(1, nrow = length(ixC), ncol = length(ixC))
+    ix_r <- (nc + 1):nrow(big_a)
+    ix_c <- 1:((p - 1) * nc)
+    big_a[ix_r, ix_c] <- diag(1, nrow = length(ix_c), ncol = length(ix_c))
   } else {
-    bigA <- Matrix::Matrix(A[[1]], sparse = TRUE)
+    big_a <- Matrix::Matrix(a[[1]], sparse = TRUE)
   }
-
-  return(bigA)
+  big_a
 }
 
 #' @title Bootstrap VAR
 #'
 #' @description Build the bootstrapped series from the original var
 #'
-#' @usage bootstrappedVAR(v)
+#' @usage bootstrapped_var(v)
 #'
 #' @param v the VAR object as from fitVAR or simulateVAR
 #'
 #' @export
-bootstrappedVAR <- function(v) {
+bootstrapped_var <- function(v) {
 
   ## This function creates the bootstrapped time series
-  if (!checkIsVar(v)) {
-    stop("v must be a var object")
+  if (!check_is_var(v)) {
+    stop("Expected var object, got ", class(v))
   }
 
   r <- v$residuals
   s <- v$series
-  A <- v$A
-  N <- ncol(A[[1]])
-  p <- length(A)
+  a <- v$A
+  n <- ncol(a[[1]])
+  p <- length(a)
   t <- nrow(r)
-  r <- r - matrix(colMeans(r), ncol = N, nrow = t)
+  r <- r - matrix(colMeans(r), ncol = n, nrow = t)
 
-  zt <- matrix(0, nrow = t, ncol = N)
+  zt <- matrix(0, nrow = t, ncol = n)
   zt[1:p, ] <- s[1:p, ]
 
   for (t0 in (p + 1):t) {
     ix <- sample((p + 1):t, 1)
     u <- r[ix, ]
-    vv <- rep(0, N)
+    vv <- rep(0, n)
     for (i in 1:p) {
-      ph <- A[[i]]
+      ph <- a[[i]]
       vv <- vv + ph %*% zt[(t0 - i), ]
     }
     vv <- vv + u
     zt[t0, ] <- vv
   }
-
-  return(zt)
+  zt
 }
 
 #' @title Test for Ganger Causality
@@ -265,40 +255,38 @@ bootstrappedVAR <- function(v) {
 #' @description This function should retain only the coefficients of the
 #' matrices of the VAR that are statistically significative (from the bootstrap)
 #'
-#' @usage testGranger(v, eb)
+#' @usage test_granger(v, eb)
 #'
 #' @param v the VAR object as from fitVAR or simulateVAR
 #' @param eb the error bands as obtained from errorBands
 #'
 #' @export
-testGranger <- function(v, eb) {
+test_granger <- function(v, eb) {
   p <- length(v$A)
-  A <- list()
+  a <- list()
   for (i in 1:p) {
-    L <- (eb$irfQUB[, , i + 1] >= 0 & eb$irfQLB[, , i + 1] <= 0)
-    A[[i]] <- v$A[[i]] * (1 - L)
+    l <- (eb$irfQUB[, , i + 1] >= 0 & eb$irfQLB[, , i + 1] <= 0)
+    a[[i]] <- v$A[[i]] * (1 - l)
   }
-
-
-  return(A)
+  a
 }
 
 #' @title Computes information criteria for VARs
 #'
-#' @description This function computes information criterias (AIC, Schwartz and
+#' @description This function computes information criteria (AIC, Schwartz and
 #' Hannan-Quinn) for VARs.
 #'
-#' @usage informCrit(v)
+#' @usage inform_crit(v)
 #'
 #' @param v a list of VAR objects as from fitVAR.
 #'
 #' @export
-informCrit <- function(v) {
+inform_crit <- function(v) {
   if (is.list(v)) {
     k <- length(v)
     r <- matrix(0, nrow = k, ncol = 3)
     for (i in 1:k) {
-      if (attr(v[[1]], "class") == "var" | attr(v[[1]], "class") == "vecm") {
+      if (attr(v[[i]], "class") == "var" || attr(v[[i]], "class") == "vecm") {
         p <- length(v[[i]]$A)
         # Compute sparsity
         s <- 0
@@ -323,36 +311,33 @@ informCrit <- function(v) {
   } else {
     stop("Input must be a list of var models.")
   }
-
-  return(results)
+  results
 }
 
-estimateCovariance <- function(res, ...) {
+estimate_covariance <- function(res, ...) {
   nc <- ncol(res)
   s <- corpcor::cov.shrink(res, verbose = FALSE)
   sigma <- matrix(0, ncol = nc, nrow = nc)
-
   for (i in 1:nc) {
     for (j in 1:nc) {
       sigma[i, j] <- s[i, j]
     }
   }
-
-  return(sigma)
+  sigma
 }
 
 #' @title Computes forecasts for VARs
 #'
 #' @description This function computes forecasts for a given VAR.
 #'
-#' @usage computeForecasts(v, num_steps)
+#' @usage compute_forecasts(v, num_steps)
 #'
 #' @param v a VAR object as from fitVAR.
 #' @param num_steps the number of forecasts to produce.
 #'
 #' @export
-computeForecasts <- function(v, num_steps = 1) {
-  if (!checkIsVar(v)) {
+compute_forecasts <- function(v, num_steps = 1) {
+  if (!check_is_var(v)) {
     stop("You must pass a var object.")
   } else {
     mu <- v$mu
@@ -370,8 +355,8 @@ computeForecasts <- function(v, num_steps = 1) {
     f <- matrix(0, nrow = nc, ncol = num_steps)
 
     tmp_data <- matrix(data = t(data[(nr - p + 1):nr, ]),
-                      nrow = nc,
-                      ncol = num_steps)
+                       nrow = nc,
+                       ncol = num_steps)
     nr <- ncol(tmp_data)
 
     for (n in 1:num_steps) {
@@ -389,13 +374,14 @@ computeForecasts <- function(v, num_steps = 1) {
       }
     }
   }
-  f <- f + matrix(rep(mu, length(mu)), length(mu), num_steps)
-  return(f)
+  f <- f + matrix(rep(mu, num_steps), nrow = length(mu), ncol = num_steps)
+  f
 }
 
-applyThreshold <- function(a_mat, nr, nc, p, type = "soft") {
+apply_threshold <- function(a_mat, nr, nc, p, type = "soft") {
   if (type == "soft") {
-    tr <- 1 / sqrt(p * nc * log(nr))
+    tr <- 1 / (p * nc * log(nr))
+    # tr <- 1 / sqrt(p * nc * log(nr))
   } else if (type == "hard") {
     tr <- (nc) ^ (-0.49)
   } else {
@@ -403,6 +389,5 @@ applyThreshold <- function(a_mat, nr, nc, p, type = "soft") {
   }
 
   l_mat <- abs(a_mat) >= tr
-  a_mat <- a_mat * l_mat
-  return(a_mat)
+  a_mat * l_mat
 }

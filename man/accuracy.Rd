@@ -4,12 +4,12 @@
 \alias{accuracy}
 \title{Accuracy metric}
 \usage{
-accuracy(referenceM, A)
+accuracy(reference_m, a)
 }
 \arguments{
-\item{referenceM}{the matrix to use as reference}
+\item{reference_m}{the matrix to use as reference}
 
-\item{A}{the matrix obtained from a fit}
+\item{a}{the matrix obtained from a fit}
 }
 \description{
 Compute the accuracy of a fit

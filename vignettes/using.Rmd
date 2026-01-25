@@ -158,7 +158,7 @@ Here we compute the IRF for the model estimated in the Quick Start section.
 ```{r, eval = TRUE}
 irf_2 <- impulse_response(fit_2)
 eb_2 <- error_bands_irf(fit_2, irf_2, verbose = FALSE)
-plotIRFGrid(irf_2, eb_2, indexes = c(2, 3, 4, 11))
+plot_irf_grid(irf_2, eb_2, indexes = c(2, 3, 4, 11))
 ```
 
 ## Simulations' examples

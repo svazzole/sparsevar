@@ -90,7 +90,7 @@ plot_var <- function(..., colors = "dark") {
   for (i in 1:l) {
     for (j in 1:varorder) {
       pl[[((i - 1) * varorder) + j]] <- plot_matrix(vars[[i]]$A[[j]],
-                                                   colors = colors)
+                                                    colors = colors)
     }
   }
 

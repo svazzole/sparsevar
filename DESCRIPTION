@@ -16,6 +16,7 @@ Imports:
     grid,
     mvtnorm,
     corpcor,
+    checkmate
 Suggests:
     knitr,
     rmarkdown,
@@ -32,5 +33,5 @@ URL: https://github.com/svazzole/sparsevar
 BugReports: https://github.com/svazzole/sparsevar
 VignetteBuilder:
     knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.3
 Encoding: UTF-8

@@ -1,4 +1,4 @@
-#' @title Transorm data
+#' @title Transform data
 #'
 #' @description Transform the input data
 #'
@@ -188,8 +188,8 @@ compute_residuals <- function(data, a) {
 #'
 #' @export
 companion_var <- function(v) {
-  if (!checkIsVar(v)) {
-    stop("v must be a var object")
+  if (!check_is_var(v)) {
+    stop("Expected var object, got ", class(v))
   }
   a <- v$A
   nc <- ncol(a[[1]])
@@ -221,8 +221,8 @@ companion_var <- function(v) {
 bootstrapped_var <- function(v) {
 
   ## This function creates the bootstrapped time series
-  if (!checkIsVar(v)) {
-    stop("v must be a var object")
+  if (!check_is_var(v)) {
+    stop("Expected var object, got ", class(v))
   }
 
   r <- v$residuals
@@ -286,7 +286,7 @@ inform_crit <- function(v) {
     k <- length(v)
     r <- matrix(0, nrow = k, ncol = 3)
     for (i in 1:k) {
-      if (attr(v[[1]], "class") == "var" || attr(v[[1]], "class") == "vecm") {
+      if (attr(v[[i]], "class") == "var" || attr(v[[i]], "class") == "vecm") {
         p <- length(v[[i]]$A)
         # Compute sparsity
         s <- 0
@@ -337,7 +337,7 @@ estimate_covariance <- function(res, ...) {
 #'
 #' @export
 compute_forecasts <- function(v, num_steps = 1) {
-  if (!checkIsVar(v)) {
+  if (!check_is_var(v)) {
     stop("You must pass a var object.")
   } else {
     mu <- v$mu
@@ -374,13 +374,14 @@ compute_forecasts <- function(v, num_steps = 1) {
       }
     }
   }
-  f <- f + matrix(rep(mu, length(mu)), length(mu), num_steps)
+  f <- f + matrix(rep(mu, num_steps), nrow = length(mu), ncol = num_steps)
   f
 }
 
 apply_threshold <- function(a_mat, nr, nc, p, type = "soft") {
   if (type == "soft") {
-    tr <- 1 / sqrt(p * nc * log(nr))
+    tr <- 1 / (p * nc * log(nr))
+    # tr <- 1 / sqrt(p * nc * log(nr))
   } else if (type == "hard") {
     tr <- (nc) ^ (-0.49)
   } else {

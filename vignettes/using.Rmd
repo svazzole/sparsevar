@@ -15,7 +15,7 @@ vignette: >
 `sparsevar` is an R package that estimates sparse VAR and VECM model using penalized least squares methods (PLS): it is possible to use
 various penalties such as ENET, SCAD or MC+ penalties. The sparsity parameter can be estimated using cross-validation or time slicing. When using ENET it is possible to estimate VAR(1) of dimension up to 200, while when using one of the other two is better not to go beyond 50. When estimating a VAR($p$) model then the limits are roughly $200/p$ and $50/p$, respectively.
 
-The authors of `sparsevar` are Monica Billio, Lorenzo Frattarolo and Simone Vazzoler and the R package is mantained by Simone Vazzoler. This vignette describes the usage of `sparsevar` in R.
+The author of `sparsevar` is Simone Vazzoler and the R package is mantained by Simone Vazzoler. This vignette describes the usage of `sparsevar` in R.
 
 # Installation
 
@@ -41,24 +41,32 @@ library(sparsevar)
 Using a function included in the package, we simply generate a $20\times 20$ VAR$(2)$ process
 ```{r, cache = TRUE}
 set.seed(1)
-sim <- simulateVAR(N = 20, p = 2)
+sim <- simulate_var(n = 20, p = 2)
 ```
 
 and we can estimate the matrices of the process using
 ```{r, cache = TRUE}
-fit <- fitVAR(sim$series, p = 2)
+fit <- fit_var(sim$series, p = 2)
+fit_2 <- fit_var(sim$series, p = 2, threshold = TRUE)
 ```
 
+Note that we created two different estimations: the first one is the default one which 
+retains all the coefficients. The second one is when we fix the threshold to `TRUE`, setting
+all the "small" coefficients to zero. The "soft" version of the threshold is
+$$
+t = \frac{1}{\sqrt{p n_c \log{n_r}}}
+$$
+
 The results can be seen by plotting the matrices
-```{r}
-plotVAR(sim, fit)
+```{r, warning=FALSE}
+plotVAR(sim, fit, fit_2)
 ```
 
 # Description of the package's functions
 
 ## Estimation of a VAR or VECM models
 
-Use `fitVAR` for VAR model estimation or `fitVECM` for VECM estimation.
+Use `fit_var` for VAR model estimation or `fit_vecm` for VECM estimation.
 
 The common arguments for the two functions are:
 
@@ -93,7 +101,7 @@ The common arguments for the two functions are:
 
 ### Output
 
-The output of the function `fitVAR` is a S3 object of class `var` containing:
+The output of the function `fit_var` is a S3 object of class `var` containing:
 
   * `mu`: a vector for the mean;
   * `A`: a list of length `p` containing the matrices estimated for the VAR(p) model;
@@ -108,9 +116,9 @@ The output of the function `fitVAR` is a S3 object of class `var` containing:
 
 ## Simulation of VAR models
 
-Use `simulateVAR`. The parameters for the function are:
+Use `simulate_var`. The parameters for the function are:
 
-  * `N`: the dimension of the process;
+  * `n`: the dimension of the process;
   * `nobs`: the number of observations of the process;
   * `rho`: the variance/covariance "intensity";
   * `sparsity`: the percentage of non zero elements in the matrix of the VAR;
@@ -122,8 +130,8 @@ Use the functions `impulseResponse` and `errorBands` to compute the impulse resp
 function and to estimate the error bands of the model respectively.
 
 ```{r, eval=FALSE}
-irf <- impulseResponse(fit)
-eb <- errorBandsIRF(fit, irf)
+irf <- impulse_response(fit)
+eb <- error_bands_irf(fit, irf)
 ```
 
 # Examples
@@ -131,15 +139,15 @@ eb <- errorBandsIRF(fit, irf)
 ## Estimations' examples
 
 ```{r, eval=FALSE}
-results <- fitVAR(rets)
+results <- fit_var(rets)
 ```
 will estimate VAR(1) process using LASSO regression on the dataset `rets`.
 
 The command
 ```{r, eval=FALSE}
-results <- fitVAR(rets, p = 3, penalty = "ENET", parallel = TRUE,
-                  ncores = 5, alpha = 0.95, type.measure = "mae",
-                  lambda = "lambda.1se")
+results <- fit_var(rets, p = 3, penalty = "ENET", parallel = TRUE,
+                   ncores = 5, alpha = 0.95, type.measure = "mae",
+                   lambda = "lambda.1se")
 ```
 will estimate a VAR(3) model on the dataset `rets` using the penalty `"ENET"` with `alpha = 0.95` (between LASSO and Ridge). For the cross validation it will use `"mae"` (mean absolute error) instead of mean square error and it will choose as model the one correspondent to the lambda which is at 1 std deviation from the minimum. Moreover it will parallelize the cross validation over 5 cores.
 
@@ -147,14 +155,15 @@ will estimate a VAR(3) model on the dataset `rets` using the penalty `"ENET"` wi
 
 Here we compute the IRF for the model estimated in the Quick Start section.
 
-```{r, eval = FALSE}
-irf <- impulseResponse(fit)
-eb <- errorBandsIRF(fit, irf, verbose = FALSE)
-plotIRFGrid(irf, eb, indexes = c(11,20))
+```{r, eval = TRUE}
+irf_2 <- impulse_response(fit_2)
+eb_2 <- error_bands_irf(fit_2, irf_2, verbose = FALSE)
+plotIRFGrid(irf_2, eb_2, indexes = c(2, 3, 4, 11))
 ```
 
 ## Simulations' examples
 
 ```{r, eval=FALSE}
-sim <- simulateVAR(N = 100, nobs = 250, rho = 0.75, sparsity = 0.05, method = "normal")
+sim <- simulate_var(n = 100, nobs = 250, rho = 0.75,
+                    sparsity = 0.05, method = "normal")
 ```

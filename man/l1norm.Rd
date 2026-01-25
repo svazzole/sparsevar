@@ -4,11 +4,11 @@
 \alias{l1norm}
 \title{L1 matrix norm}
 \usage{
-l1norm(M)
+l1norm(m)
 }
 \arguments{
-\item{M}{the matrix (real or complex valued)}
+\item{m}{the matrix (real or complex valued)}
 }
 \description{
-Compute the L1 matrix norm of M
+Compute the L1 matrix norm of m
 }

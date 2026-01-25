@@ -4,10 +4,10 @@
 \alias{l2norm}
 \title{L2 matrix norm}
 \usage{
-l2norm(M)
+l2norm(m)
 }
 \arguments{
-\item{M}{the matrix (real or complex valued)}
+\item{m}{the matrix (real or complex valued)}
 }
 \description{
 Compute the L2 matrix norm of M

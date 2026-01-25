@@ -9,7 +9,7 @@
 #' @param data the data from the time series: variables in columns and
 #' observations in rows
 #' @param p order of the VAR model
-#' @param Xt the exogenous variables
+#' @param xt_matrix the exogenous variables
 #' @param m order of the exogenous variables
 #' @param penalty the penalty function to use. Possible values are
 #' \code{"ENET"}, \code{"SCAD"} or \code{"MCP"}
@@ -111,6 +111,3 @@ var_to_varx <- function(v, p, m, nc, nc_x) {
   }
   v
 }
-
-#' @export
-fitVARX <- fit_varx

@@ -68,12 +68,12 @@ simulate_varx <- function(n = 40, k = 10, p = 1, m = 1, nobs = 250, rho = 0.5,
 
     # Create random C matrices with a given sparsity
     for (i in 1:s) {
-      out$A3[[i]] <- create_sparse_matrix(sparsity = sparsity_a3, N = k,
+      out$A3[[i]] <- create_sparse_matrix(sparsity = sparsity_a3, n = k,
                                           method = method, stationary = TRUE,
                                           p = 1, ...)
       l <- max(Mod(eigen(out$A3[[i]])$values))
       while ((l > 1) || (l == 0)) {
-        out$A3[[i]] <- create_sparse_matrix(sparsity = sparsity_a3, N = k,
+        out$A3[[i]] <- create_sparse_matrix(sparsity = sparsity_a3, n = k,
                                             method = method, stationary = TRUE,
                                             p = 1, ...)
         l <- max(Mod(eigen(out$A3[[i]])$values))
@@ -87,12 +87,12 @@ simulate_varx <- function(n = 40, k = 10, p = 1, m = 1, nobs = 250, rho = 0.5,
 
     # Create random A matrices with a given sparsity
     for (i in 1:p) {
-      out$A1[[i]] <- create_sparse_matrix(sparsity = sparsity_a1, N = n,
+      out$A1[[i]] <- create_sparse_matrix(sparsity = sparsity_a1, n = n,
                                           method = method, stationary = TRUE,
                                           p = p, ...)
       l <- max(Mod(eigen(out$A1[[i]])$values))
       while ((l > 1) || (l == 0)) {
-        out$A1[[i]] <- create_sparse_matrix(sparsity = sparsity_a1, N = n,
+        out$A1[[i]] <- create_sparse_matrix(sparsity = sparsity_a1, n = n,
                                             method = method, stationary = TRUE,
                                             p = p, ...)
         l <- max(Mod(eigen(out$A1[[i]])$values))
@@ -107,7 +107,7 @@ simulate_varx <- function(n = 40, k = 10, p = 1, m = 1, nobs = 250, rho = 0.5,
     # Create random B matrices
     for (i in 1:m) {
       r <- max(k, n)
-      tmp <- create_sparse_matrix(sparsity = sparsity_a2, N = r,
+      tmp <- create_sparse_matrix(sparsity = sparsity_a2, n = r,
                                   method = method, stationary = TRUE,
                                   p = p, ...)
       out$A2[[i]] <- tmp[1:n, 1:k]
@@ -175,13 +175,13 @@ simulate_varx <- function(n = 40, k = 10, p = 1, m = 1, nobs = 250, rho = 0.5,
 
   # Generate the VAR process
   data <- generate_var_series(nobs = nobs, mu, ar = out$A,
-                              sigma = C, skip = 200)
+                              sigma = c, skip = 200)
 
   # Complete the output
   out$series <- data$series[, 1:(n - k)]
   out$Xt <- data$series[, (n - k + 1):n]
   out$noises <- data$noises
-  out$sigma <- C
+  out$sigma <- c
 
   out
 }
@@ -235,7 +235,7 @@ check_matrices_x <- function(a) {
     if (l > 1) {
       for (i in 1:(l - 1)) {
         if (sum(1 - (dim(a[[i]]) == dim(a[[i + 1]]))) != 0) {
-          FALSE
+          return(FALSE)
         }
       }
     }

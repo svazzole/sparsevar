@@ -3,7 +3,7 @@
 #' @description Creates a sparse square matrix with a given sparsity and
 #' distribution.
 #'
-#' @param N the dimension of the square matrix
+#' @param n the dimension of the square matrix
 #' @param sparsity the density of non zero elements
 #' @param method the method used to generate the entries of the matrix.
 #' Possible values are \code{"normal"} (default) or \code{"bimodal"}.
@@ -13,15 +13,21 @@
 #' default = 1)
 #' @param ... other options for the matrix (you can specify the mean
 #' \code{mu_mat} and the standard deviation \code{sd_mat}).
-#' @return An NxN sparse matrix.
+#' @return An nxn sparse matrix.
 #' @examples
-#' M <- createSparseMatrix(
-#'   N = 30, sparsity = 0.05, method = "normal",
+#' M <- create_sparse_matrix(
+#'   n = 30, sparsity = 0.05, method = "normal",
 #'   stationary = TRUE
 #' )
 #' @export
-create_sparse_matrix <- function(n, sparsity, method = "normal",
-                                 stationary = FALSE, p = 1, ...) {
+create_sparse_matrix <- function(
+  n,
+  sparsity,
+  method = "normal",
+  stationary = FALSE,
+  p = 1,
+  ...
+) {
   opt <- list(...)
   mu <- ifelse(!is.null(opt$mu_mat), opt$mu_mat, 0)
   sd <- ifelse(!is.null(opt$sd_mat), opt$sd_mat, 1)
@@ -43,7 +49,8 @@ create_sparse_matrix <- function(n, sparsity, method = "normal",
         non_zero_entries_left,
         non_zero_entries_right
       ),
-      size = non_zero_elms, replace = FALSE
+      size = non_zero_elms,
+      replace = FALSE
     )
     entries <- sample(x = 1:(n^2), size = non_zero_elms, replace = FALSE)
     a_tmp <- numeric(length = (n^2))
@@ -55,7 +62,7 @@ create_sparse_matrix <- function(n, sparsity, method = "normal",
     d <- diag(e)
     p <- matrix(0, n, n)
     while (det(p) == 0) {
-      p <- create_sparse_matrix(N = n, sparsity = 1, method = "bimodal")
+      p <- create_sparse_matrix(n = n, sparsity = 1, method = "bimodal")
     }
     a_mat <- solve(p) %*% d %*% p
     stationary <- FALSE

@@ -49,7 +49,7 @@ mcSimulations <- function(N, nobs = 250, nMC = 100, rho = 0.5, sparsity = 0.05,
     results$accuracy[i] <- 1 - sum(abs(L - genL)) / N^2 # accuracy    -(1 - sum(genL)/N^2)
     results$matrixNorms[i, 1] <- abs(sum(L) / N^2 - sparsity) # sparsity
     results$matrixNorms[i, 2] <- l2norm(A - genA) / l2norm(genA)
-    results$matrixNorms[i, 3] <- frobNorm(A - genA) / frobNorm(genA)
+    results$matrixNorms[i, 3] <- frob_norm(A - genA) / frob_norm(genA)
     results$matrixNorms[i, 4] <- res$mse
     results$matrixNorms[i, 5] <- spRad
     results$matrixNorms[i, 6] <- estSpRad

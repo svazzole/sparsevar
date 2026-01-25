@@ -1,29 +1,37 @@
 #' @title Multivariate VECM estimation
 #'
-#' @description A function to estimate a (possibly big) multivariate VECM time series
-#' using penalized least squares methods, such as ENET, SCAD or MC+.
+#' @description A function to estimate a (possibly big)
+#' multivariate VECM time series using penalized least squares
+#' methods, such as ENET, SCAD or MC+.
 #'
 #' @usage fitVECM(data, p, penalty, method, logScale, ...)
 #'
-#' @param data the data from the time series: variables in columns and observations in
-#' rows
+#' @param data the data from the time series: variables
+#' in columns and observations in rows
 #' @param p order of the VECM model
-#' @param penalty the penalty function to use. Possible values are \code{"ENET"},
-#' \code{"SCAD"} or \code{"MCP"}
-#' @param logScale should the function consider the \code{log} of the inputs? By default
-#' this is set to \code{TRUE}
+#' @param penalty the penalty function to use.
+#' Possible values are \code{"ENET"}, \code{"SCAD"} or \code{"MCP"}
+#' @param logScale should the function consider the
+#' \code{log} of the inputs? By default this is set to \code{TRUE}
 #' @param method \code{"cv"} or \code{"timeSlice"}
 #' @param ... options for the function (TODO: specify)
 #'
 #' @return Pi the matrix \code{Pi} for the VECM model
-#' @return G the list (of length \code{p-1}) of the estimated matrices of the process
+#' @return G the list (of length \code{p-1}) of the
+#' estimated matrices of the process
 #' @return fit the results of the penalized LS estimation
 #' @return mse the mean square error of the cross validation
 #' @return time elapsed time for the estimation
 #'
 #' @export
-fitVECM <- function(data, p = 0, penalty = "ENET", method = "cv", logScale = TRUE, ...) {
-  nr <- nrow(data)
+fit_vecm <- function(
+  data,
+  p = 0,
+  penalty = "ENET",
+  method = "cv",
+  log_scale = TRUE,
+  ...
+) {
   nc <- ncol(data)
 
   p <- p + 1
@@ -32,53 +40,53 @@ fitVECM <- function(data, p = 0, penalty = "ENET", method = "cv", logScale = TRU
   opt$center <- FALSE
 
   # by default log-scale the data
-  if (logScale == TRUE) {
+  if (log_scale == TRUE) {
     data <- log(data)
     data[is.na(data)] <- 0
-    # data[is.infinite(data)] <- 0
   }
 
-  resultsVAR <- fit_var(data, p = p, penalty = penalty, method = method, ...)
-  M <- resultsVAR$A
-  I <- diag(x = 1, nrow = nc, ncol = nc)
+  results_var <- fit_var(data, p = p, penalty = penalty, method = method, ...)
+  m <- results_var$A
+  i <- diag(x = 1, nrow = nc, ncol = nc)
 
   # Coint matrix
-  Pi <- -(I - matrixSum(M, ix = 1))
+  pi_mat <- -(i - matrixSum(m, ix = 1))
 
   # Gamma matrices
-  G <- list()
+  g <- list()
 
   if (p > 1) {
     for (k in 1:(p - 1)) {
-      G[[k]] <- -matrixSum(M, ix = k + 1)
+      g[[k]] <- -matrixSum(m, ix = k + 1)
     }
   }
 
   output <- list()
-  output$mu <- resultsVAR$mu
-  output$Pi <- Pi
-  output$G <- G
-  output$A <- resultsVAR$A
-  output$fit <- resultsVAR$fit
-  output$mse <- resultsVAR$mse
-  output$mseSD <- resultsVAR$mseSD
-  output$time <- resultsVAR$time
-  output$residuals <- resultsVAR$residuals
-  output$lambda <- resultsVAR$lambda
-  output$series <- resultsVAR$series
+  output$mu <- results_var$mu
+  output$Pi <- pi_mat
+  output$G <- g
+  output$A <- results_var$A
+  output$fit <- results_var$fit
+  output$mse <- results_var$mse
+  output$mseSD <- results_var$mseSD
+  output$time <- results_var$time
+  output$residuals <- results_var$residuals
+  output$lambda <- results_var$lambda
+  output$series <- results_var$series
 
   if (is.null(opt$methodCov)) {
     output$sigma <- estimate_covariance(output$residuals)
   } else {
-    output$sigma <- estimate_covariance(output$residuals, methodCovariance = opt$methodCov)
+    output$sigma <- estimate_covariance(output$residuals,
+                                        methodCovariance = opt$methodCov)
   }
 
-  output$penalty <- resultsVAR$penalty
-  output$method <- resultsVAR$method
+  output$penalty <- results_var$penalty
+  output$method <- results_var$method
   attr(output, "class") <- "vecm"
   attr(output, "type") <- "fit"
 
-  return(output)
+  output
 }
 
 matrixSum <- function(M, ix = 1) {

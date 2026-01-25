@@ -3,7 +3,7 @@
 #' @description This function generates a simulated multivariate VAR time
 #' series.
 #'
-#' @usage simulateVAR(N, p, nobs, rho, sparsity, mu, method, covariance, ...)
+#' @usage simulate_var(N, p, nobs, rho, sparsity, mu, method, covariance, ...)
 #'
 #' @param N dimension of the time series.
 #' @param p number of lags of the VAR model.
@@ -32,16 +32,25 @@ simulate_var <- function(n = 100, p = 1, nobs = 250,
                          mu = 0, method = "normal",
                          covariance = "Toeplitz", ...) {
   opt <- list(...)
-  fixed_mat <- opt$fixedMat
-  snr <- opt$SNR
+
+  checkmate::assert_count(n, positive = TRUE)
+  checkmate::assert_count(p, positive = TRUE)
+  checkmate::assert_count(nobs, positive = TRUE)
+
+  checkmate::assert_number(sparsity, lower = 0)
+
+  checkmate::assert_choice(method, c("normal", "bimodal"))
+  checkmate::assert_choice(covariance,
+                           c("Toeplitz", "Wishart",
+                             "block1", "block2", "diagonal"))
 
   # Create a var object to save the matrices (the output)
   out <- list()
   attr(out, "class") <- "var"
   attr(out, "type") <- "simulation"
-
   out$A <- list()
 
+  fixed_mat <- opt$fixedMat
   if (!is.null(fixed_mat)) {
     # The user passed a list of matrices
     out$A <- fixed_mat
@@ -54,7 +63,7 @@ simulate_var <- function(n = 100, p = 1, nobs = 250,
     }
   } else {
     stable <- FALSE
-    while (stable == FALSE) {
+    while (!stable) {
       for (i in 1:p) {
         out$A[[i]] <- create_sparse_matrix(sparsity = sparsity, n = n,
                                            method = method, stationary = TRUE,
@@ -97,33 +106,28 @@ simulate_var <- function(n = 100, p = 1, nobs = 250,
     s <- Matrix::toeplitz(r)
     c <- stats::rWishart(1, 2 * n, s)
     c <- as.matrix(c[, , 1])
-  } else if (covariance == "diagonal") {
-    c <- diag(x = rho, nrow = n, ncol = n)
   } else {
-    stop("Unknown covariance matrix type. Possible choices are:
-          toeplitz, block1, block2 or diagonal")
+    c <- diag(x = rho, nrow = n, ncol = n)
   }
 
   # Adjust Signal to Noise Ratio
+  snr <- opt$SNR
   if (!is.null(snr)) {
-    if (snr == 0) {
+    if (snr <= 0) {
       stop("Signal to Noise Ratio must be greater than 0.")
     }
-    s <- max(abs(c_var)) / opt$SNR
+    s <- max(abs(c_var)) / snr
     c <- diag(s, n, n) %*% c %*% diag(s, n, n)
   }
 
-  # Matrix for MA part
-  # theta <- matrix(0, n, n)
-
   # Generate the VAR process
-  data <- generate_var_series(nobs = nobs, mu, AR = out$A,
-                              sigma = C, skip = 200)
+  data <- generate_var_series(nobs = nobs, mu = mu, ar = out$A,
+                              sigma = c, skip = 200)
 
   # Complete the output
   out$series <- data$series
   out$noises <- data$noises
-  out$sigma <- C
+  out$sigma <- c
 
   out
 }
@@ -169,16 +173,13 @@ generate_var_series <- function(nobs, mu, ar, sigma, skip = 200) {
 
 check_matrices <- function(a) {
 
-  # This function check if all the matrices passed have the same dimensions
-  if (!is.list(a)) {
-    stop("The matrices must be passed in a list")
-  } else {
-    l <- length(a)
-    if (l > 1) {
-      for (i in 1:(l - 1)) {
-        if (sum(1 - (dim(a[[i]]) == dim(a[[i + 1]]))) != 0) {
-          FALSE
-        }
+  checkmate::assert_list(a)
+
+  l <- length(a)
+  if (l > 1) {
+    for (i in 1:(l - 1)) {
+      if (sum(1 - (dim(a[[i]]) == dim(a[[i + 1]]))) != 0) {
+        return(FALSE)
       }
     }
   }

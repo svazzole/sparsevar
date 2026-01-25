@@ -9,7 +9,7 @@ b <- rep(1, 100)
 crossprod(A,b)
 
 ## Test2 -----------------------------------------------------------------------
-sim <- simulateVAR(N = 100)
+sim <- simulate_var(N = 100)
 
 trDt <- transformData(sim$series, 1, list())
 

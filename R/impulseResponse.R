@@ -14,13 +14,13 @@
 impulse_response <- function(v, len = 20) {
 
   # Check if v is a VAR object
-  if (!checkIsVar(v)) {
+  if (!check_is_var(v)) {
     stop("Input v must be a VAR object")
   }
 
   # Numerical problems in the estimated variance covariance
   e <- eigen(v$sigma)$values
-  if (!is.null(e[e <= 0])) {
+  if (any(e <= 0)) {
     p <- t(chol(v$sigma, pivot = TRUE))
   } else {
     p <- t(chol(v$sigma))
@@ -127,16 +127,17 @@ error_bands_irf <- function(v, irf, alpha = 0.01, m = 100,
           a <- matrix(a_vector, nrow = nc, ncol = nc * p, byrow = TRUE)
         }
 
-        if (threshold == TRUE) {
+        if (threshold) {
           apply_threshold(a, nr, nc, p, type = threshold_type)
         }
 
-        m <- cbind(diag(x = 1, nrow = (nc * (p - 1)), ncol = (nc * (p - 1))),
-                   matrix(0, nrow = (nc * (p - 1)), ncol = nc))
-        big_a <- rbind(a, m)
+        m_mat <- cbind(diag(x = 1, nrow = (nc * (p - 1)),
+                            ncol = (nc * (p - 1))),
+                       matrix(0, nrow = (nc * (p - 1)), ncol = nc))
+        big_a <- rbind(a, m_mat)
       } else {
         # fit ENET on a series of lambdas
-        if (threshold == TRUE) {
+        if (threshold) {
           fit <- fit_var(o, p, penalty = v$penalty,
                          method = v$method, threshold = TRUE)
         } else {
@@ -281,8 +282,8 @@ jackknife <- function(v, irf, mode = "fast", alpha, ...) {
         a <- matrix(a_vector, nrow = nc, ncol = nc * p, byrow = TRUE)
       }
 
-      if (threshold == TRUE) {
-        apply_threshold(a, nr, nc, p, type = threshold_type)
+      if (threshold) {
+        a <- apply_threshold(a, nr, nc, p, type = threshold_type)
       }
 
       m <- cbind(diag(x = 1, nrow = (nc * (p - 1)), ncol = (nc * (p - 1))),
@@ -290,7 +291,7 @@ jackknife <- function(v, irf, mode = "fast", alpha, ...) {
       big_a <- rbind(a, m)
     } else {
       # fit ENET on a series of lambdas
-      if (threshold == TRUE) {
+      if (threshold) {
         fit <- fit_var(data, p, penalty = v$penalty,
                        method = v$method, threshold = TRUE)
       } else {

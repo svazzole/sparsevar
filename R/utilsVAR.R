@@ -381,7 +381,7 @@ compute_forecasts <- function(v, num_steps = 1) {
 apply_threshold <- function(a_mat, nr, nc, p, type = "soft") {
   if (type == "soft") {
     tr <- 1 / (p * nc * log(nr))
-    # tr <- 1 / sqrt(p * nc * log(nr))
+    # another threshold: tr <- 1 / sqrt(p * nc * log(nr))
   } else if (type == "hard") {
     tr <- (nc) ^ (-0.49)
   } else {

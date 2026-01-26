@@ -56,17 +56,13 @@ jobs:
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
-      - name: Update pak
+      - name: Install dependencies
         run: |
-          install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/devel/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))
+          install.packages(c("remotes", "rcmdcheck"))
+          remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
-      - uses: r-hub/actions/setup-deps@v1
-        with:
-          token: ${{ secrets.RHUB_TOKEN }}
-          job-config: ${{ matrix.config.job-config }}
         env:
-          NOT_CRAN: true
-          R_PKG_CACHE_DIR: /tmp/pkg-cache-${{ github.run_id }}
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       - uses: r-hub/actions/run-check@v1
         with:
           token: ${{ secrets.RHUB_TOKEN }}
@@ -92,17 +88,13 @@ jobs:
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
-      - name: Update pak
+      - name: Install dependencies
         run: |
-          install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/devel/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))
+          install.packages(c("remotes", "rcmdcheck"))
+          remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
-      - uses: r-hub/actions/setup-deps@v1
-        with:
-          job-config: ${{ matrix.config.job-config }}
-          token: ${{ secrets.RHUB_TOKEN }}
         env:
-          NOT_CRAN: true
-          R_PKG_CACHE_DIR: /tmp/pkg-cache-${{ github.run_id }}
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       - uses: r-hub/actions/run-check@v1
         with:
           job-config: ${{ matrix.config.job-config }}

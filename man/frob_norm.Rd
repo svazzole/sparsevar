@@ -4,7 +4,7 @@
 \alias{frob_norm}
 \title{Frobenius norm of a matrix}
 \usage{
-frob_norm(M)
+frob_norm(m)
 }
 \arguments{
 \item{m}{the matrix (real or complex valued)}

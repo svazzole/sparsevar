@@ -4,7 +4,8 @@
 #' multivariate VARX time series using penalized least squares methods,
 #' such as ENET, SCAD or MC+.
 #'
-#' @usage fit_varx(data, p = 1, Xt, m = 1, penalty = "ENET", method = "cv", ...)
+#' @usage fit_varx(data, p = 1, xt_matrix, m = 1,
+#' penalty = "ENET", method = "cv", ...)
 #'
 #' @param data the data from the time series: variables in columns and
 #' observations in rows

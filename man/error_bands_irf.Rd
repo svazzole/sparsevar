@@ -4,7 +4,7 @@
 \alias{error_bands_irf}
 \title{Error bands for IRF}
 \usage{
-error_bands_irf(v, irf, alpha, M, resampling, ...)
+error_bands_irf(v, irf, alpha, m, resampling, ...)
 }
 \arguments{
 \item{v}{a var object as from fitVAR or simulateVAR}
@@ -13,14 +13,14 @@ error_bands_irf(v, irf, alpha, M, resampling, ...)
 
 \item{alpha}{level of confidence (default \code{alpha = 0.01})}
 
+\item{m}{number of bootstrapped series (default \code{m = 100})}
+
 \item{resampling}{type of resampling: \code{"bootstrap"} or
 \code{"jackknife"}}
 
 \item{...}{some options for the estimation: \code{verbose = TRUE}
 or \code{FALSE}, \code{mode = "fast"} or \code{"slow"},
 \code{threshold = TRUE} or \code{FALSE}.}
-
-\item{M}{number of bootstrapped series (default \code{M = 100})}
 }
 \value{
 a matrix containing the indices of the impulse response function that

@@ -17,6 +17,8 @@ LICENSE.md
 ^doc$
 ^Meta$
 ^CRAN-RELEASE$
+scripts/
+script_outputs/
 .env
 .claude/*
-Improv*.md
+Improvements_and_bugs.md

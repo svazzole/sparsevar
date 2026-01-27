@@ -38,7 +38,7 @@ impulse_response <- function(v, len = 20) {
 #' @description A function to find which entries of the impulse
 #' response function are zero.
 #'
-#' @usage checkImpulseZero(irf)
+#' @usage check_impulse_zero(irf)
 #'
 #' @param irf irf output from impulseResponse function
 #'
@@ -63,12 +63,12 @@ check_impulse_zero <- function(irf) {
 #' @description A function to estimate the confidence intervals for
 #' irf and oirf.
 #'
-#' @usage error_bands_irf(v, irf, alpha, M, resampling, ...)
+#' @usage error_bands_irf(v, irf, alpha, m, resampling, ...)
 #'
 #' @param v a var object as from fitVAR or simulateVAR
 #' @param irf irf output from impulseResponse function
 #' @param alpha level of confidence (default \code{alpha = 0.01})
-#' @param M number of bootstrapped series (default \code{M = 100})
+#' @param m number of bootstrapped series (default \code{m = 100})
 #' @param resampling type of resampling: \code{"bootstrap"} or
 #' \code{"jackknife"}
 #' @param ... some options for the estimation: \code{verbose = TRUE}

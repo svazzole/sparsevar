@@ -4,7 +4,8 @@
 \alias{fit_varx}
 \title{Multivariate VARX estimation}
 \usage{
-fit_varx(data, p = 1, Xt, m = 1, penalty = "ENET", method = "cv", ...)
+fit_varx(data, p = 1, xt_matrix, m = 1,
+penalty = "ENET", method = "cv", ...)
 }
 \arguments{
 \item{data}{the data from the time series: variables in columns and

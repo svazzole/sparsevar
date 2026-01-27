@@ -72,7 +72,6 @@ fit_var <- function(data, p = 1, penalty = "ENET", method = "cv", ...) {
   out
 }
 
-#' @export
 cv_var <- function(data, p, penalty = "ENET", opt = NULL) {
   nc <- ncol(data)
   nr <- nrow(data)

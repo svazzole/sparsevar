@@ -4,7 +4,7 @@
 \alias{fit_vecm}
 \title{Multivariate VECM estimation}
 \usage{
-fit_vecm(data, p, penalty, method, logScale, ...)
+fit_vecm(data, p, penalty, method, log_scale, ...)
 }
 \arguments{
 \item{data}{the data from the time series: variables
@@ -17,10 +17,10 @@ Possible values are \code{"ENET"}, \code{"SCAD"} or \code{"MCP"}}
 
 \item{method}{\code{"cv"} or \code{"timeSlice"}}
 
-\item{...}{options for the function (TODO: specify)}
-
-\item{logScale}{should the function consider the
+\item{log_scale}{should the function consider the
 \code{log} of the inputs? By default this is set to \code{TRUE}}
+
+\item{...}{options for the function (TODO: specify)}
 }
 \value{
 Pi the matrix \code{Pi} for the VECM model

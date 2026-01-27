@@ -3,7 +3,7 @@ title: "Using sparsevar package"
 author: ""
 date: "`r Sys.Date()`"
 output:
-  rmarkdown::pdf_document
+  rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Using sparsevar}
   %\VignetteEngine{knitr::rmarkdown}

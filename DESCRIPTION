@@ -1,5 +1,5 @@
 Package: sparsevar
-Version: 0.1.0
+Version: 1.0.0
 Date: 2021-04-16
 Title: Sparse VAR/VECM Models Estimation
 Authors@R: c(person("Simone", "Vazzoler", role = c("aut", "cre"),
@@ -23,7 +23,7 @@ Suggests:
     rmarkdown,
     testthat,
 Depends:
-    R (>= 3.5.0)
+    R (>= 4.5.0)
 Description: A wrapper for sparse VAR/VECM time series models estimation
              using penalties like ENET (Elastic Net), SCAD (Smoothly Clipped 
              Absolute Deviation) and MCP (Minimax Concave Penalty). 

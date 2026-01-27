@@ -1,0 +1,9 @@
+bibentry(
+  key = "sparsevar",
+  bibtype = "Manual",
+  title = "Sparse VAR/VECM Models Estimation",
+  author = c(person("Simone", "Vazzoler")),
+  note  = "R package version 1.0.0",
+  year = "2022",
+  url = "https://github.com/svazzole/sparsevar"
+)

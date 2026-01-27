@@ -1,7 +1,7 @@
 ## Test environments
-* local Xubuntu install, R 4.0.2
-* Ubuntu 16.04.6 LTS (on travis-ci), R 4.0.2 (2020-06-22)
-* win-builder (devel and release)
+* ubuntu-latest, R 4.5.2
+* macos-latest,, R 4.5.2
+* windows-latest, R 4.5.2
 
 ## R CMD check results
 There were no ERRORs, no WARNINGs and no NOTEs.

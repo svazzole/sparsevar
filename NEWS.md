@@ -1,9 +1,14 @@
+# sparsevar 1.0.0
+
+- Linted code: snake case for functions and variables
+- Removed optional picasso dependency; SCAD estimation uses ncvreg only
+- Minor bug fixing
+
 # sparsevar 0.1.0
 
 - Fix bug in plotIRF
 - Linted code
 - Fixed knitr/markdown/rmarkdown problems as in https://github.com/yihui/knitr/issues/1864
-- Removed optional picasso dependency; SCAD estimation uses ncvreg only
 
 # sparsevar 0.0.11
 

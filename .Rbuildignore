@@ -22,3 +22,4 @@ script_outputs/
 .env
 .claude/*
 Improvements_and_bugs.md
+^revdep$

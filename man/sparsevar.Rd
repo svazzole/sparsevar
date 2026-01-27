@@ -24,7 +24,7 @@ least squares methods such as LASSO, SCAD and MCP.
 Useful links:
 \itemize{
   \item \url{https://github.com/svazzole/sparsevar}
-  \item Report bugs at \url{https://github.com/svazzole/sparsevar}
+  \item Report bugs at \url{https://github.com/svazzole/sparsevar/issues}
 }
 
 }

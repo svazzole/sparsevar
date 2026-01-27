@@ -4,32 +4,35 @@
 \alias{simulate_var}
 \title{VAR simulation}
 \usage{
-simulate_var(N, p, nobs, rho, sparsity, mu, method, covariance, ...)
+simulate_var(n, p, nobs, rho, sparsity, mu, method, covariance, ...)
 }
 \arguments{
-\item{p}{number of lags of the VAR model.}
+\item{n}{dimension of the time series (default \code{n = 100}).}
 
-\item{nobs}{number of observations to be generated.}
+\item{p}{number of lags of the VAR model (default \code{p = 1}).}
 
-\item{rho}{base value for the covariance matrix.}
+\item{nobs}{number of observations to be generated (default
+\code{nobs = 250}).}
+
+\item{rho}{base value for the covariance matrix (default \code{rho = 0.5}).}
 
 \item{sparsity}{density (in percentage) of the number of nonzero elements
-of the VAR matrices.}
+of the VAR matrices (default \code{sparsity = 0.05}).}
 
-\item{mu}{a vector containing the mean of the simulated process.}
+\item{mu}{a vector containing the mean of the simulated process (default
+\code{mu = 0}).}
 
 \item{method}{which method to use to generate the VAR matrix. Possible values
-are \code{"normal"} or \code{"bimodal"}.}
+are \code{"normal"} or \code{"bimodal"} ((default \code{method = "normal"})).}
 
 \item{covariance}{type of covariance matrix to use in the simulation.
-Possible values: \code{"toeplitz"}, \code{"block1"}, \code{"block2"}
-or simply \code{"diagonal"}.}
+Possible values: \code{"Toeplitz"}, \code{"block1"}, \code{"block2"},
+\code{"Wishart"} or simply \code{"diagonal"}
+(default \code{covariance = "Toeplitz"}).}
 
 \item{...}{the options for the simulation. These are:
 \code{muMat}: the mean of the entries of the VAR matrices;
 \code{sdMat}: the sd of the entries of the matrices;}
-
-\item{N}{dimension of the time series.}
 }
 \value{
 A a list of NxN matrices ordered by lag

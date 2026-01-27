@@ -4,14 +4,14 @@
 #' multivariate VECM time series using penalized least squares
 #' methods, such as ENET, SCAD or MC+.
 #'
-#' @usage fit_vecm(data, p, penalty, method, logScale, ...)
+#' @usage fit_vecm(data, p, penalty, method, log_scale, ...)
 #'
 #' @param data the data from the time series: variables
 #' in columns and observations in rows
 #' @param p order of the VECM model
 #' @param penalty the penalty function to use.
 #' Possible values are \code{"ENET"}, \code{"SCAD"} or \code{"MCP"}
-#' @param logScale should the function consider the
+#' @param log_scale should the function consider the
 #' \code{log} of the inputs? By default this is set to \code{TRUE}
 #' @param method \code{"cv"} or \code{"timeSlice"}
 #' @param ... options for the function (TODO: specify)

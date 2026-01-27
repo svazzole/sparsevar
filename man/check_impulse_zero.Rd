@@ -4,7 +4,7 @@
 \alias{check_impulse_zero}
 \title{Check Impulse Zero}
 \usage{
-checkImpulseZero(irf)
+check_impulse_zero(irf)
 }
 \arguments{
 \item{irf}{irf output from impulseResponse function}

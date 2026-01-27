@@ -45,7 +45,7 @@ max_norm <- function(m) {
 #' @title Frobenius norm of a matrix
 #'
 #' @description Compute the Frobenius norm of m
-#' @usage frob_norm(M)
+#' @usage frob_norm(m)
 #' @param m the matrix (real or complex valued)
 #'
 #' @export

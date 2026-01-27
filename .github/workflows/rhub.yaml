@@ -33,6 +33,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Remove renv for CI
+        shell: bash
         run: |
           rm -f renv.lock
           rm -rf renv

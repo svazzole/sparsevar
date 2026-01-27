@@ -71,8 +71,8 @@ Use `fit_var` for VAR model estimation or `fit_vecm` for VECM estimation.
 The common arguments for the two functions are:
 
   * `data`: a matrix containing the multivariate time series (variables in columns, observations in rows);
-  * `p`: the order of the VAR model to be estimated; default `p = 1` for `fitVAR` and `p=2`
-    for `fitVECM`.
+  * `p`: the order of the VAR model to be estimated; default `p = 1` for `fit_var` and `p=2`
+    for `fit_vecm`.
   * `method`: the method used to estimate the sparsity parameter. Default is `method = "cv"`
   (cross-validation). Another possibility is `method = "timeSlice"`.
   * `penalty`: the penalty used in least squares. Possible values are: `"ENET"`, `"SCAD"` or `"MCP"`;

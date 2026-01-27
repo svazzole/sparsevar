@@ -7,7 +7,7 @@
 plot_vecm(v)
 }
 \arguments{
-\item{v}{a VECM object (as from \code{fitVECM})}
+\item{v}{a VECM object (as from \code{fit_vecm})}
 }
 \value{
 An \code{image} plot with a specific color palette

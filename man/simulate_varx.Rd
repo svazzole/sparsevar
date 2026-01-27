@@ -4,13 +4,8 @@
 \alias{simulate_varx}
 \title{VARX simulation}
 \usage{
-<<<<<<< HEAD:man/simulateVARX.Rd
-simulateVARX(N, K, p, m, nobs, rho,
-                    sparsityA1, sparsityA2, sparsityA3,
-=======
 simulate_varx(n, k, p, m, nobs, rho,
                     sparsity_a1, sparsity_a2, sparsity_a3,
->>>>>>> fix/code_refactoring:man/simulate_varx.Rd
                     mu, method, covariance, ...)
 }
 \arguments{
@@ -26,15 +21,6 @@ simulate_varx(n, k, p, m, nobs, rho,
 
 \item{rho}{base value for the covariance matrix.}
 
-<<<<<<< HEAD:man/simulateVARX.Rd
-\item{sparsityA1}{density (in percentage) of the number of nonzero elements
-of the A1 block.}
-
-\item{sparsityA2}{density (in percentage) of the number of nonzero elements
-of the A2 block.}
-
-\item{sparsityA3}{density (in percentage) of the number of nonzero elements
-=======
 \item{sparsity_a1}{density (in percentage) of the number of nonzero elements
 of the A1 block.}
 
@@ -42,7 +28,6 @@ of the A1 block.}
 of the A2 block.}
 
 \item{sparsity_a3}{density (in percentage) of the number of nonzero elements
->>>>>>> fix/code_refactoring:man/simulate_varx.Rd
 of the A3 block.}
 
 \item{mu}{a vector containing the mean of the simulated process.}

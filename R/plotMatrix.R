@@ -102,7 +102,7 @@ plot_var <- function(..., colors = "dark") {
 #'
 #' @description Plot all the matrices of a VECM model
 #'
-#' @param v a VECM object (as from \code{fitVECM})
+#' @param v a VECM object (as from \code{fit_vecm})
 #' @return An \code{image} plot with a specific color palette
 #' (black zero entries, red for the negative ones and green for
 #' the positive)

@@ -9,6 +9,9 @@ l_infty_norm(m)
 \arguments{
 \item{m}{the matrix (real or complex valued)}
 }
+\value{
+A numeric value representing the L-infinity matrix norm (maximum absolute row sum).
+}
 \description{
 Compute the L-infinity matrix norm of m
 }

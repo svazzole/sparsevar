@@ -9,6 +9,9 @@ frob_norm(m)
 \arguments{
 \item{m}{the matrix (real or complex valued)}
 }
+\value{
+A numeric value representing the Frobenius norm of the matrix.
+}
 \description{
 Compute the Frobenius norm of m
 }

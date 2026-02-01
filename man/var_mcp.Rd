@@ -15,6 +15,9 @@ var_mcp(data, p, lambdas, opt)
 
 \item{opt}{a list containing the options}
 }
+\value{
+An \code{ncvreg} object containing the fitted model.
+}
 \description{
 Estimate VAR using MCP penalty
 }

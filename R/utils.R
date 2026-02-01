@@ -4,6 +4,7 @@
 #' @usage l2norm(m)
 #' @param m the matrix (real or complex valued)
 #'
+#' @return A numeric value representing the L2 matrix norm.
 #' @export
 l2norm <- function(m) {
   sqrt(spectral_radius(t(m) %*% m))
@@ -15,6 +16,7 @@ l2norm <- function(m) {
 #' @usage l1norm(m)
 #' @param m the matrix (real or complex valued)
 #'
+#' @return A numeric value representing the L1 matrix norm (maximum absolute column sum).
 #' @export
 l1norm <- function(m) {
   max(colSums(Mod(m)))
@@ -26,6 +28,7 @@ l1norm <- function(m) {
 #' @usage l_infty_norm(m)
 #' @param m the matrix (real or complex valued)
 #'
+#' @return A numeric value representing the L-infinity matrix norm (maximum absolute row sum).
 #' @export
 l_infty_norm <- function(m) {
   max(rowSums(Mod(m)))
@@ -37,6 +40,7 @@ l_infty_norm <- function(m) {
 #' @usage max_norm(m)
 #' @param m the matrix (real or complex valued)
 #'
+#' @return A numeric value representing the maximum absolute entry of the matrix.
 #' @export
 max_norm <- function(m) {
   max(abs(m))
@@ -48,6 +52,7 @@ max_norm <- function(m) {
 #' @usage frob_norm(m)
 #' @param m the matrix (real or complex valued)
 #'
+#' @return A numeric value representing the Frobenius norm of the matrix.
 #' @export
 frob_norm <- function(m) {
   a <- (t(m) %*% m)
@@ -61,6 +66,7 @@ frob_norm <- function(m) {
 #' @usage spectral_radius(m)
 #' @param m the matrix (real or complex valued)
 #'
+#' @return A numeric value representing the spectral radius (largest absolute eigenvalue).
 #' @export
 spectral_radius <- function(m) {
   e <- eigen(m)
@@ -74,6 +80,7 @@ spectral_radius <- function(m) {
 #' @usage spectral_norm(m)
 #' @param m the matrix (real or complex valued)
 #'
+#' @return A numeric value representing the spectral norm (largest singular value).
 #' @export
 spectral_norm <- function(m) {
   sqrt(spectral_radius(t(m) %*% m))
@@ -87,6 +94,8 @@ spectral_norm <- function(m) {
 #'
 #' @usage accuracy(reference_m, a)
 #'
+#' @return A numeric value between 0 and 1 representing the accuracy of the fit,
+#'   computed as the proportion of correctly identified zero/non-zero entries.
 #' @export
 accuracy <- function(reference_m, a) {
   n <- ncol(a)
@@ -159,6 +168,8 @@ true_positive_rate <- function(reference_m, a) {
 #'
 #' @usage check_is_var(v)
 #'
+#' @return A logical value: \code{TRUE} if the input is a var or varx object,
+#'   \code{FALSE} otherwise.
 #' @export
 check_is_var <- function(v) {
   if (!is.null(attr(v, "class"))) {

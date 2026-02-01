@@ -9,6 +9,9 @@ spectral_radius(m)
 \arguments{
 \item{m}{the matrix (real or complex valued)}
 }
+\value{
+A numeric value representing the spectral radius (largest absolute eigenvalue).
+}
 \description{
 Compute the spectral radius of m
 }

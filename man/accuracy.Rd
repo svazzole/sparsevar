@@ -11,6 +11,10 @@ accuracy(reference_m, a)
 
 \item{a}{the matrix obtained from a fit}
 }
+\value{
+A numeric value between 0 and 1 representing the accuracy of the fit,
+  computed as the proportion of correctly identified zero/non-zero entries.
+}
 \description{
 Compute the accuracy of a fit
 }

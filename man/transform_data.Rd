@@ -13,6 +13,15 @@ transform_data(data, p, opt)
 
 \item{opt}{a list containing the options}
 }
+\value{
+A list containing:
+\itemize{
+  \item \code{X}: the design matrix for the VAR estimation
+  \item \code{y}: the response vector
+  \item \code{series}: the (possibly centered/scaled) data matrix
+  \item \code{mu}: the column means used for centering
+}
+}
 \description{
 Transform the input data
 }

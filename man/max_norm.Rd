@@ -9,6 +9,9 @@ max_norm(m)
 \arguments{
 \item{m}{the matrix (real or complex valued)}
 }
+\value{
+A numeric value representing the maximum absolute entry of the matrix.
+}
 \description{
 Compute the max-norm of m
 }

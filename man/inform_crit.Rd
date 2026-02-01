@@ -9,6 +9,11 @@ inform_crit(v)
 \arguments{
 \item{v}{a list of VAR objects as from fitVAR.}
 }
+\value{
+A data frame with columns \code{AIC}, \code{BIC}, and
+  \code{HannanQuinn} containing the information criteria values for each
+  VAR model in the input list.
+}
 \description{
 This function computes information criteria (AIC, Schwartz and
 Hannan-Quinn) for VARs.

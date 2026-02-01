@@ -9,6 +9,10 @@ bootstrapped_var(v)
 \arguments{
 \item{v}{the VAR object as from fitVAR or simulateVAR}
 }
+\value{
+A matrix containing the bootstrapped time series with the same
+  dimensions as the original series.
+}
 \description{
 Build the bootstrapped series from the original var
 }

@@ -15,6 +15,9 @@ var_enet(data, p, lambdas, opt)
 
 \item{opt}{a list containing the options}
 }
+\value{
+A \code{glmnet} object containing the fitted model.
+}
 \description{
 Estimate VAR using ENET penalty
 }

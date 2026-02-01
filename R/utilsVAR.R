@@ -8,6 +8,13 @@
 #' @param p the order of the VAR
 #' @param opt a list containing the options
 #'
+#' @return A list containing:
+#' \itemize{
+#'   \item \code{X}: the design matrix for the VAR estimation
+#'   \item \code{y}: the response vector
+#'   \item \code{series}: the (possibly centered/scaled) data matrix
+#'   \item \code{mu}: the column means used for centering
+#' }
 #' @export
 transform_data <- function(data, p, opt) {
 
@@ -73,6 +80,7 @@ transform_data <- function(data, p, opt) {
 #' @param lambdas a vector containing the lambdas to be used in the fit
 #' @param opt a list containing the options
 #'
+#' @return A \code{glmnet} object containing the fitted model.
 #' @export
 var_enet <- function(data, p, lambdas, opt) {
   # transform the dataset
@@ -93,6 +101,7 @@ var_enet <- function(data, p, lambdas, opt) {
 #' @param opt a list containing the options
 #' @param penalty a string "SCAD" or something else
 #'
+#' @return An \code{ncvreg} object containing the fitted model.
 #' @export
 
 var_scad <- function(data, p, lambdas, opt, penalty = "SCAD") {
@@ -121,6 +130,7 @@ var_scad <- function(data, p, lambdas, opt, penalty = "SCAD") {
 #' @param lambdas a vector containing the lambdas to be used in the fit
 #' @param opt a list containing the options
 #'
+#' @return An \code{ncvreg} object containing the fitted model.
 #' @export
 var_mcp <- function(data, p, lambdas, opt) {
   # transform the dataset
@@ -186,6 +196,8 @@ compute_residuals <- function(data, a) {
 #'
 #' @param v the VAR object as from \code{fitVAR} or \code{simulateVAR}
 #'
+#' @return A sparse matrix (of class \code{dgCMatrix}) representing the
+#'   companion form of the VAR(p) process.
 #' @export
 companion_var <- function(v) {
   if (!check_is_var(v)) {
@@ -217,6 +229,8 @@ companion_var <- function(v) {
 #'
 #' @param v the VAR object as from fitVAR or simulateVAR
 #'
+#' @return A matrix containing the bootstrapped time series with the same
+#'   dimensions as the original series.
 #' @export
 bootstrapped_var <- function(v) {
 
@@ -260,6 +274,8 @@ bootstrapped_var <- function(v) {
 #' @param v the VAR object as from fitVAR or simulateVAR
 #' @param eb the error bands as obtained from errorBands
 #'
+#' @return A list of matrices containing only the statistically significant
+#'   VAR coefficients (non-significant coefficients are set to zero).
 #' @export
 test_granger <- function(v, eb) {
   p <- length(v$A)
@@ -280,6 +296,9 @@ test_granger <- function(v, eb) {
 #'
 #' @param v a list of VAR objects as from fitVAR.
 #'
+#' @return A data frame with columns \code{AIC}, \code{BIC}, and
+#'   \code{HannanQuinn} containing the information criteria values for each
+#'   VAR model in the input list.
 #' @export
 inform_crit <- function(v) {
   if (is.list(v)) {
@@ -335,6 +354,8 @@ estimate_covariance <- function(res, ...) {
 #' @param v a VAR object as from fitVAR.
 #' @param num_steps the number of forecasts to produce.
 #'
+#' @return A matrix of dimension (number of variables) x (num_steps) containing
+#'   the forecasted values for each variable at each forecast horizon.
 #' @export
 compute_forecasts <- function(v, num_steps = 1) {
   if (!check_is_var(v)) {

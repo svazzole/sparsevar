@@ -9,6 +9,9 @@ l1norm(m)
 \arguments{
 \item{m}{the matrix (real or complex valued)}
 }
+\value{
+A numeric value representing the L1 matrix norm (maximum absolute column sum).
+}
 \description{
 Compute the L1 matrix norm of m
 }

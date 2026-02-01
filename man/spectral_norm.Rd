@@ -9,6 +9,9 @@ spectral_norm(m)
 \arguments{
 \item{m}{the matrix (real or complex valued)}
 }
+\value{
+A numeric value representing the spectral norm (largest singular value).
+}
 \description{
 Compute the spectral norm of m
 }

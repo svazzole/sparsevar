@@ -11,6 +11,10 @@ compute_forecasts(v, num_steps)
 
 \item{num_steps}{the number of forecasts to produce.}
 }
+\value{
+A matrix of dimension (number of variables) x (num_steps) containing
+  the forecasted values for each variable at each forecast horizon.
+}
 \description{
 This function computes forecasts for a given VAR.
 }

@@ -9,6 +9,9 @@ l2norm(m)
 \arguments{
 \item{m}{the matrix (real or complex valued)}
 }
+\value{
+A numeric value representing the L2 matrix norm.
+}
 \description{
 Compute the L2 matrix norm of M
 }

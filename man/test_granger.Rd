@@ -11,6 +11,10 @@ test_granger(v, eb)
 
 \item{eb}{the error bands as obtained from errorBands}
 }
+\value{
+A list of matrices containing only the statistically significant
+  VAR coefficients (non-significant coefficients are set to zero).
+}
 \description{
 This function should retain only the coefficients of the
 matrices of the VAR that are statistically significative (from the bootstrap)

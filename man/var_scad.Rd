@@ -17,6 +17,9 @@ var_scad(data, p, lambdas, opt, penalty)
 
 \item{penalty}{a string "SCAD" or something else}
 }
+\value{
+An \code{ncvreg} object containing the fitted model.
+}
 \description{
 Estimate VAR using SCAD penalty
 }

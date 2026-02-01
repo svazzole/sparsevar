@@ -9,6 +9,10 @@ check_is_var(v)
 \arguments{
 \item{v}{the object to test}
 }
+\value{
+A logical value: \code{TRUE} if the input is a var or varx object,
+  \code{FALSE} otherwise.
+}
 \description{
 Check if the input is a var object
 }

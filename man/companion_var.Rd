@@ -9,6 +9,10 @@ companion_var(v)
 \arguments{
 \item{v}{the VAR object as from \code{fitVAR} or \code{simulateVAR}}
 }
+\value{
+A sparse matrix (of class \code{dgCMatrix}) representing the
+  companion form of the VAR(p) process.
+}
 \description{
 Build the VAR(1) representation of a VAR(p) process
 }

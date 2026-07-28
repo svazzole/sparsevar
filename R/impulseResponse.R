@@ -73,7 +73,9 @@ check_impulse_zero <- function(irf) {
 #' \code{"jackknife"}
 #' @param ... some options for the estimation: \code{verbose = TRUE}
 #' or \code{FALSE}, \code{mode = "fast"} or \code{"slow"},
-#' \code{threshold = TRUE} or \code{FALSE}.
+#' \code{threshold = TRUE} or \code{FALSE},
+#' \code{threshold_type = "soft"} (default) or \code{"hard"}, selecting the
+#' cutoff applied when \code{threshold = TRUE}.
 #'
 #' @return a matrix containing the indices of the impulse response function that
 #' are 0.
@@ -85,13 +87,13 @@ error_bands_irf <- function(v, irf, alpha = 0.01, m = 100,
   verbose <- ifelse(!is.null(opt$verbose), opt$verbose, TRUE)
   mode <- ifelse(!is.null(opt$mode), opt$mode, "fast")
   threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
-  threshold_type <- ifelse(!is.null(opt$thresholdType),
-                           opt$thresholdType, "soft")
+  # thresholdType is accepted for backward compatibility
+  threshold_type <- opt$threshold_type %||% opt$thresholdType %||% "soft"
 
   if (resampling == "bootstrap") {
     lambda <- v$lambda
     p <- length(v$A)
-    nr <- ncol(v$series)
+    nr <- nrow(v$series)
     nc <- ncol(v$A[[1]])
     len <- dim(irf$irf)[3]
 
@@ -128,7 +130,7 @@ error_bands_irf <- function(v, irf, alpha = 0.01, m = 100,
         }
 
         if (threshold) {
-          apply_threshold(a, nr, nc, p, type = threshold_type)
+          a <- apply_threshold(a, nr, nc, p, type = threshold_type)
         }
 
         m_mat <- cbind(diag(x = 1, nrow = (nc * (p - 1)),
@@ -139,7 +141,8 @@ error_bands_irf <- function(v, irf, alpha = 0.01, m = 100,
         # fit ENET on a series of lambdas
         if (threshold) {
           fit <- fit_var(o, p, penalty = v$penalty,
-                         method = v$method, threshold = TRUE)
+                         method = v$method, threshold = TRUE,
+                         threshold_type = threshold_type)
         } else {
           fit <- fit_var(o, p, penalty = v$penalty, method = v$method)
         }
@@ -237,8 +240,8 @@ jackknife <- function(v, irf, mode = "fast", alpha, ...) {
   verbose <- ifelse(!is.null(opt$verbose), opt$verbose, TRUE)
   mode <- ifelse(!is.null(opt$mode), opt$mode, "fast")
   threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
-  threshold_type <- ifelse(!is.null(opt$thresholdType),
-                           opt$thresholdType, "soft")
+  # thresholdType is accepted for backward compatibility
+  threshold_type <- opt$threshold_type %||% opt$thresholdType %||% "soft"
 
   irfs <- array(data = rep(0, len * nc^2 * nr), dim = c(nc, nc, len + 1, nr))
   oirfs <- array(data = rep(0, len * nc^2 * nr), dim = c(nc, nc, len + 1, nr))
@@ -293,7 +296,8 @@ jackknife <- function(v, irf, mode = "fast", alpha, ...) {
       # fit ENET on a series of lambdas
       if (threshold) {
         fit <- fit_var(data, p, penalty = v$penalty,
-                       method = v$method, threshold = TRUE)
+                       method = v$method, threshold = TRUE,
+                       threshold_type = threshold_type)
       } else {
         fit <- fit_var(data, p, penalty = v$penalty, method = v$method)
       }

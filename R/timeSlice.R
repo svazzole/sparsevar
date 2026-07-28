@@ -20,6 +20,7 @@ time_slice_var_enet <- function(data, p, opt) {
   nc <- ncol(data)
 
   threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
+  threshold_type <- opt$threshold_type %||% "soft"
   return_fit <- ifelse(!is.null(opt$returnFit), opt$returnFit, FALSE)
   # Cov method: method_cov <- ifelse(!is.null(opt$methodCov),
   #                                  opt$methodCov, "tiger")
@@ -60,7 +61,7 @@ time_slice_var_enet <- function(data, p, opt) {
   # If threshold = TRUE then set to zero all the entries that are smaller than
   # the threshold
   if (threshold) {
-    a <- apply_threshold(a, nr, nc, p)
+    a <- apply_threshold(a, nr, nc, p, type = threshold_type)
   }
 
   # Get back the list of VAR matrices (of length p)
@@ -103,6 +104,7 @@ time_slice_var_scad <- function(data, p, opt, penalty) {
   nc <- ncol(data)
 
   threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
+  threshold_type <- opt$threshold_type %||% "soft"
   a <- ifelse(!is.null(opt$alpha), opt$alpha, 1)
   ## TODO: Add the look ahead period > 1
   l <- ifelse(!is.null(opt$leaveOut), opt$leaveOut, 10)
@@ -164,7 +166,7 @@ time_slice_var_scad <- function(data, p, opt, penalty) {
   # If threshold = TRUE then set to zero all the entries that are smaller than
   # the threshold
   if (threshold) {
-    a <- apply_threshold(a, nr, nc, p)
+    a <- apply_threshold(a, nr, nc, p, type = threshold_type)
   }
 
   # Get back the list of VAR matrices (of length p)

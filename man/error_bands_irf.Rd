@@ -20,7 +20,9 @@ error_bands_irf(v, irf, alpha, m, resampling, ...)
 
 \item{...}{some options for the estimation: \code{verbose = TRUE}
 or \code{FALSE}, \code{mode = "fast"} or \code{"slow"},
-\code{threshold = TRUE} or \code{FALSE}.}
+\code{threshold = TRUE} or \code{FALSE},
+\code{threshold_type = "soft"} (default) or \code{"hard"}, selecting the
+cutoff applied when \code{threshold = TRUE}.}
 }
 \value{
 a matrix containing the indices of the impulse response function that

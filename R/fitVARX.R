@@ -15,9 +15,15 @@
 #' @param penalty the penalty function to use. Possible values are
 #' \code{"ENET"}, \code{"SCAD"} or \code{"MCP"}
 #' @param method possible values are \code{"cv"} or \code{"timeSlice"}
-#' @param ... the options for the estimation. Global options are:
-#' \code{threshold}: if \code{TRUE} all the entries smaller than the oracle
-#' threshold are set to zero;
+#' @param ... the options for the estimation. Unrecognised option names are an
+#' error, not silently ignored. Global options are:
+#' \code{threshold}: \code{FALSE} (default), \code{TRUE}, or a single positive
+#' number used directly as the cutoff;
+#' \code{threshold_type}: \code{"theory"} (default), \code{"soft"} or
+#' \code{"hard"};
+#' \code{threshold_const}: the constant \code{C} in the \code{"theory"} cutoff
+#' (default = 1). See \code{\link{fit_var}} for the formulas and for what
+#' thresholding does and does not guarantee;
 #' \code{scale}: scale the data (default = FALSE)?
 #' \code{nfolds}: the number of folds used for cross validation (default = 10);
 #' \code{parallel}: if \code{TRUE} use multicore backend (default = FALSE);
@@ -31,7 +37,9 @@
 #' (default = 100);
 #' \code{leaveOut}: in the time slice validation leave out the last
 #' \code{leaveOutLast} observations (default = 15);
-#' \code{horizon}: the horizon to use for estimating mse/mae (default = 1).
+#' \code{horizon}: the forecast horizon used to score the time-slice
+#' validation. Fixed at 1 in this version; other values are not yet
+#' implemented and are rejected.
 #'
 #' @return \code{A} the list (of length \code{p}) of the estimated matrices
 #' of the process
@@ -46,6 +54,7 @@ fit_varx <- function(data, p = 1,
                      penalty = "ENET",
                      method = "cv", ...) {
   opt <- list(...)
+  validate_fit_options(opt)
 
   # convert data to matrix
   if (!is.matrix(data)) {

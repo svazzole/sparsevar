@@ -19,8 +19,7 @@ time_slice_var_enet <- function(data, p, opt) {
   nr <- nrow(data)
   nc <- ncol(data)
 
-  threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
-  threshold_type <- opt$threshold_type %||% "soft"
+  thr <- resolve_threshold(opt)
   return_fit <- ifelse(!is.null(opt$returnFit), opt$returnFit, FALSE)
   # Cov method: method_cov <- ifelse(!is.null(opt$methodCov),
   #                                  opt$methodCov, "tiger")
@@ -38,8 +37,15 @@ time_slice_var_enet <- function(data, p, opt) {
 
   for (i in 1:l) {
     d <- data[i:(win_length + i), ]
-    fit <- var_enet(d[1:(nrow(d) - 1), ], p, lam, opt)
-    res_ts[, i + 1] <- compute_errors(d, p, fit)
+    tr_win <- d[1:(nrow(d) - 1), ]
+    fit <- var_enet(tr_win, p, lam, opt)
+    # Score the held-out row on the same footing the coefficients were fitted
+    # on. Handing compute_errors() the raw levels compares centered
+    # coefficients against uncentered data, so the validation error — and with
+    # it the selected lambda — depends on where the series sits.
+    res_ts[, i + 1] <- compute_errors(
+      apply_standardization(d, standardization(tr_win, opt)), p, fit
+    )
   }
 
   final_res <- matrix(0, ncol = 3, nrow = length(lam))
@@ -58,11 +64,9 @@ time_slice_var_enet <- function(data, p, opt) {
 
   elapsed <- Sys.time() - t
 
-  # If threshold = TRUE then set to zero all the entries that are smaller than
-  # the threshold
-  if (threshold) {
-    a <- apply_threshold(a, nr, nc, p, type = threshold_type)
-  }
+  # Set to zero all the entries smaller than the cutoff. "theory" needs the
+  # un-thresholded residuals, so this must happen before split_matrix().
+  a <- threshold_coefficients(a, tr_dt$series, nc, p, thr)
 
   # Get back the list of VAR matrices (of length p)
   a <- split_matrix(a, p)
@@ -73,6 +77,7 @@ time_slice_var_enet <- function(data, p, opt) {
   # Create the output
   output <- list()
   output$mu <- tr_dt$mu
+  output$sd <- tr_dt$sd
   output$A <- a
 
   # Do you want the fit?
@@ -103,8 +108,7 @@ time_slice_var_scad <- function(data, p, opt, penalty) {
   nr <- nrow(data)
   nc <- ncol(data)
 
-  threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
-  threshold_type <- opt$threshold_type %||% "soft"
+  thr <- resolve_threshold(opt)
   a <- ifelse(!is.null(opt$alpha), opt$alpha, 1)
   ## TODO: Add the look ahead period > 1
   l <- ifelse(!is.null(opt$leaveOut), opt$leaveOut, 10)
@@ -131,12 +135,16 @@ time_slice_var_scad <- function(data, p, opt, penalty) {
 
   for (i in 1:l) {
     d <- data[i:(win_length + i), ]
+    tr_win <- d[1:(nrow(d) - 1), ]
+    # See the ENET path: the held-out row must be standardized the way the
+    # coefficients were, or lambda selection follows the series' location.
+    d_std <- apply_standardization(d, standardization(tr_win, opt))
     if (penalty == "SCAD" || penalty == "SCAD2") {
-      fit <- var_scad(d[1:(nrow(d) - 1), ], p, lam, opt, penalty)
-      res_ts[, i + 1] <- compute_errors(d, p, fit, penalty = penalty)
+      fit <- var_scad(tr_win, p, lam, opt, penalty)
+      res_ts[, i + 1] <- compute_errors(d_std, p, fit, penalty = penalty)
     } else {
-      fit <- var_mcp(d[1:(nrow(d) - 1), ], p, lam, opt)
-      res_ts[, i + 1] <- compute_errors(d, p, fit, penalty = "MCP")
+      fit <- var_mcp(tr_win, p, lam, opt)
+      res_ts[, i + 1] <- compute_errors(d_std, p, fit, penalty = "MCP")
     }
   }
 
@@ -149,35 +157,44 @@ time_slice_var_scad <- function(data, p, opt, penalty) {
 
   ix <- which(final_res[, 2] == min(final_res[, 2]))[1]
 
+  # Refit on the whole sample along the FULL decreasing lambda path and pick the
+  # selected column, rather than calling ncvreg with the single selected lambda.
+  # ncvreg warns that a one-element lambda "greatly increases your risk of
+  # converging to an inferior local maximum", because the non-convex objective
+  # relies on warm starts down the path.
   if (penalty == "SCAD") {
-    fit <- var_scad(data, p, final_res[ix, 1], opt)
-    a_vector <- fit$beta[2:nrow(fit$beta), 1]
+    fit <- var_scad(data, p, lam, opt)
+    a_vector <- fit$beta[2:nrow(fit$beta), ix]
   } else if (penalty == "MCP") {
-    fit <- var_mcp(data, p, final_res[ix, 1], opt)
-    a_vector <- fit$beta[2:nrow(fit$beta), 1]
+    fit <- var_mcp(data, p, lam, opt)
+    a_vector <- fit$beta[2:nrow(fit$beta), ix]
   } else {
-    fit <- var_scad(data, p, final_res[ix, 1], opt, penalty == "SCAD2")
-    a_vector <- fit$beta[seq_along(fit$beta), 1]
+    fit <- var_scad(data, p, lam, opt, penalty == "SCAD2")
+    a_vector <- fit$beta[2:nrow(fit$beta), ix]
   }
   a <- matrix(a_vector, nrow = nc, ncol = nc * p, byrow = TRUE)
 
   elapsed <- Sys.time() - t
 
-  # If threshold = TRUE then set to zero all the entries that are smaller than
-  # the threshold
-  if (threshold) {
-    a <- apply_threshold(a, nr, nc, p, type = threshold_type)
-  }
+  # Set to zero all the entries smaller than the cutoff. "theory" needs the
+  # un-thresholded residuals, so this must happen before split_matrix(). Safe
+  # here only because the residuals below are now computed on tr_dt$series;
+  # on raw data sigma_i was inflated ~60% on any series with a non-zero mean.
+  a <- threshold_coefficients(a, tr_dt$series, nc, p, thr)
 
   # Get back the list of VAR matrices (of length p)
   a <- split_matrix(a, p)
 
-  # Now that we have the matrices compute the residuals
-  res <- compute_residuals(data, a)
+  # Now that we have the matrices compute the residuals. The coefficients were
+  # fitted on centered data, so the residuals must be too — and on the same
+  # series the fit reports as $series, or the two disagree in length as well as
+  # in location.
+  res <- compute_residuals(tr_dt$series, a)
 
   # Create the output
   output <- list()
   output$mu <- tr_dt$mu
+  output$sd <- tr_dt$sd
   output$A <- a
 
   # Do you want the fit?

@@ -13,7 +13,7 @@
 #'
 #' @export
 plot_irf <- function(irf, eb, i, j, type = "irf", bands = "quantiles") {
-  if (attr(irf, "class") != "irf" || attr(eb, "class") != "irfBands") {
+  if (!inherits(irf, "irf") || !inherits(eb, "irfBands")) {
     stop("Inputs must be an irf object and an irfBands object")
   }
 

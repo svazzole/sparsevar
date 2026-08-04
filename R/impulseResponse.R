@@ -73,9 +73,13 @@ check_impulse_zero <- function(irf) {
 #' \code{"jackknife"}
 #' @param ... some options for the estimation: \code{verbose = TRUE}
 #' or \code{FALSE}, \code{mode = "fast"} or \code{"slow"},
-#' \code{threshold = TRUE} or \code{FALSE},
-#' \code{threshold_type = "soft"} (default) or \code{"hard"}, selecting the
-#' cutoff applied when \code{threshold = TRUE}.
+#' \code{threshold = FALSE} (default), \code{TRUE}, or a single positive number
+#' used directly as the cutoff, \code{threshold_type = "theory"} (default),
+#' \code{"soft"} or \code{"hard"}, and \code{threshold_const} (default = 1),
+#' the constant \code{C} in the \code{"theory"} cutoff. See
+#' \code{\link{fit_var}} for the formulas and for what thresholding does and
+#' does not guarantee. Unrecognised option names are an error; in particular
+#' the legacy spelling \code{thresholdType} is no longer accepted.
 #'
 #' @return a matrix containing the indices of the impulse response function that
 #' are 0.
@@ -86,9 +90,11 @@ error_bands_irf <- function(v, irf, alpha = 0.01, m = 100,
   opt <- list(...)
   verbose <- ifelse(!is.null(opt$verbose), opt$verbose, TRUE)
   mode <- ifelse(!is.null(opt$mode), opt$mode, "fast")
-  threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
-  # thresholdType is accepted for backward compatibility
-  threshold_type <- opt$threshold_type %||% opt$thresholdType %||% "soft"
+  # The legacy `thresholdType` spelling is no longer accepted: it has been dead
+  # in the fit path since v1.0.0 and was never documented, so honouring it here
+  # only taught a spelling that silently does nothing everywhere else.
+  validate_irf_options(opt)
+  thr <- resolve_threshold(opt)
 
   if (resampling == "bootstrap") {
     lambda <- v$lambda
@@ -99,6 +105,9 @@ error_bands_irf <- function(v, irf, alpha = 0.01, m = 100,
 
     irfs <- array(data = rep(0, len * nc^2 * m), dim = c(nc, nc, len + 1, m))
     oirfs <- array(data = rep(0, len * nc^2 * m), dim = c(nc, nc, len + 1, m))
+    # bootstrap draws of the stacked coefficient matrices [A_1 | ... | A_p],
+    # retained so that test_granger() can test the coefficients themselves
+    a_boot <- array(0, dim = c(nc, nc * p, m))
 
     if (verbose == TRUE) {
       cat("Step 1 of 2: bootstrapping series and re-estimating VAR...\n")
@@ -129,25 +138,26 @@ error_bands_irf <- function(v, irf, alpha = 0.01, m = 100,
           a <- matrix(a_vector, nrow = nc, ncol = nc * p, byrow = TRUE)
         }
 
-        if (threshold) {
-          a <- apply_threshold(a, nr, nc, p, type = threshold_type)
-        }
+        # No residuals exist on this path, so "theory" gets sigma and s from
+        # the bootstrap sample itself, standardized the way var_scad/var_mcp
+        # standardized it internally.
+        a <- threshold_coefficients(
+          a, boot_series(o, v, p), nc, p, thr
+        )
 
         m_mat <- cbind(diag(x = 1, nrow = (nc * (p - 1)),
                             ncol = (nc * (p - 1))),
                        matrix(0, nrow = (nc * (p - 1)), ncol = nc))
         big_a <- rbind(a, m_mat)
       } else {
-        # fit ENET on a series of lambdas
-        if (threshold) {
-          fit <- fit_var(o, p, penalty = v$penalty,
-                         method = v$method, threshold = TRUE,
-                         threshold_type = threshold_type)
-        } else {
-          fit <- fit_var(o, p, penalty = v$penalty, method = v$method)
-        }
+        # fit ENET on a series of lambdas. Re-entering fit_var() inherits the
+        # thresholding for free, but only if the whole spec is forwarded —
+        # threshold_const could not be forwarded at all before.
+        fit <- do.call(fit_var, threshold_fit_args(o, p, v, thr))
         big_a <- companion_var(fit)
       }
+
+      a_boot[, , k] <- as.matrix(big_a[1:nc, , drop = FALSE])
 
       tmp_res <- get_irf(v, big_a, len, irf$cholP)
       irfs[, , , k] <- tmp_res$irf
@@ -216,6 +226,8 @@ error_bands_irf <- function(v, irf, alpha = 0.01, m = 100,
     output$irfQLB <- irf_qlb
     output$oirfQLB <- oirf_qlb
 
+    output$Aboot <- a_boot
+
     attr(output, "class") <- "irfBands"
     attr(output, "resampling") <- "bootstrap"
   } else if (resampling == "jackknife") {
@@ -239,12 +251,16 @@ jackknife <- function(v, irf, mode = "fast", alpha, ...) {
   opt <- list(...)
   verbose <- ifelse(!is.null(opt$verbose), opt$verbose, TRUE)
   mode <- ifelse(!is.null(opt$mode), opt$mode, "fast")
-  threshold <- ifelse(!is.null(opt$threshold), opt$threshold, FALSE)
-  # thresholdType is accepted for backward compatibility
-  threshold_type <- opt$threshold_type %||% opt$thresholdType %||% "soft"
+  # The legacy `thresholdType` spelling is no longer accepted: it has been dead
+  # in the fit path since v1.0.0 and was never documented, so honouring it here
+  # only taught a spelling that silently does nothing everywhere else.
+  validate_irf_options(opt)
+  thr <- resolve_threshold(opt)
 
   irfs <- array(data = rep(0, len * nc^2 * nr), dim = c(nc, nc, len + 1, nr))
   oirfs <- array(data = rep(0, len * nc^2 * nr), dim = c(nc, nc, len + 1, nr))
+  # jackknife draws of the stacked coefficient matrices [A_1 | ... | A_p]
+  a_boot <- array(0, dim = c(nc, nc * p, nr))
 
   if (verbose == TRUE) {
     cat("Step 1 of 2: jack knifing series and re-estimating VAR...\n")
@@ -285,24 +301,22 @@ jackknife <- function(v, irf, mode = "fast", alpha, ...) {
         a <- matrix(a_vector, nrow = nc, ncol = nc * p, byrow = TRUE)
       }
 
-      if (threshold) {
-        a <- apply_threshold(a, nr, nc, p, type = threshold_type)
-      }
+      # As in the bootstrap path: no residuals here, so sigma and s come from
+      # the resampled series.
+      a <- threshold_coefficients(
+        a, boot_series(data, v, p), nc, p, thr
+      )
 
       m <- cbind(diag(x = 1, nrow = (nc * (p - 1)), ncol = (nc * (p - 1))),
                  matrix(0, nrow = (nc * (p - 1)), ncol = nc))
       big_a <- rbind(a, m)
     } else {
-      # fit ENET on a series of lambdas
-      if (threshold) {
-        fit <- fit_var(data, p, penalty = v$penalty,
-                       method = v$method, threshold = TRUE,
-                       threshold_type = threshold_type)
-      } else {
-        fit <- fit_var(data, p, penalty = v$penalty, method = v$method)
-      }
+      # fit ENET on a series of lambdas; see the bootstrap path above
+      fit <- do.call(fit_var, threshold_fit_args(data, p, v, thr))
       big_a <- companion_var(fit)
     }
+
+    a_boot[, , k] <- as.matrix(big_a[1:nc, , drop = FALSE])
 
     tmp_res <- get_irf(v, big_a, len, irf$cholP)
     irfs[, , , k] <- tmp_res$irf
@@ -356,6 +370,8 @@ jackknife <- function(v, irf, mode = "fast", alpha, ...) {
   output$oirfUB <- oirf_ub
   output$irfLB <- irf_lb
   output$oirfLB <- oirf_lb
+
+  output$Aboot <- a_boot
 
   attr(output, "class") <- "irfBands"
   attr(output, "resampling") <- "jackknife"
@@ -491,7 +507,7 @@ bootstrap_ols <- function(v, irf, mode = "fast", alpha, ...) {
   output$oirfLB <- oirf_lb
 
   attr(output, "class") <- "irfBands"
-  attr(output, "resampling") <- "jackknife"
+  attr(output, "resampling") <- "bootstrapOLS"
   output
 }
 

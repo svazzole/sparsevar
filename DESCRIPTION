@@ -1,6 +1,6 @@
 Package: sparsevar
-Version: 1.0.0
-Date: 2026-01-27
+Version: 1.1.0
+Date: 2026-08-03
 Title: Sparse VAR (Vector Autoregression) / VECM (Vector Error Correction Model) Estimation
 Author: Simone Vazzoler [aut, cre]
 Maintainer: Simone Vazzoler <svazzole@gmail.com>
@@ -24,7 +24,7 @@ Suggests:
     rmarkdown,
     testthat,
 Depends:
-    R (>= 4.5.0)
+    R (>= 4.4.0)
 Description: A wrapper for sparse VAR (Vector Autoregression) and
              VECM (Vector Error Correction Model) time series models estimation
              using penalties like ENET (Elastic Net), SCAD (Smoothly Clipped

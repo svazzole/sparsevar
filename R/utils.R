@@ -172,9 +172,5 @@ true_positive_rate <- function(reference_m, a) {
 #'   \code{FALSE} otherwise.
 #' @export
 check_is_var <- function(v) {
-  if (!is.null(attr(v, "class"))) {
-    ifelse(attr(v, "class") == "var" || attr(v, "class") == "varx",
-           return(TRUE), return(FALSE))
-  }
-  FALSE
+  inherits(v, c("var", "varx"))
 }

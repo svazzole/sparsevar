@@ -2,20 +2,44 @@
 % Please edit documentation in R/utilsVAR.R
 \name{test_granger}
 \alias{test_granger}
-\title{Test for Ganger Causality}
+\title{Test for Granger Causality}
 \usage{
-test_granger(v, eb)
+test_granger(v, eb, alpha = 0.05)
 }
 \arguments{
 \item{v}{the VAR object as from fitVAR or simulateVAR}
 
-\item{eb}{the error bands as obtained from errorBands}
+\item{eb}{the error bands as obtained from \code{error_bands_irf}; must
+contain the \code{Aboot} array of resampled coefficient matrices}
+
+\item{alpha}{significance level of the joint test (default 0.05)}
 }
 \value{
-A list of matrices containing only the statistically significant
-  VAR coefficients (non-significant coefficients are set to zero).
+A list of \code{p} matrices containing only the coefficients of
+  variable pairs for which the non-causality null was rejected; all lags of
+  a non-causal pair are set to zero. The logical \code{n x n} causality
+  matrix is attached as the attribute \code{"causality"}, with entry
+  \eqn{(i, j)} \code{TRUE} when \eqn{j} Granger-causes \eqn{i}.
 }
 \description{
-This function should retain only the coefficients of the
-matrices of the VAR that are statistically significative (from the bootstrap)
+Tests, for every ordered pair of variables \eqn{(i, j)}, the
+null hypothesis that variable \eqn{j} does not Granger-cause variable
+\eqn{i}, that is
+\deqn{H_0: A_1[i, j] = A_2[i, j] = \ldots = A_p[i, j] = 0.}
+This is a joint hypothesis across all \eqn{p} lags, and it is assessed with
+a sup-norm bootstrap simultaneous confidence region built from the
+resampled coefficient matrices stored in \code{eb$Aboot}. For each pair the
+studentised statistic \eqn{\max_l |A_l[i,j]| / s_l} is compared against the
+\eqn{1 - \alpha} quantile of its bootstrap counterpart, where \eqn{s_l} is
+the bootstrap standard deviation of \eqn{A_l[i,j]}. Lags whose bootstrap
+standard deviation is zero carry no information and are excluded from the
+maximum.
+
+Because the null is joint over lags, a pair that fails to reject has *all*
+of its lags set to zero, which is the interpretation Granger causality
+requires.
+
+Note that the bootstrap used here resamples residuals around a penalised
+fit. Such a bootstrap is not in general consistent for LASSO-type
+estimators, so the resulting levels should be read as approximate.
 }

@@ -110,7 +110,7 @@ plot_var <- function(..., colors = "dark") {
 #'
 #' @export
 plot_vecm <- function(v) {
-  if (attr(v, "class") != "vecm") {
+  if (!inherits(v, "vecm")) {
     stop("v must be a VECM object")
   }
 

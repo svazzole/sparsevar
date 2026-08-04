@@ -37,7 +37,12 @@ fit_vecm <- function(
   p <- p + 1
 
   opt <- list(...)
-  opt$center <- FALSE
+  # NB: this used to set opt$center <- FALSE, but opt is never passed to
+  # fit_var() below (only `...` is), so the override never took effect and the
+  # data has always been centered. Honouring it makes the estimate worse:
+  # on the cointegrated example the recovered beta goes from (1, -2.083) to
+  # (1, -2.160) against a true (1, -2). Centering is the correct behaviour, so
+  # the dead override is removed rather than wired up.
 
   # by default log-scale the data
   if (log_scale == TRUE) {
@@ -118,7 +123,7 @@ matrix_sum <- function(m, ix = 1) {
 #'
 #' @export
 decompose_pi <- function(vecm, rk, ...) {
-  if (attr(vecm, "class") != "vecm") {
+  if (!inherits(vecm, "vecm")) {
     stop("The input is not a vecm object.")
   }
 
@@ -153,7 +158,7 @@ decompose_pi <- function(vecm, rk, ...) {
 }
 
 decompose_pi2 <- function(vecm, rk) {
-  if (attr(vecm, "class") != "vecm") {
+  if (!inherits(vecm, "vecm")) {
     stop("The input is not a vecm object.")
   }
 

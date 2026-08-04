@@ -20,6 +20,8 @@ A list containing:
   \item \code{y}: the response vector
   \item \code{series}: the (possibly centered/scaled) data matrix
   \item \code{mu}: the column means used for centering
+  \item \code{sd}: the column standard deviations used for scaling; all
+    ones when \code{opt$scale} is \code{FALSE} (the default)
 }
 }
 \description{

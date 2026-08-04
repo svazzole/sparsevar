@@ -20,9 +20,13 @@ error_bands_irf(v, irf, alpha, m, resampling, ...)
 
 \item{...}{some options for the estimation: \code{verbose = TRUE}
 or \code{FALSE}, \code{mode = "fast"} or \code{"slow"},
-\code{threshold = TRUE} or \code{FALSE},
-\code{threshold_type = "soft"} (default) or \code{"hard"}, selecting the
-cutoff applied when \code{threshold = TRUE}.}
+\code{threshold = FALSE} (default), \code{TRUE}, or a single positive number
+used directly as the cutoff, \code{threshold_type = "theory"} (default),
+\code{"soft"} or \code{"hard"}, and \code{threshold_const} (default = 1),
+the constant \code{C} in the \code{"theory"} cutoff. See
+\code{\link{fit_var}} for the formulas and for what thresholding does and
+does not guarantee. Unrecognised option names are an error; in particular
+the legacy spelling \code{thresholdType} is no longer accepted.}
 }
 \value{
 a matrix containing the indices of the impulse response function that

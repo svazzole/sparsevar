@@ -17,9 +17,16 @@ are \code{"ENET"}, \code{"SCAD"} or \code{"MCP"}}
 
 \item{method}{possible values are \code{"cv"} or \code{"timeSlice"}}
 
-\item{...}{the options for the estimation. Global options are:
-\code{threshold}: if \code{TRUE} all the entries smaller than the oracle
-threshold are set to zero;
+\item{...}{the options for the estimation. Unrecognised option names are an
+error, not silently ignored. Global options are:
+\code{threshold}: \code{FALSE} (default, no thresholding), \code{TRUE}
+(threshold at the cutoff named by \code{threshold_type}), or a single
+positive number used directly as the cutoff, in which case
+\code{threshold_type} is ignored;
+\code{threshold_type}: \code{"theory"} (default), \code{"soft"} or
+\code{"hard"} -- see Details;
+\code{threshold_const}: the constant \code{C} in the \code{"theory"} cutoff
+(default = 1), ignored by the other two;
 \code{scale}: scale the data (default = FALSE)?
 \code{nfolds}: the number of folds used for cross validation (default = 10);
 \code{parallel}: if \code{TRUE} use multicore backend (default = FALSE);
@@ -33,7 +40,9 @@ of cores to use for parallel evaluation. Options for ENET estimation:
 validation (default = 100);
 \code{leaveOut}: in the time slice validation leave out the
 last \code{leaveOutLast} observations (default = 15);
-\code{horizon}: the horizon to use for estimating mse/mae (default = 1).}
+\code{horizon}: the forecast horizon used to score the time-slice
+validation. Fixed at 1 in this version; other values are not yet
+implemented and are rejected.}
 }
 \value{
 \code{A} the list (of length \code{p}) of the estimated matrices
@@ -51,4 +60,68 @@ of the process
 A function to estimate a (possibly high-dimensional)
 multivariate VAR time series using penalized least squares methods,
 such as ENET, SCAD or MC+.
+}
+\details{
+\strong{Thresholding.} Penalized estimates shrink coefficients but rarely
+set enough of them to exactly zero, so a post-hoc cutoff is applied to the
+estimated transition matrices. \code{threshold_type} selects the
+\emph{cutoff}; the \emph{rule} is always hard thresholding,
+\eqn{a \cdot 1(|a| \ge \tau)}. The names \code{"soft"} and \code{"hard"} are
+therefore a misnomer -- they are two cutoffs under one rule -- and are kept
+only for backward compatibility.
+
+\itemize{
+  \item \code{"theory"} (default):
+    \eqn{\tau_{ij} = (\sigma_i / s_j) \, C \sqrt{\log(n^2 p) / (T - p)}},
+    where \eqn{\sigma_i} is the residual standard deviation of equation
+    \eqn{i} taken from the un-thresholded fit, \eqn{s_j} is the standard
+    deviation of series \eqn{j} (shared across all \eqn{p} lags), \eqn{n} is
+    the number of series, \eqn{T} the number of observations, and \eqn{C} is
+    \code{threshold_const}. The \eqn{\sigma_i / s_j} factor makes the cutoff
+    dimensionally coherent, so it is not distorted when series are measured
+    in different units.
+  \item \code{"soft"}: \eqn{\tau = 1 / (p n \log(T - p))}.
+  \item \code{"hard"}: \eqn{\tau = n^{-0.49}}.
+}
+
+Neither legacy cutoff depends on \eqn{T} and \eqn{p} in a way derived from
+theory -- \code{"hard"} does not depend on \eqn{T} at all -- which is why
+\code{"theory"} is the default from version 1.1.0.
+
+\strong{Choosing \code{threshold_const}.} The default \eqn{C = 1} was
+calibrated on a simulation grid over penalties, dimensions and sample sizes.
+The optimum is \strong{flat}: performance is essentially unchanged for
+\eqn{C} anywhere in \eqn{[0.75, 1.5]}, so 1 should not be read as a sharply
+identified value. There is a mild dependence on the penalty -- SCAD and MCP
+fits do slightly better at lower \eqn{C} (around 0.5 and 0.75 respectively)
+-- so users fitting those penalties who care about the last fraction of
+accuracy have a reason to lower it. A single default is used because
+lowering it globally would cost the default ENET penalty more than it gains
+the others.
+
+\strong{What thresholding does and does not do.} The cutoff \strong{controls
+over-selection}: it removes spurious non-zero entries. It does \strong{not}
+recover the true support. The supporting theory bounds false positives only,
+under no minimum-signal (beta-min) condition, so there is no guarantee about
+false negatives -- and in practice the thresholded estimator tends to
+\emph{under}-select, discarding some genuinely non-zero coefficients along
+with the spurious ones.
+}
+\references{
+Basu, S. and Michailidis, G. (2015). Regularized estimation in sparse
+high-dimensional time series models. \emph{The Annals of Statistics},
+43(4), 1535-1567. Proposition 4.1 states a thresholded estimator for this
+model class and motivates the rate used here.
+
+Zhou, S. (2009). Thresholding procedures for high dimensional variable
+selection and statistical estimation. \emph{Advances in Neural Information
+Processing Systems}, 22.
+
+Bickel, P. J., Ritov, Y. and Tsybakov, A. B. (2009). Simultaneous analysis
+of Lasso and Dantzig selector. \emph{The Annals of Statistics}, 37(4),
+1705-1732.
+
+The \code{"theory"} cutoff follows the noise-level form of the last two
+references, specialised to the VAR parameter count and with a constant
+calibrated by simulation; it is not stated verbatim in any of them.
 }
